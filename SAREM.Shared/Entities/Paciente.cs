@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class Paciente
     {
@@ -19,6 +19,8 @@ namespace SAREM.Shared
         public string nacionalidad { get; set; }
         [Required]
         public bool sexo { get; set; }
+
+        public bool sansion { get; set; }
 
         public virtual ICollection<PacienteConsultaAgenda> agendadas { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> canceladas { get; set; }

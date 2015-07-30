@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class Especialidad
     {

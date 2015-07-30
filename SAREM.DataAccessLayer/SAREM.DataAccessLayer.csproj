@@ -48,6 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DALAgenda.cs" />
+    <Compile Include="DALPacientes.cs" />
+    <Compile Include="IDALAgenda.cs" />
+    <Compile Include="IDALPacientes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SARMContext.cs" />
@@ -57,7 +61,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SARM.Shared\SAREM.Shared.csproj">
+    <ProjectReference Include="..\SAREM.Shared\SAREM.Shared.csproj">
       <Project>{00344963-17c0-4f95-a42c-1819485eb5e6}</Project>
       <Name>SAREM.Shared</Name>
     </ProjectReference>

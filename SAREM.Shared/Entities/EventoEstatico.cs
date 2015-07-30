@@ -1,6 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class EventoEstatico : Evento
     {

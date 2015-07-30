@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class AgendaEvento
     {

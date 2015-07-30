@@ -1,6 +1,6 @@
 ﻿
 using System.Collections.Generic;
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class EventoNotificacion : Evento
     {

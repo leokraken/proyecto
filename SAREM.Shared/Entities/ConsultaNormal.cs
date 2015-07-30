@@ -1,5 +1,5 @@
 ﻿
-namespace SAREM.Shared
+namespace SAREM.Shared.Entities
 {
     public class ConsultaNormal : Consulta
     {

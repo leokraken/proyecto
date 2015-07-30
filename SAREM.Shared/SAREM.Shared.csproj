@@ -60,6 +60,7 @@
     <Compile Include="Entities\Medico.cs" />
     <Compile Include="Entities\Paciente.cs" />
     <Compile Include="Entities\PacienteConsultaAgenda.cs" />
+    <Compile Include="Entities\PacienteConsultaAusencia.cs" />
     <Compile Include="Entities\PacienteConsultaCancelar.cs" />
     <Compile Include="Entities\PacienteEvento.cs" />
     <Compile Include="Entities\Parte.cs" />

@@ -1,4 +1,4 @@
-﻿using SAREM.Shared;
+﻿using SAREM.Shared.Entities;
 using System;
 using System.Collections.Concurrent;
 using System.Data.Common;
@@ -6,10 +6,10 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 
-namespace SARM.DataAccessLayer
+namespace SAREM.DataAccessLayer
 {
     public class SARMContext : DbContext
-    {
+    { 
         public string tenant;
         static string con = @"Data Source=SLAVE-PC\SQLEXPRESS;Initial Catalog=sarem;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
         static DbConnection connection = new SqlConnection(con);
@@ -27,6 +27,7 @@ namespace SARM.DataAccessLayer
         public DbSet<Paciente> pacientes { get; set; }
         public DbSet<PacienteConsultaAgenda> consultasagendadas { get; set; }
         public DbSet<PacienteConsultaCancelar> consultascanceladas { get; set; }
+        public DbSet<PacienteConsultaAusencia> consultasausentes { get; set; }
         public DbSet<PacienteEvento> eventospacientes { get; set; }
         public DbSet<Parte> partes { get; set; }
         public DbSet<Rango> rangos { get; set; }
@@ -113,8 +114,16 @@ namespace SARM.DataAccessLayer
                     }
                     else
                     {
-                        var createScript = ((IObjectContextAdapter)ctx).ObjectContext.CreateDatabaseScript();
-                        ctx.Database.ExecuteSqlCommand(createScript);
+                        try
+                        {
+                            var createScript = ((IObjectContextAdapter)ctx).ObjectContext.CreateDatabaseScript();
+                            ctx.Database.ExecuteSqlCommand(createScript);
+                        }
+                        catch (Exception E)
+                        {
+                            throw new Exception("El esquema ya existe");
+                        }
+
                     }
                 }
             }
@@ -124,6 +133,42 @@ namespace SARM.DataAccessLayer
             }
         }
 
+        //public SARMContext():base(con)
+        //{
+        //    Database.SetInitializer<SARMContext>(null);
+        //}
 
     }
+
+    public class SAREMAdminContext : DbContext
+    {
+        static string con = @"Data Source=SLAVE-PC\SQLEXPRESS;Initial Catalog=sarem;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
+
+        public SAREMAdminContext():base(con)
+        {
+            Database.SetInitializer<SAREMAdminContext>(null);
+        }
+        public void dropSchema(string schema)
+        {
+            string drop = "drop table [{0}].[{1}]";
+            string tables = @"SELECT TABLE_NAME FROM information_schema.tables where TABLE_SCHEMA=@schema";
+            string alters = @"select concat('alter table [', @schema, '].[', table_name, '] drop constraint ', constraint_name, ';') from information_schema.table_constraints where table_schema=@schema and constraint_type='FOREIGN KEY'";
+            var schemaslist = this.Database.SqlQuery<string>(alters, new SqlParameter("@schema", schema)).ToListAsync(); //.ToList();
+
+            foreach (var s in schemaslist.Result)
+            {
+                Database.ExecuteSqlCommand(s);
+                Console.WriteLine(s.ToString());
+            }
+
+            var tablelist = this.Database.SqlQuery<string>(tables, new SqlParameter("@schema", schema)).ToListAsync();
+            foreach (var t in tablelist.Result)
+            {
+
+                Console.WriteLine(String.Format(drop, schema, t));
+                Database.ExecuteSqlCommand(String.Format(drop, schema, t));
+            }
+        }
+    }
+
 }
