@@ -1,6 +1,7 @@
 ﻿using SAREM.Shared.Entities;
 using System;
 using System.Collections.Concurrent;
+using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -11,7 +12,7 @@ namespace SAREM.DataAccessLayer
     public class SARMContext : DbContext
     { 
         public string tenant;
-        static string con = @"Data Source=SLAVE-PC\SQLEXPRESS;Initial Catalog=sarem;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
+        static string con = ConfigurationManager.ConnectionStrings["sarem"].ConnectionString;
         static DbConnection connection = new SqlConnection(con);
 
         public DbSet<AgendaEvento> agendaeventos { get; set; }
@@ -34,7 +35,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<Nacion> naciones { get; set; }
 
 
-        private SARMContext(DbCompiledModel model, string name): base(con, model)
+        private SARMContext(DbCompiledModel model, string name): base("Name=sarem", model)
         {
             tenant = name;
             Database.SetInitializer<SARMContext>(null);
@@ -76,8 +77,7 @@ namespace SAREM.DataAccessLayer
                 .WithRequired(pc => pc.paciente);
 
             builder.Entity<PacienteConsultaCancelar>().ToTable("consultas_canceladas", schemaName);
-                //.HasKey(k => new { k.PacienteID, k.ConsultaID });
-
+            
             builder.Entity<PacienteEvento>().ToTable("eventos_paciente", schemaName)
                 .HasKey(k => new { k.PacienteID, k.EventoID, k.ComunicacionID });
             builder.Entity<Parte>().ToTable("Partes", schemaName);
@@ -87,17 +87,8 @@ namespace SAREM.DataAccessLayer
 
 
             builder.Entity<PacienteConsultaAgenda>().ToTable("paciente_consulta", schemaName);
-            //    .HasRequired(p => p.Consulta)
-            //    .WithRequiredDependent(c => c.paciente);
-                //.WithOptional(c => c.paciente);
-
-
-            //    .HasRequired(p => p.Paciente)
-            //    .WithMany(p => p.agendadas)
-             //   .HasForeignKey(pc => pc.PacienteID);
-            //builder.Entity<Paciente>().HasMany<Consulta>().WithOptional(c => c.paciente).Map(pc=> {pc.})
-
-            var model = builder.Build(connection);
+            
+            var model = builder.Build(new SqlConnection(con));
             DbCompiledModel compModel = model.Compile();
             var compiledModel = modelCache.GetOrAdd(schemaName, compModel);
             SARMContext ret = new SARMContext(compiledModel, schemaName);
