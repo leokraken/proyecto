@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SAREM.Shared.Entities
 {
+    public enum Sexo { MASCULINO, FEMENINO };
     public class Paciente
     {
         [Key]
@@ -16,13 +17,14 @@ namespace SAREM.Shared.Entities
         [Required]
         public DateTime FN { get; set; }
         [Required]
-        public string nacionalidad { get; set; }
+        public string NacionID { get; set; }
         [Required]
-        public bool sexo { get; set; }
-
+        public Sexo sexo { get; set; }
         public bool sansion { get; set; }
 
+        public virtual Nacion nacion { get; set; }
         public virtual ICollection<PacienteConsultaAgenda> agendadas { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> canceladas { get; set; }
+        public virtual ICollection<Consulta> ausencias { get; set; }
     }
 }

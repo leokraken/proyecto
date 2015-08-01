@@ -2,12 +2,12 @@
 
 namespace SAREM.Shared.Entities
 {
-    public class Funcionario
+    public abstract class Funcionario
     {
         [Key]
         public string FuncionarioID { get; set; }
         [Required]
-        public long nombre { get; set; }
+        public string nombre { get; set; }
         
     }
 }

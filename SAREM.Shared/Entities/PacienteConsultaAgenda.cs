@@ -7,7 +7,9 @@ namespace SAREM.Shared.Entities
 {
     public class PacienteConsultaAgenda
     {
+        [Key, Column(Order=0)]
         public string PacienteID { get; set; }
+        [Key, Column(Order=1)]
         public long ConsultaID { get; set; }
 
         public virtual Paciente paciente { get; set; }

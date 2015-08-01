@@ -13,5 +13,7 @@ namespace SAREM.DataAccessLayer
         void eliminarConsulta(long ConsultaID);
         ICollection<Consulta> listarConsultas();
         ICollection<Consulta> listarConsultasPaciente(string PacienteID);
+        ICollection<Consulta> listarConsultasCanceladasPaciente(string PacienteID);
+        ICollection<Consulta> listarConsultasAusentesPaciente(string PacienteID);
     }
 }
