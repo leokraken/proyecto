@@ -26,7 +26,11 @@ namespace SAREM.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/custom.css",
-                      "~/Content/site.css"));
+                     "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/ContentEsp/css").Include(
+                     "~/Content/morris.css",
+                     "~/Content/sb-admin.css"));
         }
     }
 }
