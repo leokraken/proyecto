@@ -72,12 +72,13 @@ namespace SAREM.Testing
             Debug.WriteLine("Funcionarios agregados...");
 
             //Creo consultas para asignar
+            
             List<Consulta> consultas = new List<Consulta>
             {
                 new Consulta {
                     EspecialidadID = especialidades[0].EspecialidadID,
-                    fecha_fin=DateTime.UtcNow,
-                    fecha_inicio= DateTime.UtcNow,
+                    fecha_fin=DateTime.UtcNow,                  
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(30),
                     FuncionarioID=funcionarios[0].FuncionarioID,
                 }
             };
@@ -137,7 +138,7 @@ namespace SAREM.Testing
         public static void ClassCleanup()
         {
             var db = new SAREMAdminContext();
-            db.dropSchema(tenant);
+            //db.dropSchema(tenant);
         }
 
     }
