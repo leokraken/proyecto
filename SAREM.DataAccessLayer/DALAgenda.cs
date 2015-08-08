@@ -147,5 +147,19 @@ namespace SAREM.DataAccessLayer
             return q.Single().ausencias;
         }
 
+        public ICollection<Especialidad> listarEspecialidades()
+        {
+            return db.especialidades.ToList();
+        }
+
+        public ICollection<Local> listarLocales()
+        {
+            return db.locales.ToList();
+        }
+
+        public ICollection<Funcionario> listarFuncionarios()
+        {
+            return db.funcionarios.ToList();
+        }
     }
 }
