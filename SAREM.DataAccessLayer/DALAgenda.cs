@@ -76,7 +76,8 @@ namespace SAREM.DataAccessLayer
         //Precondiciones: No tiene.
         public void agregarConsulta(Consulta consulta)
         {
-            db.consultas.Add(consulta);            
+            db.consultas.Add(consulta);
+            db.SaveChanges();
         }
 
         public void modificarConsulta(Consulta consulta)
