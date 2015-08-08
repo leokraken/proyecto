@@ -15,5 +15,8 @@ namespace SAREM.DataAccessLayer
         ICollection<Consulta> listarConsultasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasCanceladasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasAusentesPaciente(string PacienteID);
+        ICollection<Especialidad> listarEspecialidades();
+        ICollection<Local> listarLocales();
+        ICollection<Funcionario> listarFuncionarios();
     }
 }
