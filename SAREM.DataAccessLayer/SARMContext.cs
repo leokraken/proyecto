@@ -98,6 +98,8 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("MedicosEspecialidades", schemaName);
                 });
 
+            builder.Entity<Local>().ToTable("locales", schemaName);
+
             builder.Entity<Local>()
                 .HasMany<Especialidad>(l => l.especialidades)
                 .WithMany(e => e.locales)

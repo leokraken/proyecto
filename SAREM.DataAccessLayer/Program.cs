@@ -14,9 +14,13 @@ namespace SARM.DataAccessLayer
     {
         static void Main(string[] args)
         {
+            //SARMContext.createTenant("testschema");
+            //IDALAgenda idal = new DALAgenda("testschema");
+            //var lista =idal.listarLocales();
+            //Console.WriteLine(lista.Count);
             using(var db = new SAREMAdminContext())
             {
-                //db.dropSchema("test");
+                db.dropSchema("conn");
             }
 
             Console.WriteLine("Proceso finalizado...");

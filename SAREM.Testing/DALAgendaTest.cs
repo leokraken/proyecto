@@ -71,8 +71,19 @@ namespace SAREM.Testing
             db.SaveChanges();
             Debug.WriteLine("Funcionarios agregados...");
 
+
+            List<Local> locales = new List<Local>
+            {
+                new Local {LocalID=1, nombre = "local1", calle="calle1", numero="SN"},
+                new Local {LocalID=2, nombre = "local2", calle="calle2", numero="SN2"},
+                new Local {LocalID=3, nombre = "local3", calle="calle3", numero="SN3"}
+            };
+            locales.ForEach(l => db.locales.Add(l));
+            db.SaveChanges();
             //Creo consultas para asignar
             
+
+
             List<Consulta> consultas = new List<Consulta>
             {
                 new Consulta {
@@ -80,6 +91,7 @@ namespace SAREM.Testing
                     fecha_fin=DateTime.UtcNow,                  
                     fecha_inicio= DateTime.UtcNow.AddMinutes(30),
                     FuncionarioID=funcionarios[0].FuncionarioID,
+                    LocalID=1
                 }
             };
             consultas.ForEach(c => db.consultas.Add(c));
