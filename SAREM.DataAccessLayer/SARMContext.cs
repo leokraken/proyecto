@@ -87,7 +87,26 @@ namespace SAREM.DataAccessLayer
 
 
             builder.Entity<PacienteConsultaAgenda>().ToTable("paciente_consulta", schemaName);
-            
+
+
+            builder.Entity<Medico>()
+                .HasMany<Especialidad>(m => m.especialidades)
+                .WithMany(e => e.medicos)
+                .Map(me => {
+                    me.MapLeftKey("MedicoID");
+                    me.MapRightKey("EspecialidadID");
+                    me.ToTable("MedicosEspecialidades", schemaName);
+                });
+
+            builder.Entity<Local>()
+                .HasMany<Especialidad>(l => l.especialidades)
+                .WithMany(e => e.locales)
+                .Map(me =>{
+                    me.MapLeftKey("LocalID");
+                    me.MapRightKey("EspecialidadID");
+                    me.ToTable("LocalesEspecialidades", schemaName);
+                });
+
             var model = builder.Build(new SqlConnection(con));
             DbCompiledModel compModel = model.Compile();
             var compiledModel = modelCache.GetOrAdd(schemaName, compModel);

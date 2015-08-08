@@ -17,5 +17,6 @@ namespace SAREM.Shared.Entities
         public double longitud { get; set; }
 
         public virtual ICollection<Consulta> consultas { get; set; }
+        public virtual ICollection<Especialidad> especialidades { get; set; }
     }
 }

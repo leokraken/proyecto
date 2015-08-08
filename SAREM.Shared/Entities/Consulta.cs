@@ -17,6 +17,7 @@ namespace SAREM.Shared.Entities
         public long EspecialidadID { get; set; }
         [DHXJson(Ignore = true)]
         public string FuncionarioID { get; set; }
+        public long LocalID { get; set; }
 
         [Required]
         [DHXJson(Alias = "start_date")]
@@ -30,13 +31,12 @@ namespace SAREM.Shared.Entities
 
         public virtual Especialidad especialidad { get; set; }
         public virtual Medico medico { get; set; }
+        public virtual Paciente ausencia { get; set; }
+        public virtual Local local { get; set; }
 
         //varios pacientes pueden agendar si uno de ellos cancela
         public virtual ICollection<PacienteConsultaAgenda> pacientes { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> pacientescancelar { get; set; }
-        //one to many
-        public virtual Paciente ausencia { get; set; }
-
         public virtual ICollection<AgendaEvento> notificaciones { get; set; }
     }
 }
