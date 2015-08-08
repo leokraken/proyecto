@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SAREM.DataAccessLayer;
+using SAREM.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +10,11 @@ namespace SAREM.Web.Controllers
 {
     public class ConsultaController : Controller
     {
+        IDALAgenda agenda = new DALAgenda("test");
         // GET: Consulta
         public ActionResult Index()
         {
+           
             return View();
         }
 
@@ -21,25 +25,40 @@ namespace SAREM.Web.Controllers
         }
 
         // GET: Consulta/Create
+        [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            var model = new Consulta
+            {
+               local = agenda.listarLocales(),
+               especialidades = agenda.listarEspecialidades(),
+               funcionarios = agenda.listarFuncionarios()
+            };
+
+
+            return View(model);
         }
 
         // POST: Consulta/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create([Bind(Include = "pacienteId,localID,especialidadID,medID,fecha_inicio,fecha_fin")] Consulta consulta)
         {
-            try
-            {
-                // TODO: Add insert logic here
 
-                return RedirectToAction("Index");
-            }
-            catch
+            if (ModelState.IsValid)
             {
-                return View();
+                SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
+                c.LocalID = consulta.localID;
+                c.EspecialidadID = consulta.especialidadID;
+                c.FuncionarioID = consulta.medID;
+                c.fecha_fin = consulta.fecha_fin.ToUniversalTime();
+                c.fecha_inicio = consulta.fecha_inicio.ToUniversalTime();
+                
+                agenda.agregarConsulta(c);
+              
+                return RedirectToAction("Index", "Tecnico");
             }
+
+            return View(consulta);
         }
 
         // GET: Consulta/Edit/5

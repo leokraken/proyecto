@@ -1,0 +1,110 @@
+﻿@model SAREM.Web.Models.Consulta
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<h2>Crear Consulta</h2>
+<hr />
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        
+       
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2">Nro de Documento Paciente:</label>
+           
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.pacienteId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.pacienteId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Orígen:</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(
+                        model => model.localID,
+                        Model.local.Select(l => new SelectListItem
+                        {
+                            Text = l.nombre,
+                            Value = l.LocalID.ToString()
+                        }),
+                        "Seleccione un Orígen")
+                @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Especialidad:</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(
+                        model => model.especialidadID,
+                        Model.especialidades.Select(e => new SelectListItem
+                        {
+                            Text = e.tipo,
+                            Value = e.EspecialidadID.ToString()
+                        }),
+                        "Seleccione una Especialidad")
+                @Html.ValidationMessageFor(model => model.especialidadID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Médico:</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(
+                        model => model.medID,
+                        Model.funcionarios.Select(f => new SelectListItem
+                        {
+                            Text = f.nombre,
+                            Value = f.FuncionarioID.ToString()
+                        }),
+                        "Seleccione un Médico")
+               
+                @Html.ValidationMessageFor(model => model.medID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Fecha Inicio:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Seleccione una fecha.." } })
+                @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Fecha Fin:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Seleccione una fecha.." } })
+                @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver a Inicio", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    $(function () { // will trigger when the document is ready
+       $('.datepicker').datepicker(); //Initialise any date pickers
+    });
+</script>

@@ -9,7 +9,7 @@ namespace SAREM.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-1.10.2.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -21,11 +21,13 @@ namespace SAREM.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                       "~/Scripts/bootstrap-datepicker.js",    // ** NEW for Bootstrap Datepicker
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/custom.css",
+                      "~/Content/bootstrap-datepicker.css", // ** NEW for Bootstrap Datepicker
                      "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/ContentEsp/css").Include(
