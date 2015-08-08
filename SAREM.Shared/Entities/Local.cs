@@ -12,7 +12,7 @@ namespace SAREM.Shared.Entities
         public string calle { get; set; }
         [Required]
         public string numero { get; set; }
-        
+        public string nombre { get; set; }
         public double latitud { get; set; }
         public double longitud { get; set; }
 
