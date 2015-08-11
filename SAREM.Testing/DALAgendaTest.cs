@@ -31,12 +31,12 @@ namespace SAREM.Testing
             db = SARMContext.getTenant(tenant);
             iagenda = new DALAgenda(tenant);
 
-            List<Nacion> naciones = new List<Nacion>
+            List<Pais> naciones = new List<Pais>
             {
-                new Nacion { NacionID = "UY", nombre = "Uruguay" },
-                new Nacion { NacionID = "BR", nombre = "Brasil" }
+                new Pais { PaisID = "UY", nombre = "Uruguay" },
+                new Pais { PaisID = "BR", nombre = "Brasil" }
             };
-            naciones.ForEach(n => db.naciones.Add(n));
+            naciones.ForEach(n => db.paises.Add(n));
             db.SaveChanges();
 
             List<Paciente> pacientes = new List<Paciente>
@@ -45,7 +45,7 @@ namespace SAREM.Testing
                     FN=new DateTime(1991,6,22),
                     sexo=Sexo.MASCULINO,
                     nombre="Leonardo Clavijo",
-                    NacionID = naciones.First().NacionID
+                    PaisID = naciones.First().PaisID
                 }
             };
             pacientes.ForEach(p => db.pacientes.Add(p));
@@ -65,7 +65,7 @@ namespace SAREM.Testing
             //funcionarios
             List<Medico> funcionarios = new List<Medico>
             {
-                new Medico {FuncionarioID="17299999", nombre="Medico1"}
+                new Medico {FuncionarioID="17299999", nombre="Medico1", especialidades=especialidades}
             };
             funcionarios.ForEach(f => db.funcionarios.Add(f));
             db.SaveChanges();
@@ -74,7 +74,7 @@ namespace SAREM.Testing
 
             List<Local> locales = new List<Local>
             {
-                new Local {LocalID=1, nombre = "local1", calle="calle1", numero="SN"},
+                new Local {LocalID=1, nombre = "local1", calle="calle1", numero="SN", especialidades=especialidades},
                 new Local {LocalID=2, nombre = "local2", calle="calle2", numero="SN2"},
                 new Local {LocalID=3, nombre = "local3", calle="calle3", numero="SN3"}
             };

@@ -52,8 +52,6 @@
     <Compile Include="Entities\AgendaEvento.cs" />
     <Compile Include="Entities\Comunicacion.cs" />
     <Compile Include="Entities\Consulta.cs" />
-    <Compile Include="Entities\ConsultaEspecial.cs" />
-    <Compile Include="Entities\ConsultaNormal.cs" />
     <Compile Include="Entities\Especialidad.cs" />
     <Compile Include="Entities\Evento.cs" />
     <Compile Include="Entities\EventoEstatico.cs" />
@@ -61,7 +59,7 @@
     <Compile Include="Entities\Funcionario.cs" />
     <Compile Include="Entities\Local.cs" />
     <Compile Include="Entities\Medico.cs" />
-    <Compile Include="Entities\Nacion.cs" />
+    <Compile Include="Entities\Pais.cs" />
     <Compile Include="Entities\Paciente.cs" />
     <Compile Include="Entities\PacienteConsultaAgenda.cs" />
     <Compile Include="Entities\PacienteConsultaCancelar.cs" />

@@ -52,6 +52,7 @@
     <Compile Include="DALAgenda.cs" />
     <Compile Include="DALPacientes.cs" />
     <Compile Include="IDALAgenda.cs" />
+    <Compile Include="IDALEvento.cs" />
     <Compile Include="IDALPacientes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

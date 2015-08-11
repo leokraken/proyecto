@@ -40,7 +40,7 @@ namespace SAREM.DataAccessLayer
             else
             {
                 var p = db.pacientes.Find(paciente.PacienteID);
-                p.NacionID = paciente.NacionID;
+                p.PaisID = paciente.PaisID;
                 p.celular = paciente.celular;
                 p.direccion = paciente.direccion;
                 p.FN = paciente.FN;

@@ -17,12 +17,12 @@ namespace SAREM.Shared.Entities
         [Required]
         public DateTime FN { get; set; }
         [Required]
-        public string NacionID { get; set; }
+        public string PaisID { get; set; }
         [Required]
         public Sexo sexo { get; set; }
         public bool sansion { get; set; }
 
-        public virtual Nacion nacion { get; set; }
+        public virtual Pais nacion { get; set; }
         public virtual ICollection<PacienteConsultaAgenda> agendadas { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> canceladas { get; set; }
         public virtual ICollection<Consulta> ausencias { get; set; }
