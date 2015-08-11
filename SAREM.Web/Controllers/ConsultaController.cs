@@ -1,10 +1,12 @@
 ﻿using SAREM.DataAccessLayer;
+using SAREM.Shared.Entities;
 using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace SAREM.Web.Controllers
 {
@@ -28,11 +30,12 @@ namespace SAREM.Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            var model = new Consulta
+            var model = new SAREM.Web.Models.Consulta
             {
                local = agenda.listarLocales(),
-               especialidades = agenda.listarEspecialidades(),
-               funcionarios = agenda.listarFuncionarios()
+               
+               //especialidades = agenda.listarEspecialidades(),
+               //funcionarios = agenda.listarFuncionarios()
             };
 
 
@@ -41,7 +44,7 @@ namespace SAREM.Web.Controllers
 
         // POST: Consulta/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "pacienteId,localID,especialidadID,medID,fecha_inicio,fecha_fin")] Consulta consulta)
+        public ActionResult Create([Bind(Include = "pacienteId,localID,especialidadID,medID,fecha_inicio,fecha_fin")]  SAREM.Web.Models.Consulta consulta)
         {
 
             if (ModelState.IsValid)
@@ -50,8 +53,8 @@ namespace SAREM.Web.Controllers
                 c.LocalID = consulta.localID;
                 c.EspecialidadID = consulta.especialidadID;
                 c.FuncionarioID = consulta.medID;
-                c.fecha_fin = consulta.fecha_fin.ToUniversalTime();
-                c.fecha_inicio = consulta.fecha_inicio.ToUniversalTime();
+                //c.fecha_fin = consulta.fecha_fin.ToUniversalTime();
+                //c.fecha_inicio = consulta.fecha_inicio.ToUniversalTime();
                 
                 agenda.agregarConsulta(c);
               
@@ -59,6 +62,31 @@ namespace SAREM.Web.Controllers
             }
 
             return View(consulta);
+        }
+
+
+
+        public JsonResult GetEspecialidades(string idLocalidad)
+        {
+            List<SelectListItem> especialidades = new List<SelectListItem>();
+            foreach (Especialidad e in agenda.listarEspecialidades()) {
+
+                especialidades.Add(new SelectListItem { Text = e.tipo, Value = e.EspecialidadID.ToString() });
+            }
+            return Json(new SelectList(especialidades, "Value", "Text"));
+          
+        }
+
+
+        public JsonResult GetMedicos(string idEspecialidad)
+        {
+            List<SelectListItem> medicos = new List<SelectListItem>();
+            foreach (Funcionario m in agenda.listarFuncionarios())
+            {
+
+                medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
+            }
+            return Json(new SelectList(medicos, "Value", "Text"));
         }
 
         // GET: Consulta/Edit/5

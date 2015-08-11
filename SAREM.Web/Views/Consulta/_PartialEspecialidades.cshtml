@@ -1,0 +1,44 @@
+﻿@model SAREM.Web.Models.Consulta
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">Especialidad:</label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(
+                        model => model.especialidadID,
+                        Model.especialidades.Select(e => new SelectListItem
+                        {
+                            Text = e.tipo,
+                            Value = e.EspecialidadID.ToString()
+                        }),
+                        "Seleccione una Especialidad", new { @class = "esp_change" })
+        @Html.ValidationMessageFor(model => model.especialidadID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+
+        $(".esp_change").change(function () {
+           
+            $.ajax({
+                url: '@Url.Action("GetMedicos", "Consulta")',
+                type: "GET",
+                data: { idEspecialidad: $(this).find('option:selected').val() },
+                cache: false,
+                success: function (data) {
+                    //Fill div with results
+                    $("#medicos").html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+
+        });
+    });
+</script>
+
+

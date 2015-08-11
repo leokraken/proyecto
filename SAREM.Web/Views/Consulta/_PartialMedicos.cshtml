@@ -1,0 +1,17 @@
+﻿@model SAREM.Web.Models.Consulta
+
+<div class="form-group">
+    <label class="control-label col-md-2">Médico:</label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(
+                        model => model.medID,
+                        Model.funcionarios.Select(f => new SelectListItem
+                        {
+                            Text = f.nombre,
+                            Value = f.FuncionarioID.ToString()
+                        }),
+                        "Seleccione un Médico")
+
+        @Html.ValidationMessageFor(model => model.medID, "", new { @class = "text-danger" })
+    </div>
+</div>
