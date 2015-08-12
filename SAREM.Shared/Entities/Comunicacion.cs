@@ -10,5 +10,6 @@ namespace SAREM.Shared.Entities
         [Required]
         public string nombre { get; set; }
         public string metadata { get; set; }
+
     }
 }

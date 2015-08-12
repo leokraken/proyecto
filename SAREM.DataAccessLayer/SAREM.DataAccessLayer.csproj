@@ -50,9 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DALAgenda.cs" />
+    <Compile Include="DALNotificaciones.cs" />
     <Compile Include="DALPacientes.cs" />
     <Compile Include="IDALAgenda.cs" />
-    <Compile Include="IDALEvento.cs" />
+    <Compile Include="IDALNotificaciones.cs" />
     <Compile Include="IDALPacientes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

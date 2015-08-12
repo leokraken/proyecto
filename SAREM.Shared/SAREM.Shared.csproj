@@ -56,6 +56,7 @@
     <Compile Include="Entities\Evento.cs" />
     <Compile Include="Entities\EventoEstatico.cs" />
     <Compile Include="Entities\EventoNotificacion.cs" />
+    <Compile Include="Entities\EventoPacienteComunicacion.cs" />
     <Compile Include="Entities\Funcionario.cs" />
     <Compile Include="Entities\Local.cs" />
     <Compile Include="Entities\Medico.cs" />

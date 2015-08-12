@@ -17,7 +17,7 @@ namespace SARM.DataAccessLayer
             //SARMContext.createTenant("testschema");
             using(var db = new SAREMAdminContext())
             {
-                db.dropSchema("testschema");
+                //db.dropSchema("test");
             }
 
             Console.WriteLine("Proceso finalizado...");

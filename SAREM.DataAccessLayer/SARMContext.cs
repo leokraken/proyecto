@@ -33,6 +33,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<Rango> rangos { get; set; }
         public DbSet<Referencia> referencias { get; set; }
         public DbSet<Pais> paises { get; set; }
+        public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
 
 
         private SARMContext(DbCompiledModel model, string name): base("Name=sarem", model)
@@ -71,7 +72,9 @@ namespace SAREM.DataAccessLayer
             //medicos, etc
             builder.Entity<Funcionario>().ToTable("Funcionarios", schemaName);
             builder.Entity<Paciente>().ToTable("Pacientes", schemaName);
-            
+            builder.Entity<EventoPacienteComunicacion>().ToTable("EventoPacienteComunicacion", schemaName);
+
+
             builder.Entity<Paciente>()
                 .HasMany<PacienteConsultaCancelar>(p => p.canceladas)
                 .WithRequired(pc => pc.paciente);
@@ -118,6 +121,10 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("EventoRangos", schemaName);
                 });
 
+            builder.Entity<Evento>()
+                .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
+            builder.Entity<Paciente>()
+                .HasMany<EventoPacienteComunicacion>(e => e.eventos);
 
             var model = builder.Build(new SqlConnection(con));
             DbCompiledModel compModel = model.Compile();

@@ -16,6 +16,6 @@ namespace SAREM.Shared.Entities
         [Required]
         public int dias { get; set; }
 
-        public virtual ICollection<Paciente> pacientes { get; set; }
+        public virtual ICollection<EventoPacienteComunicacion> pacientes { get; set; }
     }
 }

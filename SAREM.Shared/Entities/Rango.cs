@@ -14,7 +14,7 @@ namespace SAREM.Shared.Entities
         public short limitei { get; set; }
         [Required]
         public short limites { get; set; }
-        public bool sexo { get; set; }
+        public Sexo sexo { get; set; }
 
         public virtual ICollection<EventoEstatico> eventos { get; set; }
     }
