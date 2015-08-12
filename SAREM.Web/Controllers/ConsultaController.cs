@@ -3,6 +3,7 @@ using SAREM.Shared.Entities;
 using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,6 +14,19 @@ namespace SAREM.Web.Controllers
     public class ConsultaController : Controller
     {
         IDALAgenda agenda = new DALAgenda("test");
+        IDALPacientes paciente = new DALPacientes("test");
+
+        private static string[] formats = new string[]
+        {
+            "dd/MM/yyyy H:mm",
+            "dd/MM/yyyy HH:mm"    
+        };
+
+        private static DateTime ParseDate(string input)
+        {
+            return DateTime.ParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
+        }
+
         // GET: Consulta
         public ActionResult Index()
         {
@@ -44,24 +58,32 @@ namespace SAREM.Web.Controllers
 
         // POST: Consulta/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "pacienteId,localID,especialidadID,medID,fecha_inicio,fecha_fin")]  SAREM.Web.Models.Consulta consulta)
+        public JsonResult Create(SAREM.Web.Models.Consulta consulta)
         {
 
             if (ModelState.IsValid)
             {
+              
                 SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
-                c.LocalID = consulta.localID;
-                c.EspecialidadID = consulta.especialidadID;
+                c.LocalID = Convert.ToInt64(consulta.localID);
+                c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
                 c.FuncionarioID = consulta.medID;
-                //c.fecha_fin = consulta.fecha_fin.ToUniversalTime();
-                //c.fecha_inicio = consulta.fecha_inicio.ToUniversalTime();
+
+
+               
+                c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
+                c.fecha_inicio = ParseDate(consulta.fecha_inicio).ToUniversalTime();
                 
+
+               
                 agenda.agregarConsulta(c);
               
-                return RedirectToAction("Index", "Tecnico");
+                return Json(new { success = true});
             }
 
-            return View(consulta);
+            return Json(new { success = false});
+
+            
         }
 
 

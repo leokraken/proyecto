@@ -21,10 +21,10 @@ namespace SAREM.Shared.Entities
 
         [Required]
         [DHXJson(Alias = "start_date")]
-        public DateTime fecha_inicio { get; set; }
+        public DateTime? fecha_inicio { get; set; }
         [Required]
         [DHXJson(Alias = "end_date")]
-        public DateTime fecha_fin { get; set; }
+        public DateTime? fecha_fin { get; set; }
 
         [DHXJson(Alias = "text")]
         public string Description { get; set; }

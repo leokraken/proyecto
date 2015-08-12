@@ -14,20 +14,26 @@ namespace SAREM.Web.Models
         [Required(ErrorMessage = "Debe ingresar un Nro de Documento")]
         public String pacienteId { get; set; }
         public IEnumerable<Local> local { get; set; }
+       
         [Required(ErrorMessage = "Debe seleccionar un Orígen")]
-        public long localID { get; set; }
+        [RegularExpression(@"^[1-9][0-9]*$")]
+        public String localID { get; set; }
        
         public IEnumerable<Especialidad> especialidades { get; set; }
-       
-        public long especialidadID { get; set; }
+        //esp id es un long
+        [RegularExpression(@"^[1-9][0-9]*$")]
+        [Required(ErrorMessage = "Debe ingresar una Especialidad")]
+        public String especialidadID { get; set; }
         public IEnumerable<Funcionario> funcionarios { get; set; }
+
+        [RegularExpression(@"^[1-9][0-9]*$")]
+        [Required(ErrorMessage = "Debe ingresar un Médico")]
+        public String medID { get; set; }
         
-        public string medID { get; set; }
         [Required(ErrorMessage = "Debe ingresar la Fecha de Inicio")]
-        [DataType(DataType.Date)]
-        public DateTime? fecha_inicio { get; set; }
+        public String fecha_inicio { get; set; }
+        
         [Required(ErrorMessage = "Debe ingresar la Fecha de Fin")]
-        [DataType(DataType.Date)]
-        public DateTime? fecha_fin { get; set; }
+        public String fecha_fin { get; set; }
     }
 }

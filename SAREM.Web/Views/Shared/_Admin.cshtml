@@ -86,7 +86,7 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Consultas <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
                             <li>
-                                @Html.ActionLink("Crear Consulta", "Create", "Consulta")
+                                <a href="#" id="crearConsulta">Crear Consulta</a>
                             </li>
                             <li>
                                 <a href="#">Modificar Consultas</a>
@@ -104,7 +104,7 @@
             <!-- /.navbar-collapse -->
         </nav>
         <div id="page-wrapper">
-            <div class="container-fluid">
+            <div id="target" class="container-fluid">
                 @RenderBody()
             </div>
         </div>
@@ -115,8 +115,31 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     
-   
-    
+    <script>
+    $(document).ready(function () {
+
+        $("#crearConsulta").click(function () {
+
+
+            $.ajax({
+                url: '@Url.Action("Create", "Consulta")',
+                type: "GET",
+                cache: false,
+                success: function (data) {
+                    //Fill div with results
+                    $("#target").html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+
+        });
+
+    });
+
+    </script>
+
 </body>
 </html>
 

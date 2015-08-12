@@ -824,6 +824,7 @@
     }
 
     function loadLocale(name) {
+       
         var oldLocale = null;
         if (!locales[name] && hasModule) {
             try {

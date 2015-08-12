@@ -20,7 +20,7 @@
             <label class="control-label col-md-2">Nro de Documento Paciente:</label>
            
             <div class="col-md-10">
-                @Html.EditorFor(model => model.pacienteId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.pacienteId, new { htmlAttributes = new { @class = "form-control", @id = "idP" } })
                 @Html.ValidationMessageFor(model => model.pacienteId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Fecha Inicio:</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new {  @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
                 @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Fecha Fin:</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new {  @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
                 @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -75,7 +75,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Crear" class="btn btn-default" />
+                <button id="Crear" type="button" class="btn btn-default">Crear</button>
+              
             </div>
         </div>
        
@@ -127,7 +128,7 @@
                     }
                 });
             }
-              });
+        });
 
         $("#Especial").change(function () {
             if ($("#Especial option:selected").index() != 0) {
@@ -163,9 +164,50 @@
 
 
               $(function () {
-                  $('.datetimepicker').datetimepicker();
+                  $('.datetimepicker').datetimepicker({
+                     locale: 'es'
+
+                  });
 
               });
+
+
+              $("#Crear").click(function () {
+                
+                  $.ajax({
+                      url: '@Url.Action("Create", "Consulta")',
+                      dataType: "json",
+                      type: "POST",
+                      contentType: 'application/json; charset=utf-8',
+                      data: JSON.stringify({
+                          consulta: {
+                              pacienteId: $("#idP").val(), localID: $(".origen_change").find('option:selected').val(),
+                              especialidadID: $("#Especial").find('option:selected').val(), medID: $("#Medico").find('option:selected').val(),
+                              fecha_inicio: $("#idFI").val(), fecha_fin: $("#idFF").val()
+                          }
+                      }),
+                      async: true,
+                      processData: false,
+                      cache: false,
+                      success: function (data) {
+
+                          if (data.success) {
+                              window.location.href = '/Tecnico/Index/'
+
+                          } else {
+
+                              alert("Existen campos obligatorios que no han sido ingresados correctamente.");
+                          }
+                      },
+                      error: function (xhr) {
+                          
+                          alert('error');
+                      }
+                  })
+
+
+              });
+
           });
     </script>
 

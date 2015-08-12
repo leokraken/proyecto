@@ -10,7 +10,8 @@ namespace SAREM.Web
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/moment.min.js"
+                        "~/Scripts/moment.min.js",
+                        "~/Scripts/moment-with-locales.js"
                         ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
@@ -25,6 +26,7 @@ namespace SAREM.Web
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/bootstrap.min.js",
                       "~/Scripts/bootstrap-datetimepicker.js",    // ** NEW for Bootstrap Datepicker
+                 
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
