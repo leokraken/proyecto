@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SAREM.DataAccessLayer
 {
-    public class DALNotificaciones
+    public class DALNotificaciones : IDALNotificaciones
     {
         private string tenant;
         private SARMContext db = null;
@@ -18,21 +18,24 @@ namespace SAREM.DataAccessLayer
             db = SARMContext.getTenant(tenant);
         }
 
-        void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID)
+        public void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID)
         {
-            EventoEstatico e = (from ev in db.eventos.Include("rangos")
-                       where ev.EventoID==EventoID && ev is EventoEstatico
-                       select ev).First() as EventoEstatico;
+            EventoEstatico e = db.eventos.Include("rangos").OfType<EventoEstatico>().Where(ev => ev.EventoID == EventoID).First();
 
             Paciente p = db.pacientes.Find(PacienteID);
             Comunicacion c = db.comunicaciones.Find(ComunicacionID);
 
             if(e!=null && p!=null && c!=null)
             {
+                DateTime now = DateTime.Today;
+                int edad = now.Year - p.FN.Year;
+                if (p.FN > now.AddYears(-edad)) edad--;
+
                 bool ok = false;
                 foreach (var r in e.rangos)
                 {
-                    if (p.FN.Year >= r.limitei && p.FN.Year <= r.limites)
+                    //Console.WriteLine(p.FN.Year+"::"+r.limitei + " " + r.limites);
+                    if (edad >= r.limitei && edad <= r.limites && r.sexo==p.sexo)
                     {
                         ok = true;
                         break;
@@ -56,23 +59,21 @@ namespace SAREM.DataAccessLayer
         }
 
         //lista los eventos dado un PacienteID, segun sexo y rango de edades
-        ICollection<Evento> listarEventosPosibles(string PacienteID)
+        public ICollection<Evento> listarEventosPosibles(string PacienteID)
         {
             List<Evento> eventos = new List<Evento>();
             Paciente p = db.pacientes.Find(PacienteID);
             if (p != null)
             {
-                List<EventoEstatico> eventosq = (from eq in db.eventos.Include("rangos")
-                               where eq is EventoEstatico
-                               select eq as EventoEstatico).ToList();
-
-                foreach (var e in eventosq)
+                List<EventoEstatico> eventosestaticos = db.eventos.Include("rangos").OfType<EventoEstatico>().ToList(); 
+                foreach (var e in eventosestaticos)
                 {
                     foreach (var r in e.rangos)
                     {
                         if (p.FN.Year >= r.limitei && p.FN.Year <= r.limites)
                         {
                             eventos.Add(e);
+                            break;
                         }
                     }
                 }
@@ -84,7 +85,7 @@ namespace SAREM.DataAccessLayer
             return eventos;
         }
 
-        ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID)
+        public ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID)
         {
             var query = from p in db.eventopacientecomunicacion
                             //.Include("paciente")
@@ -95,7 +96,7 @@ namespace SAREM.DataAccessLayer
             return query.ToList();
         }
 
-        ICollection<Comunicacion> listarComunicaciones()
+        public ICollection<Comunicacion> listarComunicaciones()
         {
             return db.comunicaciones.ToList();
         }

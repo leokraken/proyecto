@@ -34,6 +34,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<Referencia> referencias { get; set; }
         public DbSet<Pais> paises { get; set; }
         public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
+        //public DbSet<EventoRango> eventorango { get; set; }
 
 
         private SARMContext(DbCompiledModel model, string name): base("Name=sarem", model)
@@ -90,7 +91,7 @@ namespace SAREM.DataAccessLayer
 
 
             builder.Entity<PacienteConsultaAgenda>().ToTable("PacienteConsulta", schemaName);
-
+            //builder.Entity<EventoRango>().ToTable("EventosRangos", schemaName);
 
             builder.Entity<Medico>()
                 .HasMany<Especialidad>(m => m.especialidades)
