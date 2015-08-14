@@ -12,8 +12,25 @@ namespace SAREM.Testing
     public class DALAgendaTest
     {
         private static IDALAgenda iagenda = null;
+        private static IDALNotificaciones inot = null;
         private static SARMContext db = null;
         private static string tenant = "test";
+
+        //datos
+        private static List<Comunicacion> comunicaciones = new List<Comunicacion> { 
+                new Comunicacion{ ID=1, nombre="Whatsapp", metadata="Mensaje"},
+                new Comunicacion{ ID=2, nombre="Email", metadata="Email Mensaje"},
+                new Comunicacion{ ID=1, nombre="SMS", metadata="Mensaje SMS"}
+            };
+
+        private static List<Rango> rangos = new List<Rango> { 
+                new Rango{ID=1, limitei=56, limites=70, nombre="Rango1", sexo=Sexo.FEMENINO},
+                new Rango{ID=1, limitei=18, limites=45, nombre="Rango2", sexo=Sexo.FEMENINO}
+            };
+        private static List<Evento> eventos = new List<Evento> { 
+                new EventoEstatico{EventoID=1, nombre="Evento1", mensaje="Mensaje1", dias=1, rangos=rangos},
+                new EventoEstatico{EventoID=2, nombre="Evento2", mensaje="Mensaje2", dias=1, rangos=rangos},
+            };
 
         [ClassInitialize]
         public static void InitializeClass(TestContext tc)
@@ -21,6 +38,8 @@ namespace SAREM.Testing
 
             try
             {
+                var context = new SAREMAdminContext();
+                context.dropSchema(tenant);
                 SARMContext.createTenant(tenant);
             }
             catch (Exception E)
@@ -30,6 +49,7 @@ namespace SAREM.Testing
             
             db = SARMContext.getTenant(tenant);
             iagenda = new DALAgenda(tenant);
+            inot = new DALNotificaciones(tenant);
 
             List<Pais> naciones = new List<Pais>
             {
@@ -45,6 +65,12 @@ namespace SAREM.Testing
                     FN=new DateTime(1991,6,22),
                     sexo=Sexo.MASCULINO,
                     nombre="Leonardo Clavijo",
+                    PaisID = naciones.First().PaisID
+                },
+                new Paciente{ PacienteID="50548306",
+                    FN=new DateTime(1991,6,22),
+                    sexo=Sexo.FEMENINO,
+                    nombre="Kali la diosa",
                     PaisID = naciones.First().PaisID
                 }
             };
@@ -94,10 +120,22 @@ namespace SAREM.Testing
                     LocalID=1
                 }
             };
+
             consultas.ForEach(c => db.consultas.Add(c));
             db.SaveChanges();
             Debug.WriteLine("Consultas agregados...");
 
+            comunicaciones.ForEach(c => db.comunicaciones.Add(c));
+            db.SaveChanges();
+            Debug.WriteLine("Comunicaciones agregados...");
+
+            rangos.ForEach(r => db.rangos.Add(r));
+            db.SaveChanges();
+            Debug.WriteLine("Rangos agregados...");
+
+            eventos.ForEach(e => db.eventos.Add(e));
+            db.SaveChanges();
+            Debug.WriteLine("Eventos agregados...");
         }
 
         [TestMethod]
@@ -127,8 +165,6 @@ namespace SAREM.Testing
             {
                 Debug.WriteLine(c.ConsultaID+c.fecha_inicio.ToString());
             }
-          
-          
         }
 
         [TestMethod]
@@ -145,6 +181,45 @@ namespace SAREM.Testing
             canceladas.ToList().ForEach(c => Debug.WriteLine(c.ConsultaID));
             Assert.AreEqual(canceladas.Count(), 1);
         }
+
+        [TestMethod]
+        public void TestNotificaciones()
+        {
+            string PacienteID = "50548305";
+            //Listar comunicaciones
+            List<Comunicacion> com = inot.listarComunicaciones().ToList();
+            com.ForEach(c =>
+            {
+                Console.WriteLine("ID: " + c.ID + " Nombre:" + c.nombre);
+                Assert.IsTrue(comunicaciones.Any(x => x.ID == c.ID));
+            });
+
+            //listar eventos
+            var ev = inot.listarEventosPosibles(PacienteID);
+            Assert.AreEqual(ev.Count, 0);
+            try
+            {
+                inot.suscribirPacienteEvento(eventos[0].EventoID, PacienteID, com[0].ID);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("OK Prueba correcta::" + e.Message);
+            }
+
+            try
+            {
+                inot.suscribirPacienteEvento(eventos[0].EventoID, "50548306", com[0].ID);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error no deberia lanzar excepcion::" + e.Message);
+            }
+
+        }
+
+
 
         [ClassCleanup]
         public static void ClassCleanup()

@@ -12,7 +12,7 @@ namespace SAREM.DataAccessLayer
         void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID);
         //lista los eventos dado un PacienteID, segun sexo y rango de edades
         ICollection<Evento> listarEventosPosibles(string PacienteID);
-        ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID);
+        ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID);
         ICollection<Comunicacion> listarComunicaciones();
 
     }

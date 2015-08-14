@@ -1,4 +1,5 @@
 ﻿using SAREM.DataAccessLayer;
+using SAREM.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
@@ -17,7 +18,11 @@ namespace SARM.DataAccessLayer
            
             using(var db = new SAREMAdminContext())
             {
+<<<<<<< HEAD
                 //db.dropSchema("test");
+=======
+                db.dropSchema("test");
+>>>>>>> origin/master
                 //db.dropSchema("testschema");
             }
             SARMContext.createTenant("testschema");

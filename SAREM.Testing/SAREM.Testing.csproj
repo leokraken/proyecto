@@ -58,7 +58,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DALAgendaTest.cs" />
-    <Compile Include="DALNotificacionesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
