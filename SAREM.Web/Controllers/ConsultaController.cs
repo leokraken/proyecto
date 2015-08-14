@@ -100,7 +100,7 @@ namespace SAREM.Web.Controllers
         }
 
 
-        public JsonResult GetMedicos(string idEspecialidad)
+        public JsonResult GetMedicos(string idEspecialidad, string idLocalidad)
         {
             List<SelectListItem> medicos = new List<SelectListItem>();
             foreach (Funcionario m in agenda.listarFuncionarios())

@@ -11,8 +11,7 @@ namespace SAREM.Web.Models
     public class Consulta
     {
         
-        [Required(ErrorMessage = "Debe ingresar un Nro de Documento")]
-        public String pacienteId { get; set; }
+       
         public IEnumerable<Local> local { get; set; }
        
         [Required(ErrorMessage = "Debe seleccionar un Orígen")]
