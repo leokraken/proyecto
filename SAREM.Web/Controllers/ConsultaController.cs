@@ -91,7 +91,8 @@ namespace SAREM.Web.Controllers
         public JsonResult GetEspecialidades(string idLocalidad)
         {
             List<SelectListItem> especialidades = new List<SelectListItem>();
-            foreach (Especialidad e in agenda.listarEspecialidades()) {
+            foreach (Especialidad e in agenda.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
+            {
 
                 especialidades.Add(new SelectListItem { Text = e.tipo, Value = e.EspecialidadID.ToString() });
             }
@@ -103,7 +104,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetMedicos(string idEspecialidad, string idLocalidad)
         {
             List<SelectListItem> medicos = new List<SelectListItem>();
-            foreach (Funcionario m in agenda.listarFuncionarios())
+            foreach (Funcionario m in agenda.listarMedicosEspecialidadLocal(Convert.ToInt64(idLocalidad), Convert.ToInt64(idEspecialidad)))
             {
 
                 medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
