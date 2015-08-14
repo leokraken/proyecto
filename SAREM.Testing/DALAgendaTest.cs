@@ -81,7 +81,10 @@ namespace SAREM.Testing
             //especialidades
             List<Especialidad> especialidades = new List<Especialidad>
             {
-                new Especialidad{ tipo="Esp1", descripcion="especialidad 1"}
+                new Especialidad{ tipo="Esp1", descripcion="especialidad 1"},
+                new Especialidad{ tipo="Esp2", descripcion="especialidad 2"},
+                new Especialidad{ tipo="Esp3", descripcion="especialidad 3"},
+                new Especialidad{ tipo="Esp4", descripcion="especialidad 4"}
             };
             especialidades.ForEach(e => db.especialidades.Add(e));
             db.SaveChanges();
@@ -100,7 +103,7 @@ namespace SAREM.Testing
 
             List<Local> locales = new List<Local>
             {
-                new Local {LocalID=1, nombre = "local1", calle="calle1", numero="SN", especialidades=especialidades},
+                new Local {LocalID=1, nombre = "local1", calle="calle1", numero="SN", especialidades=especialidades, medicos=funcionarios},
                 new Local {LocalID=2, nombre = "local2", calle="calle2", numero="SN2"},
                 new Local {LocalID=3, nombre = "local3", calle="calle3", numero="SN3"}
             };
@@ -219,7 +222,20 @@ namespace SAREM.Testing
 
         }
 
+        [TestMethod]
+        public void listarEspecialidadesLocalTest()
+        {
+            var especialidades = iagenda.listarEspecialidadesLocal(1).ToList();
+            especialidades.ForEach(e => Console.WriteLine(e.EspecialidadID));
 
+        }
+
+        [TestMethod]
+        public void listarMedicosEspecialidadLocalTest()
+        {
+            var medicos = iagenda.listarMedicosEspecialidadLocal(1, 1).ToList();
+            medicos.ForEach(m => Console.WriteLine(m.FuncionarioID + m.nombre));
+        }
 
         [ClassCleanup]
         public static void ClassCleanup()

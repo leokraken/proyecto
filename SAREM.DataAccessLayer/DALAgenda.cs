@@ -162,5 +162,31 @@ namespace SAREM.DataAccessLayer
         {
             return db.funcionarios.ToList();
         }
+
+        public ICollection<Especialidad> listarEspecialidadesLocal(long LocalID)
+        {
+            var q = from e in db.locales.Include("especialidades")
+                    where e.LocalID == LocalID
+                    select e;
+            var local = q.First();
+            if (local != null)
+            {
+                return local.especialidades.ToList();
+            }
+            else
+            {
+                throw new Exception("No existe especialidad");
+            }
+        }
+        public ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID)
+        {
+            var medicos = db.funcionarios//.Include("especialidades")
+                //.Include("locales")
+                .OfType<Medico>()
+                .Where(m => m.especialidades.Any(e => e.EspecialidadID == EspecialidadID) && m.locales.Any(l => l.LocalID == LocalID))
+                .ToList();
+            return medicos;
+        }
+
     }
 }

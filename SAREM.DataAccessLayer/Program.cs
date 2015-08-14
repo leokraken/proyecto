@@ -15,17 +15,12 @@ namespace SARM.DataAccessLayer
     {
         static void Main(string[] args)
         {
-           
+            //SARMContext.createTenant("test");
+
             using(var db = new SAREMAdminContext())
             {
-
-                //db.dropSchema("test");
-
                 db.dropSchema("test");
-
-                //db.dropSchema("testschema");
             }
-            SARMContext.createTenant("testschema");
             Console.WriteLine("Proceso finalizado...");
             Console.Read();
         }

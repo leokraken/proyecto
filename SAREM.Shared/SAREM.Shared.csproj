@@ -60,6 +60,7 @@
     <Compile Include="Entities\Funcionario.cs" />
     <Compile Include="Entities\Local.cs" />
     <Compile Include="Entities\Medico.cs" />
+    <Compile Include="Entities\MedicoLocal.cs" />
     <Compile Include="Entities\Pais.cs" />
     <Compile Include="Entities\Paciente.cs" />
     <Compile Include="Entities\PacienteConsultaAgenda.cs" />

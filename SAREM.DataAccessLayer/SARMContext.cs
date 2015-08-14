@@ -34,6 +34,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<Referencia> referencias { get; set; }
         public DbSet<Pais> paises { get; set; }
         public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
+        public DbSet<MedicoLocal> medicolocal { get; set; }
         //public DbSet<EventoRango> eventorango { get; set; }
 
 
@@ -122,6 +123,16 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("EventoRangos", schemaName);
                 });
 
+            builder.Entity<Medico>()
+                .HasMany<Local>(e => e.locales)
+                .WithMany(r => r.medicos)
+                .Map(me =>
+                {
+                    me.MapLeftKey("MedicoID");
+                    me.MapRightKey("LocalID");
+                    me.ToTable("MedicoLocal", schemaName);
+                });
+
             builder.Entity<Evento>()
                 .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
             builder.Entity<Paciente>()
@@ -175,7 +186,7 @@ namespace SAREM.DataAccessLayer
 
     public class SAREMAdminContext : DbContext
     {
-        static string con = @"Data Source=SLAVE-PC\SQLEXPRESS;Initial Catalog=sarem;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False";
+        static string con = ConfigurationManager.ConnectionStrings["sarem"].ConnectionString;
 
         public SAREMAdminContext():base(con)
         {

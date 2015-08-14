@@ -18,5 +18,6 @@ namespace SAREM.Shared.Entities
 
         public virtual ICollection<Consulta> consultas { get; set; }
         public virtual ICollection<Especialidad> especialidades { get; set; }
+        public virtual ICollection<Medico> medicos { get; set; }
     }
 }
