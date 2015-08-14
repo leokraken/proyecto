@@ -18,11 +18,11 @@ namespace SARM.DataAccessLayer
            
             using(var db = new SAREMAdminContext())
             {
-<<<<<<< HEAD
+
                 //db.dropSchema("test");
-=======
+
                 db.dropSchema("test");
->>>>>>> origin/master
+
                 //db.dropSchema("testschema");
             }
             SARMContext.createTenant("testschema");
