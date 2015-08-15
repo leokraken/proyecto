@@ -8,7 +8,8 @@ namespace SAREM.DataAccessLayer
     public class DALAgenda: IDALAgenda
     {
         private SARMContext db = null;
-
+        private static int DAY=24;
+        private static int MAX_PACIENTES = 10;
         public DALAgenda(string tenant)
         {
             db = SARMContext.getTenant(tenant);
@@ -21,11 +22,26 @@ namespace SAREM.DataAccessLayer
             if (paciente!=null)
             {
                 Consulta consulta = db.consultas.Find(ConsultaID);
+                int numpacientes = db.consultas.Include("pacientes")
+                                     .Where(c => c.ConsultaID == ConsultaID)
+                                     .Single().pacientes.Count;
+
                 if (consulta != null)
                 {
-                    PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = PacienteID, fecharegistro = DateTime.UtcNow };
-                    db.consultasagendadas.Add(pca);
-                    db.SaveChanges();
+                    //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
+                    if (numpacientes < MAX_PACIENTES)
+                    {
+                        PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = PacienteID, fecharegistro = DateTime.UtcNow };
+                        db.consultasagendadas.Add(pca);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        //agrego a lista de espera
+                        var espera = new PacienteConsultaEspera { ConsultaID=consulta.ConsultaID, PacienteID=paciente.PacienteID, fecha= DateTime.UtcNow };
+                        db.pacienteespera.Add(espera);
+                        db.SaveChanges();
+                    }
                 }
                 else
                     throw new Exception("No existe consulta");
@@ -47,6 +63,8 @@ namespace SAREM.DataAccessLayer
                     fecha = DateTime.UtcNow 
                 };
                 db.consultascanceladas.Add(cancelar);
+                //extraer de la lista de consultas
+                db.consultasagendadas.Remove(db.consultasagendadas.Where(c => c.ConsultaID == ConsultaID && c.PacienteID == PacienteID).Single());
                 db.SaveChanges();
             }
             else
@@ -63,7 +81,8 @@ namespace SAREM.DataAccessLayer
                 var consulta = db.consultas.Find(ConsultaID);
                 if (consulta != null)
                 {
-                    consulta.ausencia = paciente;
+                    //consulta.ausencia = paciente;
+                    db.Entry<Consulta>(consulta).Entity.ausencias.Add(paciente);
                     db.SaveChanges();
                 }
             }

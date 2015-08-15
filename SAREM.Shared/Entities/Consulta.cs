@@ -31,9 +31,10 @@ namespace SAREM.Shared.Entities
 
         public virtual Especialidad especialidad { get; set; }
         public virtual Medico medico { get; set; }
-        public virtual Paciente ausencia { get; set; }
         public virtual Local local { get; set; }
 
+        public virtual ICollection<Paciente> ausencias { get; set; }
+        public virtual ICollection<PacienteConsultaEspera> espera { get; set; }
         //varios pacientes pueden agendar si uno de ellos cancela
         public virtual ICollection<PacienteConsultaAgenda> pacientes { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> pacientescancelar { get; set; }

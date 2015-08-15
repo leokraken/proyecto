@@ -183,6 +183,11 @@ namespace SAREM.Testing
             var canceladas = iagenda.listarConsultasCanceladasPaciente(ci);
             canceladas.ToList().ForEach(c => Debug.WriteLine(c.ConsultaID));
             Assert.AreEqual(canceladas.Count(), 1);
+
+            //Pruebo que cancelando consulta, las consultas del paciente son 0
+            var marcadas = iagenda.listarConsultasPaciente(ci);
+            Assert.AreEqual(marcadas.Count, 0);
+            Console.WriteLine("Consultas marcadas: " + marcadas.Count);
         }
 
         [TestMethod]
