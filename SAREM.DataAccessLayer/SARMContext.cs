@@ -36,7 +36,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
         public DbSet<MedicoLocal> medicolocal { get; set; }
         public DbSet<PacienteConsultaEspera> pacienteespera { get; set; }
-        //public DbSet<EventoRango> eventorango { get; set; }
+        public DbSet<PacienteConsultaAusencia> pacienteausentes { get; set; }
 
 
         private SARMContext(DbCompiledModel model, string name): base("Name=sarem", model)
@@ -78,11 +78,11 @@ namespace SAREM.DataAccessLayer
             builder.Entity<EventoPacienteComunicacion>().ToTable("EventoPacienteComunicacion", schemaName);
 
 
+            builder.Entity<PacienteConsultaCancelar>().ToTable("ConsultasCanceladas", schemaName);
             builder.Entity<Paciente>()
                 .HasMany<PacienteConsultaCancelar>(p => p.canceladas)
                 .WithRequired(pc => pc.paciente);
 
-            builder.Entity<PacienteConsultaCancelar>().ToTable("ConsultasCanceladas", schemaName);
             
             builder.Entity<PacienteEvento>().ToTable("EventosPaciente", schemaName)
                 .HasKey(k => new { k.PacienteID, k.EventoID, k.ComunicacionID });
@@ -92,8 +92,8 @@ namespace SAREM.DataAccessLayer
                 .HasKey(k => new { k.PacienteID, k.FuncionarioID});
 
 
-            builder.Entity<PacienteConsultaAgenda>().ToTable("PacienteConsulta", schemaName);
-            //builder.Entity<EventoRango>().ToTable("EventosRangos", schemaName);
+            builder.Entity<PacienteConsultaAgenda>().ToTable("PacienteConsulta", schemaName)
+                .HasRequired(x => x.consulta).WithMany(x => x.pacientes);
 
             builder.Entity<Medico>()
                 .HasMany<Especialidad>(m => m.especialidades)
@@ -134,16 +134,17 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("MedicoLocal", schemaName);
                 });
 
+            /*
             builder.Entity<Paciente>()
-                .HasMany<Consulta>(p => p.ausencias)
-                .WithMany(c => c.ausencias)
+                .HasMany<Consulta>(p => p.consultasausentes)
+                .WithMany(c => c.pacientesausencias)
                 .Map(me =>
                 {
-                    me.MapLeftKey("PacienteID");
-                    me.MapRightKey("ConsultaID");
+                    me.MapLeftKey("ConsultaID");
+                    me.MapRightKey("PacienteID");
                     me.ToTable("AusenciasPacientes", schemaName);
-                });
-
+                });*/
+            
 
             builder.Entity<Evento>()
                 .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
@@ -151,6 +152,9 @@ namespace SAREM.DataAccessLayer
                 .HasMany<EventoPacienteComunicacion>(e => e.eventos);
 
             builder.Entity<PacienteConsultaEspera>().ToTable("PacientesEspera", schemaName);
+            builder.Entity<PacienteConsultaAusencia>().ToTable("PacientesAusentes", schemaName);
+
+            
             var model = builder.Build(new SqlConnection(con));
             DbCompiledModel compModel = model.Compile();
             var compiledModel = modelCache.GetOrAdd(schemaName, compModel);
