@@ -5,30 +5,30 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
-<h2>Crear Consulta</h2>
-<hr />
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
+  
+   <div class="row">
+       <div class="col-xs-2"><h3>Crear Consulta</h3></div>
+       <div class="col-xs-7"><img src="~/Content/images/agenda2.png" class="img-responsive"></div>
     
-    <div class="form-horizontal">
-        
-       
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            <label class="control-label col-md-2">Nro de Documento Paciente:</label>
-           
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.pacienteId, new { htmlAttributes = new { @class = "form-control", @id = "idP" } })
-                @Html.ValidationMessageFor(model => model.pacienteId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+   </div>
+              
+   <hr />
+ 
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Orígen:</label>
-            <div class="col-md-10">
-                @Html.DropDownListFor(
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+           
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Orígen:</label>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(
                         model => model.localID,
                         Model.local.Select(l => new SelectListItem
                         {
@@ -36,179 +36,232 @@
                             Value = l.LocalID.ToString()
                         }),
                  "Seleccione un Orígen", new { @class = "origen_change" })
-                @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
-        <div id="especialidades" style="display:none">
-            <div class="form-group">
-            <label class="control-label col-md-2">Especialidad:</label>
-            <div class="col-md-10">
-               
-                @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { style = "width:250px", @class = "dropdown1" })
-            </div>
-            </div>
-         </div>
-        <div id="medicos" style="display:none">
-            <div class="form-group">
-            <label class="control-label col-md-2">Médico:</label>
-            <div class="col-md-10">
-                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:250px", @class = "dropdown1" })
-            </div>
-            </div>
-         </div>
-        <div class="form-group">
-            <label class="control-label col-md-2">Fecha Inicio:</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new {  @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
-                @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            <div id="especialidades" style="display:none">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Especialidad:</label>
+                    <div class="col-md-10">
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Fecha Fin:</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new {  @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
-                @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
+                        @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { style = "width:250px", @class = "dropdown1" })
+                    </div>
+                </div>
             </div>
-        </div>
-       
+            <div id="medicos" style="display:none">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Médico:</label>
+                    <div class="col-md-10">
+                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:250px", @class = "dropdown1" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">Fecha Inicio:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                    @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                </div>
+            </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button id="Crear" type="button" class="btn btn-default">Crear</button>
-              
+            <div class="form-group">
+                <label class="control-label col-md-2">Fecha Fin:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                    @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
+                </div>
             </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button id="Crear" type="button" class="btn btn-default">Crear</button>
+
+                </div>
+            </div>
+
         </div>
-       
+    }
+
+    <div>
+        @Html.ActionLink("Volver a Inicio", "Index")
     </div>
-}
+    @Scripts.Render("~/bundles/jquery")
 
-<div>
-    @Html.ActionLink("Volver a Inicio", "Index")
-</div>
-@Scripts.Render("~/bundles/jquery")
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
 
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
 
 
-        $(".origen_change").change(function () {
+            $(".origen_change").change(function () {
 
-            if ($(".origen_change option:selected").index() != 0) {
+                if ($(".origen_change option:selected").index() != 0) {
 
-                $("#medicos").css("display", "none");
-                $("#Especial").empty().append('<option value="0">Seleccione una Especialidad</option>');
+                    $("#medicos").css("display", "none");
+                    $("#Especial").empty().append('<option value="0">Seleccione una Especialidad</option>');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetEspecialidades", "Consulta")',
+                        dataType: 'json',
+                        data: { idLocalidad: $(this).find('option:selected').val() },
+                        cache: false,
+                        success: function (data) {
+                            //Fill div with results
+                            // states contains the JSON formatted list
+                            // of states passed from the controller
+
+                            $.each(data, function (i, dato) {
+                                $("#Especial").append('<option value="' + dato.Value + '">' +
+                                     dato.Text + '</option>');
+                                // here we are adding option for States
+
+                            });
+
+                            $("#especialidades").css("display", "block");
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve states.' + ex);
+                        }
+                    });
+                }
+            });
+
+            $("#Especial").change(function () {
+                if ($("#Especial option:selected").index() != 0) {
+                    $("#Medico").empty().append('<option value="0">Seleccione un Médico</option>');
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("GetMedicos", "Consulta")',
+                        dataType: 'json',
+                        data: { idEspecialidad: $(this).find('option:selected').val(), idLocalidad: $(".origen_change option:selected").val() },
+                        cache: false,
+                        success: function (data) {
+                            //Fill div with results
+                            // states contains the JSON formatted list
+                            // of states passed from the controller
+
+                            $.each(data, function (i, dato) {
+                                $("#Medico").append('<option value="' + dato.Value + '">' +
+                                     dato.Text + '</option>');
+                                // here we are adding option for States
+
+                            });
+
+                            $("#medicos").css("display", "block");
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve states.' + ex);
+                        }
+                    });
+
+                }
+            });
+
+
+
+            $(function () {
+                $('.datetimepicker').datetimepicker({
+                    locale: 'es'
+
+                });
+
+            });
+
+
+            $("#Crear").click(function () {
 
                 $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetEspecialidades", "Consulta")',
-                    dataType: 'json',
-                    data: { idLocalidad: $(this).find('option:selected').val() },
+                    url: '@Url.Action("Create", "Consulta")',
+                    dataType: "json",
+                    type: "POST",
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        consulta: {
+                            localID: $(".origen_change").find('option:selected').val(),
+                            especialidadID: $("#Especial").find('option:selected').val(), medID: $("#Medico").find('option:selected').val(),
+                            fecha_inicio: $("#idFI").val(), fecha_fin: $("#idFF").val()
+                        }
+                    }),
+                    async: true,
+                    processData: false,
                     cache: false,
                     success: function (data) {
-                        //Fill div with results
-                        // states contains the JSON formatted list
-                        // of states passed from the controller
 
-                        $.each(data, function (i, dato) {
-                            $("#Especial").append('<option value="' + dato.Value + '">' +
-                                 dato.Text + '</option>');
-                            // here we are adding option for States
+                        if (data.success) {
+                            $("#idFI").val("");
+                            $("#idFF").val("");
+                            $("#medicos").css("display", "none");
+                            $("#especialidades").css("display", "none");
+                            $(".origen_change").prop('selectedIndex', 0);
+                            $('#exito').modal('show');
 
-                        });
+                        } else {
 
-                        $("#especialidades").css("display", "block");
+                            $('#error').modal('show');
+                        }
                     },
-                    error: function (ex) {
-                        alert('Failed to retrieve states.' + ex);
+                    error: function (xhr) {
+
+                        alert('error');
                     }
-                });
-            }
+                })
+
+
+            });
+
         });
 
-        $("#Especial").change(function () {
-            if ($("#Especial option:selected").index() != 0) {
-                $("#Medico").empty().append('<option value="0">Seleccione un Médico</option>');
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetMedicos", "Consulta")',
-                    dataType: 'json',
-                    data: { idEspecialidad: $(this).find('option:selected').val() },
-                    cache: false,
-                    success: function (data) {
-                        //Fill div with results
-                        // states contains the JSON formatted list
-                        // of states passed from the controller
+        $(function () {
+            $("#ok").on('click', function () {
+                $('#exito').modal('hide');
+            });
+        });
 
-                        $.each(data, function (i, dato) {
-                            $("#Medico").append('<option value="' + dato.Value + '">' +
-                                 dato.Text + '</option>');
-                            // here we are adding option for States
-
-                        });
-
-                        $("#medicos").css("display", "block");
-                    },
-                    error: function (ex) {
-                        alert('Failed to retrieve states.' + ex);
-                    }
-                });
-
-            }
-              });
-
-
-
-              $(function () {
-                  $('.datetimepicker').datetimepicker({
-                     locale: 'es'
-
-                  });
-
-              });
-
-
-              $("#Crear").click(function () {
-                
-                  $.ajax({
-                      url: '@Url.Action("Create", "Consulta")',
-                      dataType: "json",
-                      type: "POST",
-                      contentType: 'application/json; charset=utf-8',
-                      data: JSON.stringify({
-                          consulta: {
-                              pacienteId: $("#idP").val(), localID: $(".origen_change").find('option:selected').val(),
-                              especialidadID: $("#Especial").find('option:selected').val(), medID: $("#Medico").find('option:selected').val(),
-                              fecha_inicio: $("#idFI").val(), fecha_fin: $("#idFF").val()
-                          }
-                      }),
-                      async: true,
-                      processData: false,
-                      cache: false,
-                      success: function (data) {
-
-                          if (data.success) {
-                              window.location.href = '/Tecnico/Index/'
-
-                          } else {
-
-                              alert("Existen campos obligatorios que no han sido ingresados correctamente.");
-                          }
-                      },
-                      error: function (xhr) {
-                          
-                          alert('error');
-                      }
-                  })
-
-
-              });
-
-          });
+        $(function () {
+            $("#ok2").on('click', function () {
+                $('#error').modal('hide');
+            });
+        });
     </script>
 
-   
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="exito">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Crear Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <p>La consulta ha sido creada con éxito</p>
+            </div>
+            <div class="modal-footer">
+              
+                <button type="button" class="btn btn-primary" id="ok">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="error">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Error al Crear Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <p>No se han completado correctamente todos los campos de la consulta</p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" id="ok2">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

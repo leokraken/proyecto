@@ -203,6 +203,8 @@
     <Content Include="Content\fontawesome\font-awesome.min.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\agenda.png" />
+    <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\morris.css" />
     <Content Include="Content\sb-admin.css" />
