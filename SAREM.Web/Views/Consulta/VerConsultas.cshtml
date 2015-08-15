@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "VerConsultas";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<h2>VerConsultas</h2>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/grid-0.4.5.min.css" rel="stylesheet" type="text/css" />
+
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript" ></script>
+<script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/Scripts/grid-0.4.5.min.js" type="text/javascript"></script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <table id="grid" data-source="@Url.Action("GetConsultas")"></table>
+}
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+<script>
+
+    grid = $("#grid").grid({
+        dataKey: "ID",
+        uiLibrary: "bootstrap",
+        columns: [
+          { field: "ID", width: 50, sortable: true, hidden: true },
+          { field: "Origen", title: "Orígen", sortable: true },
+          { field: "Especialidad", sortable: true },
+          { field: "Medico", title: "Médico", sortable: true },
+
+          {
+              field: "Edit", title: "", width: 34, type: "icon",
+              icon: "glyphicon-pencil", tooltip: "Edit", events: { "click": Edit }
+          },
+          {
+              field: "Delete", title: "", width: 34, type: "icon",
+              icon: "glyphicon-remove", tooltip: "Delete", events: { "click": Remove }
+          }
+        ],
+        pager: { enable: true, limit: 5, sizes: [2, 5, 10, 20] }
+    });
+
+</script>

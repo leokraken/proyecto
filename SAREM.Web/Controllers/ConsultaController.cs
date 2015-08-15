@@ -112,6 +112,20 @@ namespace SAREM.Web.Controllers
             return Json(new SelectList(medicos, "Value", "Text"));
         }
 
+        public ActionResult GetCustomers()
+        {
+            var aux = new
+            {
+                items = new[] {
+                  
+                    new {name = "command" , index = "X", optional = "0"}, 
+                    new {name = "command" , index = "X", optional = "0"}
+            }
+            };
+            //return Json( agenda.listarConsultas().ToArray(), JsonRequestBehavior.AllowGet);
+            return Json(aux, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Consulta/Edit/5
         public ActionResult Edit(int id)
         {

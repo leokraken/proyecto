@@ -203,6 +203,8 @@
     <Content Include="Content\fontawesome\font-awesome.min.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\grid-0.4.5.css" />
+    <Content Include="Content\grid-0.4.5.min.css" />
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\password13.png" />
@@ -485,6 +487,8 @@
     <Content Include="Scripts\dhtmlxScheduler\locale\recurring\repeat_template_ro.html" />
     <Content Include="Scripts\dhtmlxScheduler\locale\recurring\repeat_template_ru.html" />
     <Content Include="Scripts\dhtmlxScheduler\locale\recurring\repeat_template_sk.html" />
+    <Content Include="Scripts\grid-0.4.5.js" />
+    <Content Include="Scripts\grid-0.4.5.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -605,6 +609,7 @@
     <Content Include="Views\Consulta\Create.cshtml" />
     <Content Include="Views\Consulta\_PartialEspecialidades.cshtml" />
     <Content Include="Views\Consulta\_PartialMedicos.cshtml" />
+    <Content Include="Views\Consulta\VerConsultas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
