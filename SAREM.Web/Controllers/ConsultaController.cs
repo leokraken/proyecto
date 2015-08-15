@@ -1,6 +1,6 @@
 ﻿using SAREM.DataAccessLayer;
 using SAREM.Shared.Entities;
-using SAREM.Web.Models;
+//using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,8 +13,8 @@ namespace SAREM.Web.Controllers
 {
     public class ConsultaController : Controller
     {
-        IDALAgenda agenda = new DALAgenda("test");
-        IDALPacientes paciente = new DALPacientes("test");
+        private IDALAgenda agenda = new DALAgenda("test");
+        private IDALPacientes paciente = new DALPacientes("test");
 
         private static string[] formats = new string[]
         {

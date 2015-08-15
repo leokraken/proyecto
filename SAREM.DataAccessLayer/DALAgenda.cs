@@ -10,11 +10,13 @@ namespace SAREM.DataAccessLayer
         private SARMContext db = null;
         private static int DAY=24;
         private static int MAX_PACIENTES = 10;
+        
         public DALAgenda(string tenant)
         {
             db = SARMContext.getTenant(tenant);
         }
 
+        //MQ
         public void agregarConsultaPaciente(string PacienteID, long ConsultaID)
         {
             //check if exists
@@ -82,7 +84,8 @@ namespace SAREM.DataAccessLayer
                 if (consulta != null)
                 {
                     //consulta.ausencia = paciente;
-                    db.Entry<Consulta>(consulta).Entity.ausencias.Add(paciente);
+                    var a = new PacienteConsultaAusencia { ConsultaID=ConsultaID, PacienteID=PacienteID};
+                    db.pacienteausentes.Add(a);
                     db.SaveChanges();
                 }
             }
@@ -161,10 +164,10 @@ namespace SAREM.DataAccessLayer
 
         public ICollection<Consulta> listarConsultasAusentesPaciente(string PacienteID)
         {
-            var q = from c in db.pacientes.Include("ausencias")
+            var q = from c in db.pacienteausentes.Include("consulta")
                     where c.PacienteID == PacienteID
-                    select c;
-            return q.Single().ausencias;
+                    select c.consulta;
+            return q.ToList();
         }
 
         public ICollection<Especialidad> listarEspecialidades()
@@ -199,8 +202,7 @@ namespace SAREM.DataAccessLayer
         }
         public ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID)
         {
-            var medicos = db.funcionarios//.Include("especialidades")
-                //.Include("locales")
+            var medicos = db.funcionarios
                 .OfType<Medico>()
                 .Where(m => m.especialidades.Any(e => e.EspecialidadID == EspecialidadID) && m.locales.Any(l => l.LocalID == LocalID))
                 .ToList();
