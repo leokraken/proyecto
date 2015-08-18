@@ -200,6 +200,7 @@ namespace SAREM.DataAccessLayer
                 throw new Exception("No existe especialidad");
             }
         }
+
         public ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID)
         {
             var medicos = db.funcionarios
@@ -208,6 +209,21 @@ namespace SAREM.DataAccessLayer
                 .ToList();
             return medicos;
         }
+
+        public Consulta obtenerConsulta(long ConsultaID)
+        {
+            var query = from c in db.consultas.Include("especialidad")
+                        .Include("medico")
+                        .Include("local")
+                        .Include("pacientes")
+                        .Include("pacientesespera")
+                        where c.ConsultaID == ConsultaID
+                        select c;
+            Consulta con = query.Single();
+            con.pacientesespera = con.pacientesespera.Take(3).ToList();
+            return con;
+        }
+
 
     }
 }

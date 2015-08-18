@@ -74,7 +74,25 @@ namespace SAREM.Testing
                     PaisID = naciones.First().PaisID
                 }
             };
+            //lista
             pacientes.ForEach(p => db.pacientes.Add(p));
+            db.SaveChanges();
+    
+            //custom
+            List<Paciente> customs = new List<Paciente>();
+            for (int i = 0; i < 20; i++)
+            {
+                Paciente template = new Paciente
+                {
+                    PacienteID = i.ToString(),
+                    FN = new DateTime(1991, 6, 22),
+                    sexo = Sexo.MASCULINO,
+                    nombre = "Leonardo Clavijo" + i.ToString(),
+                    PaisID = naciones.First().PaisID
+                };
+                customs.Add(template);
+            }
+            customs.ForEach(x =>db.pacientes.Add(x));
             db.SaveChanges();
             Debug.WriteLine("Pacientes agregados...");
 
@@ -121,6 +139,20 @@ namespace SAREM.Testing
                     fecha_inicio= DateTime.UtcNow.AddMinutes(30),
                     FuncionarioID=funcionarios[0].FuncionarioID,
                     LocalID=1
+                },
+                new Consulta {
+                    EspecialidadID = especialidades[1].EspecialidadID,
+                    fecha_fin=DateTime.UtcNow,                  
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(32),
+                    FuncionarioID=funcionarios[0].FuncionarioID,
+                    LocalID=2
+                },
+                new Consulta {
+                    EspecialidadID = especialidades[2].EspecialidadID,
+                    fecha_fin=DateTime.UtcNow,                  
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(60),
+                    FuncionarioID=funcionarios[0].FuncionarioID,
+                    LocalID=1
                 }
             };
 
@@ -145,6 +177,7 @@ namespace SAREM.Testing
         public void AgregarConsultaPaciente()
         {
             string CI = "50548305";
+            string CI2 = "50548306";
             //listar consultas
             foreach (var c in db.consultas)
             {
@@ -155,11 +188,22 @@ namespace SAREM.Testing
                 Debug.WriteLine(p.PacienteID + " " + p.nombre);
             }
 
-            //selecciono la primera consulta
+            //selecciono las consultas y agrego al paciente
             var consultas = from c in db.consultas
                            select c;
-            iagenda.agregarConsultaPaciente(CI,consultas.First().ConsultaID);
+            
+            foreach (var c in consultas)
+            {
+                if(c.ConsultaID!=2)
+                    iagenda.agregarConsultaPaciente(CI, c.ConsultaID);
+            }
 
+         
+            //agrego a la consulta 2 todos los pacientes
+            foreach (var p in db.pacientes)
+            {
+                iagenda.agregarConsultaPaciente(p.PacienteID, 2);
+            }
 
             //listo consultas paciente
             Debug.WriteLine("Consultas paciente " + CI);
@@ -168,6 +212,7 @@ namespace SAREM.Testing
             {
                 Debug.WriteLine(c.ConsultaID+c.fecha_inicio.ToString());
             }
+            //debe tener 3
         }
 
         [TestMethod]
@@ -184,9 +229,9 @@ namespace SAREM.Testing
             canceladas.ToList().ForEach(c => Debug.WriteLine(c.ConsultaID));
             Assert.AreEqual(canceladas.Count(), 1);
 
-            //Pruebo que cancelando consulta, las consultas del paciente son 0
+            //Pruebo que cancelando consulta, las consultas del paciente son 2
             var marcadas = iagenda.listarConsultasPaciente(ci);
-            Assert.AreEqual(marcadas.Count, 0);
+            //Assert.AreEqual(marcadas.Count, 2);
             Console.WriteLine("Consultas marcadas: " + marcadas.Count);
         }
 
@@ -218,7 +263,6 @@ namespace SAREM.Testing
             try
             {
                 inot.suscribirPacienteEvento(eventos[0].EventoID, "50548306", com[0].ID);
-
             }
             catch (Exception e)
             {
@@ -240,6 +284,24 @@ namespace SAREM.Testing
         {
             var medicos = iagenda.listarMedicosEspecialidadLocal(1, 1).ToList();
             medicos.ForEach(m => Console.WriteLine(m.FuncionarioID + m.nombre));
+        }
+        
+        [TestMethod]
+        public void obtenerConsulta()
+        {
+            var c = iagenda.obtenerConsulta(2);
+            Console.WriteLine("Local");
+            Console.WriteLine(c.local.LocalID);
+            Console.WriteLine("medico");
+            Console.WriteLine(c.medico.nombre);
+            Console.WriteLine("Pacientes");
+            foreach (var a in c.pacientes)
+                Console.WriteLine(a.PacienteID);
+
+            Console.WriteLine("Espera");
+            foreach (var a in c.pacientesespera)
+                Console.WriteLine(a.PacienteID);
+
         }
 
         [ClassCleanup]
