@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -112,8 +113,74 @@ namespace SAREM.Web.Controllers
             return Json(new SelectList(medicos, "Value", "Text"));
         }
 
+
+        public class GetS
+        {
+            public List<Student> records { get; set; }
+        }
+
+        public class Student
+        {
+            public string id { get; set; }
+            public string nombre { get; set; }
+            public string apellido { get; set; }
+            public DateTime fechaInicio { get; set; }
+            public DateTime fechaFin { get; set; }
+        }
+
+
+        public ActionResult VerConsultas()
+        {
+            return View("VerConsultas");
+        }
+
+       
+        public JsonResult GetConsultas(string sidx, string sord, int page, int rows)
+        {
+
+            int pageIndex = Convert.ToInt32(page) - 1;
+            int pageSize = rows;
+            
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("es-UY");
+            DateTime dt = new DateTime(2015, 7, 13, 18, 0, 0);
+            DateTime dt2 = new DateTime(2015, 7, 13, 19, 0, 0);
+
+            DateTime dt21 = new DateTime(2015, 7, 14, 4, 0, 0);
+            DateTime dt22 = new DateTime(2015, 7, 14, 5, 0, 0);
+
+            DateTime dt31 = new DateTime(2015, 7, 15, 4, 0, 0);
+            DateTime dt32 = new DateTime(2015, 7, 15, 5, 0, 0);
+
+            // Defines a custom string format to display the DateTime value.
+            // zzzz specifies the full time zone offset.
+            String format = "dd/MM/yyyy HH:mm";
+
+            var aux = new GetS
+            {
+
+                records = new List<Student>
+                    {
+                        new Student {id = "1", nombre = "Juan", apellido = "Santos", fechaInicio = dt, fechaFin = dt2},
+                        new Student {id = "2", nombre = "Andrea", apellido = "Suarez", fechaInicio = dt21, fechaFin = dt22},
+                        new Student {id = "3", nombre = "Laura", apellido = "Paoli", fechaInicio = dt31, fechaFin = dt32 }
+                    }
+            };
+
+            int totalRecords = aux.records.Count();
+            var totalPages = (int)Math.Ceiling((float)totalRecords / (float)rows);
+            var jsonData = new
+            {
+                total = totalPages,
+                page,
+                records = totalRecords,
+                rows = aux.records
+            };
+            //return Json(aux, JsonRequestBehavior.AllowGet);
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Consulta/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(SAREM.Web.Models.Consulta consulta)
         {
             return View();
         }
