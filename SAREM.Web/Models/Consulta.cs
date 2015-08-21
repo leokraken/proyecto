@@ -17,18 +17,23 @@ namespace SAREM.Web.Models
         [Required(ErrorMessage = "Debe seleccionar un Orígen")]
         [RegularExpression(@"^[1-9][0-9]*$")]
         public String localID { get; set; }
-       
+        public String localDesc { get; set; }
+
+
         public IEnumerable<Especialidad> especialidades { get; set; }
+        
         //esp id es un long
         [RegularExpression(@"^[1-9][0-9]*$")]
         [Required(ErrorMessage = "Debe ingresar una Especialidad")]
         public String especialidadID { get; set; }
+        public String descEspecialidad { get; set; }
         public IEnumerable<Funcionario> funcionarios { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]*$")]
         [Required(ErrorMessage = "Debe ingresar un Médico")]
         public String medID { get; set; }
-        
+        public String medDesc { get; set; }
+
         [Required(ErrorMessage = "Debe ingresar la Fecha de Inicio")]
         public String fecha_inicio { get; set; }
         

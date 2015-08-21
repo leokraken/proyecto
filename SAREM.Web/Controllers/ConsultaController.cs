@@ -67,9 +67,12 @@ namespace SAREM.Web.Controllers
               
                 SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                 c.LocalID = Convert.ToInt64(consulta.localID);
+                c.local = agenda.obtenerLocal(c.LocalID);
+              
                 c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
+                c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
                 c.FuncionarioID = consulta.medID;
-
+                c.medico = agenda.obtenerMedico(c.FuncionarioID);
 
                
                 c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
@@ -114,31 +117,59 @@ namespace SAREM.Web.Controllers
         }
 
 
-        public class GetS
+        public class GetConsultasJSON
         {
-            public List<Student> records { get; set; }
+            public List<ConsultaJSON> records { get; set; }
         }
 
-        public class Student
+        public class ConsultaJSON
         {
-            public string id { get; set; }
-            public string nombre { get; set; }
-            public string apellido { get; set; }
-            public DateTime fechaInicio { get; set; }
-            public DateTime fechaFin { get; set; }
+            public long id { get; set; }
+            public string origen { get; set; }
+            public string especialidad { get; set; }
+            public string medico { get; set; }
+            public String fechaInicio { get; set; }
+            public String fechaFin { get; set; }
         }
 
 
         public ActionResult VerConsultas()
         {
-            return View("VerConsultas");
+            return View("VerConsultasNew");
         }
 
        
-        public JsonResult GetConsultas(string sidx, string sord, int page, int rows)
-        {
 
-            int pageIndex = Convert.ToInt32(page) - 1;
+
+        public JsonResult GetConsultas()
+        {
+            var consultas = agenda.listarConsultas();
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+            long index = 0;
+            foreach (Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.id = c.ConsultaID;
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("es-UY");
+
+                cjson.fechaInicio = c.fecha_inicio.ToString();
+                cjson.fechaFin = c.fecha_fin.ToString();
+            
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+            /*int pageIndex = Convert.ToInt32(page) - 1;
             int pageSize = rows;
             
             Thread.CurrentThread.CurrentCulture = new CultureInfo("es-UY");
@@ -175,8 +206,10 @@ namespace SAREM.Web.Controllers
                 records = totalRecords,
                 rows = aux.records
             };
-            //return Json(aux, JsonRequestBehavior.AllowGet);
-            return Json(jsonData, JsonRequestBehavior.AllowGet);
+            //return Json(aux, JsonRequestBehavior.AllowGet);*/
+           // return Json(jsonData, JsonRequestBehavior.AllowGet);
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Consulta/Edit/5

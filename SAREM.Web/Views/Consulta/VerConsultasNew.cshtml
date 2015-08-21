@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "VerConsultasNew";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<h2>Consultas</h2>
+
+<link rel="stylesheet" href="~/Content/boostrap-table/src/bootstrap-table.css">
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
+<script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
+
+
+    <table data-toggle="table" data-search="true" data-url='@Url.Action("GetConsultas", "Consulta")' data-pagination="true" data-side-pagination="client"
+       data-page-number="1" data-page-size="10" data-page-list="[10, 25, 50, 100, All]" data-row-style="rowStyle">
+    <thead>
+        <tr>
+            <th data-field="id">ID</th>
+            <th data-field="origen">Orígen</th>
+            <th data-field="especialidad">Especialidad</th>
+            <th data-field="medico">Médico</th>
+            <th data-field="fechaInicio">Fecha Inicio</th>
+            <th data-field="fechaFin">Fecha Fin</th>
+        </tr>
+    </thead>
+
+</table>
+<script>
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if (index % 2 === 0 ) {
+            return {
+                classes: classes[2]
+            };
+        }
+        return {};
+    }
+</script>

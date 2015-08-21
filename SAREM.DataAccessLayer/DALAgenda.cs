@@ -132,7 +132,9 @@ namespace SAREM.DataAccessLayer
         public ICollection<Consulta> listarConsultas()
         {
             //Entidades sin objetos dependencia 'datatypes'
-            var query = from c in db.consultas
+            var query = from c in db.consultas.Include("especialidad")
+                        .Include("medico")
+                        .Include("local")
                         select c;
             return query.ToList();
         }
@@ -224,6 +226,37 @@ namespace SAREM.DataAccessLayer
             return con;
         }
 
+        public Local obtenerLocal(long LocalID)
+        {
+            var query = from l in db.locales
+                        where l.LocalID == LocalID
+                        select l;
+
+            Local loc = query.Single();
+            return loc;
+
+        }
+
+        public Especialidad obtenerEspecialidad(long EspecialidadID)
+        {
+            var query = from e in db.especialidades
+                        where e.EspecialidadID == EspecialidadID
+                        select e;
+
+            Especialidad esp = query.Single();
+            return esp;
+
+        }
+
+        public Medico obtenerMedico(string FuncionarioID)
+        {
+            var query = db.funcionarios
+                        .OfType<Medico>().Single(x => x.FuncionarioID == FuncionarioID);
+
+            Medico med = query;
+            return med;
+
+        }
 
     }
 }
