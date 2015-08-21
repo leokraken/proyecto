@@ -28,6 +28,49 @@ namespace SAREM.Web.Controllers
             return DateTime.ParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
         }
 
+        public class GetConsultasJSON
+        {
+            public List<ConsultaJSON> records { get; set; }
+        }
+
+        public class ConsultaJSON
+        {
+            public long id { get; set; }
+            public string origen { get; set; }
+            public string especialidad { get; set; }
+            public string medico { get; set; }
+            public String fechaInicio { get; set; }
+            public String fechaFin { get; set; }
+        }
+
+        public class LocalJson
+        {
+            public string LocalID { get; set; }
+            public string nombre { get; set; }
+            public Boolean sel { get; set; }
+        }
+
+        public class EspecialidadJson
+        {
+            public string EspecialidadID { get; set; }
+            public string descripcion { get; set; }
+            public Boolean sel { get; set; }
+        }
+
+        public class MedicoJson
+        {
+            public string FuncionarioID { get; set; }
+            public string nombre { get; set; }
+            public Boolean sel { get; set; }
+        }
+
+        public class GetLocalEspMedJson
+        {
+            public List<LocalJson> locales { get; set; }
+            public List<MedicoJson> medicos { get; set; }
+            public List<EspecialidadJson> especialidades { get; set; }
+        }
+
         // GET: Consulta
         public ActionResult Index()
         {
@@ -117,22 +160,6 @@ namespace SAREM.Web.Controllers
         }
 
 
-        public class GetConsultasJSON
-        {
-            public List<ConsultaJSON> records { get; set; }
-        }
-
-        public class ConsultaJSON
-        {
-            public long id { get; set; }
-            public string origen { get; set; }
-            public string especialidad { get; set; }
-            public string medico { get; set; }
-            public String fechaInicio { get; set; }
-            public String fechaFin { get; set; }
-        }
-
-
         public ActionResult VerConsultas()
         {
             return View("VerConsultasNew");
@@ -145,7 +172,7 @@ namespace SAREM.Web.Controllers
         {
             var consultas = agenda.listarConsultas();
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
-            long index = 0;
+           
             foreach (Consulta c in consultas)
             {
                 ConsultaJSON cjson = new ConsultaJSON();
@@ -156,10 +183,18 @@ namespace SAREM.Web.Controllers
                 cjson.medico = c.medico.nombre;
 
                 String format = "dd/MM/yyyy HH:mm";
-                Thread.CurrentThread.CurrentCulture = new CultureInfo("es-UY");
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
 
-                cjson.fechaInicio = c.fecha_inicio.ToString();
-                cjson.fechaFin = c.fecha_fin.ToString();
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
             
                 lista.Add(cjson);
             }
@@ -169,53 +204,79 @@ namespace SAREM.Web.Controllers
 
                 records = lista
             };
-            /*int pageIndex = Convert.ToInt32(page) - 1;
-            int pageSize = rows;
-            
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("es-UY");
-            DateTime dt = new DateTime(2015, 7, 13, 18, 0, 0);
-            DateTime dt2 = new DateTime(2015, 7, 13, 19, 0, 0);
-
-            DateTime dt21 = new DateTime(2015, 7, 14, 4, 0, 0);
-            DateTime dt22 = new DateTime(2015, 7, 14, 5, 0, 0);
-
-            DateTime dt31 = new DateTime(2015, 7, 15, 4, 0, 0);
-            DateTime dt32 = new DateTime(2015, 7, 15, 5, 0, 0);
-
-            // Defines a custom string format to display the DateTime value.
-            // zzzz specifies the full time zone offset.
-            String format = "dd/MM/yyyy HH:mm";
-
-            var aux = new GetS
-            {
-
-                records = new List<Student>
-                    {
-                        new Student {id = "1", nombre = "Juan", apellido = "Santos", fechaInicio = dt, fechaFin = dt2},
-                        new Student {id = "2", nombre = "Andrea", apellido = "Suarez", fechaInicio = dt21, fechaFin = dt22},
-                        new Student {id = "3", nombre = "Laura", apellido = "Paoli", fechaInicio = dt31, fechaFin = dt32 }
-                    }
-            };
-
-            int totalRecords = aux.records.Count();
-            var totalPages = (int)Math.Ceiling((float)totalRecords / (float)rows);
-            var jsonData = new
-            {
-                total = totalPages,
-                page,
-                records = totalRecords,
-                rows = aux.records
-            };
-            //return Json(aux, JsonRequestBehavior.AllowGet);*/
-           // return Json(jsonData, JsonRequestBehavior.AllowGet);
+          
 
             return Json(lista, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Consulta/Edit/5
-        public ActionResult Edit(SAREM.Web.Models.Consulta consulta)
+        public JsonResult Edit(SAREM.Web.Models.Consulta consulta)
         {
-            return View();
+            GetLocalEspMedJson obj = new GetLocalEspMedJson();
+            List<LocalJson> locales = new List<LocalJson>();
+            foreach (Local l in agenda.listarLocales()) {
+
+                LocalJson lj = new LocalJson();
+                lj.LocalID = l.LocalID.ToString();
+                lj.nombre = l.nombre;
+                if (l.LocalID == Convert.ToInt64(consulta.localID))
+                {
+                    lj.sel = true;
+                } else {
+                    lj.sel = false;
+                }
+
+                locales.Add(lj);
+            }
+
+            obj.locales = locales;
+
+            List<EspecialidadJson> esps = new List<EspecialidadJson>();
+            var espsLocal = agenda.listarEspecialidadesLocal(Convert.ToInt64(consulta.localID));
+            foreach (Especialidad e in espsLocal) {
+
+                EspecialidadJson ejson = new EspecialidadJson();
+                ejson.EspecialidadID = e.EspecialidadID.ToString();
+                ejson.descripcion = e.descripcion;
+
+                if (e.EspecialidadID == Convert.ToInt64(consulta.especialidadID))
+                {
+                    ejson.sel = true;
+
+                } else {
+
+                    ejson.sel = false;
+                }
+
+                esps.Add(ejson);
+            }
+
+            obj.especialidades = esps;
+
+
+            List<MedicoJson> meds = new List<MedicoJson>();
+            var medsespsLocal = agenda.listarMedicosEspecialidadLocal(Convert.ToInt64(consulta.localID), Convert.ToInt64(consulta.especialidadID));
+
+            foreach (Medico m in medsespsLocal)
+            {
+                MedicoJson mjson = new MedicoJson();
+                mjson.FuncionarioID = m.FuncionarioID;
+                mjson.nombre = m.nombre;
+                if (m.FuncionarioID.Equals(consulta.medID)) {
+
+                   mjson.sel = true;
+
+                } else {
+
+                    mjson.sel = false;
+                }
+
+                meds.Add(mjson);
+            }
+
+            obj.medicos = meds;
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Consulta/Edit/5
