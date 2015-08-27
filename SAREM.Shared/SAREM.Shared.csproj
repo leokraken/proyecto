@@ -49,12 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datatypes\DataNotificacionConsulta.cs" />
     <Compile Include="Entities\AgendaEvento.cs" />
     <Compile Include="Entities\Comunicacion.cs" />
     <Compile Include="Entities\Consulta.cs" />
     <Compile Include="Entities\Especialidad.cs" />
     <Compile Include="Entities\Evento.cs" />
-    <Compile Include="Entities\EventoEstatico.cs" />
+    <Compile Include="Entities\EventoAcotado.cs" />
+    <Compile Include="Entities\EventoPersonalizado.cs" />
+    <Compile Include="Entities\EventoSecuencial.cs" />
     <Compile Include="Entities\EventoNotificacion.cs" />
     <Compile Include="Entities\EventoPacienteComunicacion.cs" />
     <Compile Include="Entities\Funcionario.cs" />

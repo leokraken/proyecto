@@ -13,7 +13,7 @@ namespace SAREM.Shared.Entities
         [ForeignKey("PacienteID")]
         public virtual Paciente paciente { get; set; }
         [ForeignKey("EventoID")]
-        public virtual EventoEstatico evento { get; set; }
+        public virtual EventoPersonalizado evento { get; set; }
         [ForeignKey("ComunicacionID")]
         public virtual Comunicacion comunicacion { get; set; }
 

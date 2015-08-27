@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAREM.Shared.enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,6 @@ namespace SAREM.Shared.Entities
         public short limites { get; set; }
         public Sexo sexo { get; set; }
 
-        public virtual ICollection<EventoEstatico> eventos { get; set; }
+        public virtual ICollection<EventoPersonalizado> eventos { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SAREM.Shared.Entities;
+﻿using SAREM.Shared.Datatypes;
+using SAREM.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace SAREM.DataAccessLayer
         ICollection<Evento> listarEventosPosibles(string PacienteID);
         ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID);
         ICollection<Comunicacion> listarComunicaciones();
-
+        void agregarNotificacionConsulta(DataNotificacionConsulta dnc);
     }
 }

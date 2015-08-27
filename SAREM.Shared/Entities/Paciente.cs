@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SAREM.Shared.enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SAREM.Shared.Entities
 {
-    public enum Sexo { MASCULINO, FEMENINO };
     public class Paciente
     {
         [Key]

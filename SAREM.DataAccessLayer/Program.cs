@@ -15,8 +15,6 @@ namespace SARM.DataAccessLayer
     {
         static void Main(string[] args)
         {
-
-
             using(var db = new SAREMAdminContext())
             {
                 //db.dropSchema("test");

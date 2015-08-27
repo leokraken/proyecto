@@ -69,8 +69,9 @@ namespace SAREM.DataAccessLayer
             builder.Entity<Especialidad>().ToTable("Especialidades", schemaName);
             //estatico notificacion
             builder.Entity<Evento>()
-                .Map<EventoEstatico>(ee => ee.Requires("TipoEvento").HasValue(0))
-                .Map<EventoNotificacion>(en => en.Requires("TipoEvento").HasValue(1))
+                .Map<EventoAcotado>(ee => ee.Requires("TipoEvento").HasValue(0))
+                .Map<EventoSecuencial>(ee => ee.Requires("TipoEvento").HasValue(1))
+                .Map<EventoNotificacion>(en => en.Requires("TipoEvento").HasValue(2))
                 .ToTable("Eventos", schemaName);
             //medicos, etc
             builder.Entity<Funcionario>().ToTable("Funcionarios", schemaName);
@@ -114,7 +115,8 @@ namespace SAREM.DataAccessLayer
                     me.MapRightKey("EspecialidadID");
                     me.ToTable("LocalesEspecialidades", schemaName);
                 });
-            builder.Entity<EventoEstatico>()
+            /*
+            builder.Entity<EventoPersonalizado>()
                 .HasMany<Rango>(e => e.rangos)
                 .WithMany(r => r.eventos)
                 .Map(me =>
@@ -122,7 +124,7 @@ namespace SAREM.DataAccessLayer
                     me.MapLeftKey("EventoID");
                     me.MapRightKey("RangoID");
                     me.ToTable("EventoRangos", schemaName);
-                });
+                });*/
 
             builder.Entity<Medico>()
                 .HasMany<Local>(e => e.locales)
@@ -182,7 +184,7 @@ namespace SAREM.DataAccessLayer
                         }
                         catch (Exception E)
                         {
-                            throw new Exception("El esquema ya existe");
+                            throw E;//new Exception("El esquema ya existe");
                         }
 
                     }
