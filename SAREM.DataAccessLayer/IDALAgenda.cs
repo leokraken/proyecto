@@ -21,6 +21,8 @@ namespace SAREM.DataAccessLayer
         ICollection<Especialidad> listarEspecialidadesLocal(long LocalID);
         ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID);
         Consulta obtenerConsulta(long ConsultaID);
-
+        Local obtenerLocal(long LocalID);
+        Especialidad obtenerEspecialidad(long EspecialidadID);
+        Medico obtenerMedico(string FuncionarioID);
     }
 }
