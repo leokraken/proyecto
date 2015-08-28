@@ -35,7 +35,7 @@ namespace SAREM.Web.Controllers
 
         public class ConsultaJSON
         {
-            public long id { get; set; }
+            public string idC { get; set; }
             public string origen { get; set; }
             public string especialidad { get; set; }
             public string medico { get; set; }
@@ -141,7 +141,7 @@ namespace SAREM.Web.Controllers
             foreach (Especialidad e in agenda.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
             {
 
-                especialidades.Add(new SelectListItem { Text = e.tipo, Value = e.EspecialidadID.ToString() });
+                especialidades.Add(new SelectListItem { Text = e.descripcion, Value = e.EspecialidadID.ToString() });
             }
             return Json(new SelectList(especialidades, "Value", "Text"));
           
@@ -177,7 +177,7 @@ namespace SAREM.Web.Controllers
             {
                 ConsultaJSON cjson = new ConsultaJSON();
 
-                cjson.id = c.ConsultaID;
+                cjson.idC = c.ConsultaID.ToString();
                 cjson.origen = c.local.nombre;
                 cjson.especialidad = c.especialidad.descripcion;
                 cjson.medico = c.medico.nombre;
@@ -210,16 +210,18 @@ namespace SAREM.Web.Controllers
         }
 
         // GET: Consulta/Edit/5
-        public JsonResult Edit(SAREM.Web.Models.Consulta consulta)
+        public JsonResult Edit(string idC)
         {
+            long idL = Convert.ToInt64(idC);
             GetLocalEspMedJson obj = new GetLocalEspMedJson();
             List<LocalJson> locales = new List<LocalJson>();
+            Consulta c = agenda.obtenerConsulta(idL);
             foreach (Local l in agenda.listarLocales()) {
 
                 LocalJson lj = new LocalJson();
                 lj.LocalID = l.LocalID.ToString();
                 lj.nombre = l.nombre;
-                if (l.LocalID == Convert.ToInt64(consulta.localID))
+                if (l.LocalID == c.local.LocalID)
                 {
                     lj.sel = true;
                 } else {
@@ -232,14 +234,14 @@ namespace SAREM.Web.Controllers
             obj.locales = locales;
 
             List<EspecialidadJson> esps = new List<EspecialidadJson>();
-            var espsLocal = agenda.listarEspecialidadesLocal(Convert.ToInt64(consulta.localID));
+            var espsLocal = agenda.listarEspecialidadesLocal(c.LocalID);
             foreach (Especialidad e in espsLocal) {
 
                 EspecialidadJson ejson = new EspecialidadJson();
                 ejson.EspecialidadID = e.EspecialidadID.ToString();
                 ejson.descripcion = e.descripcion;
 
-                if (e.EspecialidadID == Convert.ToInt64(consulta.especialidadID))
+                if (e.EspecialidadID == c.EspecialidadID)
                 {
                     ejson.sel = true;
 
@@ -255,14 +257,14 @@ namespace SAREM.Web.Controllers
 
 
             List<MedicoJson> meds = new List<MedicoJson>();
-            var medsespsLocal = agenda.listarMedicosEspecialidadLocal(Convert.ToInt64(consulta.localID), Convert.ToInt64(consulta.especialidadID));
+            var medsespsLocal = agenda.listarMedicosEspecialidadLocal(c.LocalID, c.EspecialidadID);
 
             foreach (Medico m in medsespsLocal)
             {
                 MedicoJson mjson = new MedicoJson();
                 mjson.FuncionarioID = m.FuncionarioID;
                 mjson.nombre = m.nombre;
-                if (m.FuncionarioID.Equals(consulta.medID)) {
+                if (m.FuncionarioID.Equals(c.FuncionarioID)) {
 
                    mjson.sel = true;
 
@@ -281,17 +283,41 @@ namespace SAREM.Web.Controllers
 
         // POST: Consulta/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public JsonResult Edit(SAREM.Web.Models.Consulta consulta)
         {
             try
             {
-                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
 
-                return RedirectToAction("Index");
+                    SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
+                    c.LocalID = Convert.ToInt64(consulta.localID);
+                    c.local = agenda.obtenerLocal(c.LocalID);
+                    c.ConsultaID = Convert.ToInt64(consulta.consultaID);
+                    c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
+                    c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
+                    c.FuncionarioID = consulta.medID;
+                    c.medico = agenda.obtenerMedico(c.FuncionarioID);
+
+
+                    c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
+                    c.fecha_inicio = ParseDate(consulta.fecha_inicio).ToUniversalTime();
+
+
+
+                    agenda.modificarConsulta(c);
+
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false });
+                }
+
             }
             catch
             {
-                return View();
+                return Json(new { success = false });
             }
         }
 

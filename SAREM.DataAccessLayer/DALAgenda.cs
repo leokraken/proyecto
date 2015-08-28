@@ -109,10 +109,14 @@ namespace SAREM.DataAccessLayer
             else
             {
                 var c = db.consultas.Find(consulta.ConsultaID);
+                c.LocalID = consulta.LocalID;
+                c.local = obtenerLocal(consulta.LocalID);
                 c.EspecialidadID = consulta.EspecialidadID;
+                c.especialidad = this.obtenerEspecialidad(consulta.EspecialidadID);
                 c.fecha_fin = consulta.fecha_fin;
                 c.fecha_inicio = consulta.fecha_inicio;
                 c.FuncionarioID = consulta.FuncionarioID;
+                c.medico = this.obtenerMedico(consulta.FuncionarioID);
                 db.SaveChanges();
             }
         }

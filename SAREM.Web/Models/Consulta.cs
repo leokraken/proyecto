@@ -13,7 +13,8 @@ namespace SAREM.Web.Models
         
        
         public IEnumerable<Local> local { get; set; }
-       
+        public String consultaID { get; set; }
+
         [Required(ErrorMessage = "Debe seleccionar un Orígen")]
         [RegularExpression(@"^[1-9][0-9]*$")]
         public String localID { get; set; }
