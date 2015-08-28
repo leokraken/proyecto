@@ -288,7 +288,14 @@
            //     field: 'idC',
            //     values: [row.idC]
            // });
+        },
+        'click .pacientes': function (e, value, row, index) {
+
+            
+            $('#PacientesDialog').modal('show');
+          
         }
+
     };
 
     function operateFormatter(value, row, index) {
@@ -298,7 +305,12 @@
             '</a>  ',
             '<a class="remove" href="javascript:void(0)" title="Eliminar">',
             '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>',
+            ' ',
+            '<a class="pacientes" href="javascript:void(0)" title="Pacientes">',
+            '<i class="fa fa-users"></i>',
             '</a>'
+
         ].join('');
     }
 
@@ -382,3 +394,37 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="PacientesDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Pacientes</h4>
+            </div>
+            <div class="modal-body">
+                <div class="tabbable">
+                    <!-- Only required for left/right tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab1" data-toggle="tab">Pacientes Consulta</a></li>
+                        <li><a href="#tab2" data-toggle="tab">Pacientes en Lista de Espera</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            Data 1
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            <p>Data 2.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                <button type="button" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

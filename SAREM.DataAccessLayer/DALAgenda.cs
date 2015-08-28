@@ -157,6 +157,8 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+
+
         public ICollection<Consulta> listarConsultasCanceladasPaciente(string PacienteID)
         {
             if (!db.pacientes.Any(p => p.PacienteID == PacienteID))
