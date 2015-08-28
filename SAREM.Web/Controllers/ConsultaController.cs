@@ -321,25 +321,23 @@ namespace SAREM.Web.Controllers
             }
         }
 
-        // GET: Consulta/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+       
 
         // POST: Consulta/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public JsonResult Delete(string idC)
         {
             try
             {
                 // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
+                long idCC = Convert.ToInt64(idC);
+                agenda.eliminarConsulta(idCC);
+                return Json(new { success = true });
             }
             catch
             {
-                return View();
+                return Json(new { success = false });
             }
         }
     }
