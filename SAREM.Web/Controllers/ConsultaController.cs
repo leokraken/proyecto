@@ -71,6 +71,21 @@ namespace SAREM.Web.Controllers
             public List<EspecialidadJson> especialidades { get; set; }
         }
 
+
+        public class Pacientes
+        {
+            public List<PacienteJson> records { get; set; }
+        }
+
+        public class PacienteJson
+        {
+            public string PacienteID { get; set; }
+            public string nombre { get; set; }
+            public string celular { get; set; }
+            public string telefono { get; set; }
+            public string sexo { get; set; }
+        }
+
         // GET: Consulta
         public ActionResult Index()
         {
@@ -341,9 +356,46 @@ namespace SAREM.Web.Controllers
             }
         }
 
-        // GET: Consulta/Create
+       
         [HttpGet]
         public ActionResult VerPacientes(string idC)
+        {
+            var model = new SAREM.Web.Models.Consulta
+            {
+                consultaID = idC,
+
+            };
+
+
+            return View("VerConsultaPaciente",model);
+        }
+
+        [HttpGet]
+        public JsonResult GetPacientes(string idC)
+        {
+            long idL = Convert.ToInt64(idC);
+            Pacientes obj = new Pacientes();
+            List<PacienteJson> pacientes = new List<PacienteJson>();
+            Consulta c = agenda.obtenerConsulta(idL);
+            foreach (PacienteConsultaAgenda p in c.pacientes)
+            {
+
+                PacienteJson pj = new PacienteJson();
+                pj.PacienteID = p.PacienteID;
+                pj.nombre = p.paciente.nombre;
+                pj.celular = p.paciente.celular;
+                pj.telefono = p.paciente.telefono;
+                pj.sexo = p.paciente.sexo.ToString();
+
+                obj.records.Add(pj);
+               
+            }
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetPacientesEspera(string idC)
         {
             var model = new SAREM.Web.Models.Consulta
             {

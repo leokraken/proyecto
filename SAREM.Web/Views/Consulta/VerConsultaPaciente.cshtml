@@ -5,24 +5,77 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
-<h3>Pacientes en Consulta</h3>
+<link rel="stylesheet" href="~/Content/boostrap-table/src/bootstrap-table.css">
+<link rel="stylesheet" href="~/Content/awesomplete.css">
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
+<script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
+<script src="~/Scripts/mustache.js" type="text/javascript"></script>
+<script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
 
+
+<h3>Pacientes en Consulta</h3>
+<br />
 <div>
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
-        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+        <li  class="active"><a href="#pacientes"  data-toggle="tab">Pacientes</a></li>
+        <li ><a href="#pacientesEspera"  data-toggle="tab">Pacientes en Lista de Espera</a></li>
+       
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="home">...</div>
-        <div role="tabpanel" class="tab-pane" id="profile">...</div>
-        <div role="tabpanel" class="tab-pane" id="messages">...</div>
-        <div role="tabpanel" class="tab-pane" id="settings">...</div>
+        <div role="tabpanel" class="tab-pane active" id="pacientes">
+           
+            <div class="container">
+                <div class="pull-right">
+                    <br />
+
+                    <img src="~/Content/images/addPac2.png" id="addPac" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente a la Consulta">
+                    <br/>
+                </div>
+                <table id="tablaPacientes"></table>
+            </div>
+               
+            
+            
+        </div>
+        <div role="tabpanel" class="tab-pane" id="pacientesEspera">.aSASs</div>
+      
     </div>
 
 </div>
+
+<script>
+
+    $(document).ready(function () {
+
+    
+        $("#addPac").popover({ trigger: "hover" });
+
+        $('#tablaPacientes').bootstrapTable({
+            url: '@Url.Action("GetPacientes", "Consulta")' + '?idC=' + @Model.consultaID,
+            columns: [{
+                field: 'PacienteID',
+                title: 'Id'
+            }, {
+                field: 'nombre',
+                title: 'Nombre'
+            }, {
+                field: 'celular',
+                title: 'Celular'
+            },{
+                field: 'telefono',
+                title: 'Teléfono'
+            }, 
+            {
+                field: 'sexo',
+                title: 'Sexo'
+            }, 
+            ]
+        });
+    });
+</script>

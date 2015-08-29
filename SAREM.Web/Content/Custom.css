@@ -17,7 +17,7 @@
       
 .navbar-custom .navbar-nav > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
-    background-color: #CCF2FF;
+    background-color: #EEE;
 }
       
 .navbar-custom .navbar-brand {
@@ -29,3 +29,4 @@
 .navbar-custom .icon-bar {
   	background-color:#000099;
 }
+

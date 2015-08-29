@@ -184,6 +184,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\awesomplete.css" />
     <Content Include="Content\boostrap-table\dist\bootstrap-table-all.js" />
     <Content Include="Content\boostrap-table\dist\bootstrap-table-all.min.js" />
     <Content Include="Content\boostrap-table\dist\bootstrap-table-locale-all.js" />
@@ -377,6 +378,8 @@
     <Content Include="Content\fontawesome\font-awesome.min.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\addPac.png" />
+    <Content Include="Content\images\addPac2.png" />
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\password13.png" />
@@ -467,6 +470,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\awesomplete.js" />
     <Content Include="Scripts\bootstrap-datepicker.es.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />

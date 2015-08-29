@@ -291,8 +291,8 @@
         },
         'click .pacientes': function (e, value, row, index) {
 
-            var baseUrl = '@Url.Action("VerPacientes", "Consulta")';
-            var url = baseurl + '?idC=' + row.idC;
+          
+            var url = '/Consulta/VerPacientes' + '?idC=' + row.idC;
             location.href = url;
         }
 
