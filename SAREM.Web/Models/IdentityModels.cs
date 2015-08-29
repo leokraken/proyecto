@@ -29,5 +29,7 @@ namespace SAREM.Web.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<SAREM.Web.Models.Consulta> Consultas { get; set; }
     }
 }

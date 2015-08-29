@@ -340,5 +340,20 @@ namespace SAREM.Web.Controllers
                 return Json(new { success = false });
             }
         }
+
+        // GET: Consulta/Create
+        [HttpGet]
+        public ActionResult VerPacientes(string idC)
+        {
+            var model = new SAREM.Web.Models.Consulta
+            {
+                consultaID = idC
+
+            };
+
+
+            return View("VerConsultaPaciente", model);
+        }
+ 
     }
 }

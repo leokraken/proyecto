@@ -11,10 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAREM.Testing", "SAREM.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAREM.Web", "SAREM.Web\SAREM.Web.csproj", "{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}"
 EndProject
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SAREM.CloudService", "SAREM.CloudService\SAREM.CloudService.ccproj", "{B6B710DC-EBFD-4734-9F1A-52FF1267255A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificacionesWorkerRole", "NotificacionesWorkerRole\NotificacionesWorkerRole.csproj", "{CCDE3FF2-F397-434F-80B6-3B070D57ECF9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,14 +33,6 @@ Global
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6B710DC-EBFD-4734-9F1A-52FF1267255A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6B710DC-EBFD-4734-9F1A-52FF1267255A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6B710DC-EBFD-4734-9F1A-52FF1267255A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6B710DC-EBFD-4734-9F1A-52FF1267255A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCDE3FF2-F397-434F-80B6-3B070D57ECF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCDE3FF2-F397-434F-80B6-3B070D57ECF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCDE3FF2-F397-434F-80B6-3B070D57ECF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCDE3FF2-F397-434F-80B6-3B070D57ECF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

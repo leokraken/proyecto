@@ -927,6 +927,7 @@
     <Content Include="Views\Consulta\_PartialMedicos.cshtml" />
     <Content Include="Views\Consulta\VerConsultas.cshtml" />
     <Content Include="Views\Consulta\VerConsultasNew.cshtml" />
+    <Content Include="Views\Consulta\VerConsultaPaciente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

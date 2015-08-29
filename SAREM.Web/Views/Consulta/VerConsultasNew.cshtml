@@ -274,14 +274,14 @@
                 }
             });
 
-           
+
 
 
             //alert('You click like action, row: ' + JSON.stringify(row));
 
         },
         'click .remove': function (e, value, row, index) {
-           
+
             $("#idRowDel").val(row.idC);
             $('#modalRemove').modal('show');
            // $table.bootstrapTable('remove', {
@@ -291,9 +291,9 @@
         },
         'click .pacientes': function (e, value, row, index) {
 
-            
-            $('#PacientesDialog').modal('show');
-          
+            var baseUrl = '@Url.Action("VerPacientes", "Consulta")';
+            var url = baseurl + '?idC=' + row.idC;
+            location.href = url;
         }
 
     };
@@ -314,7 +314,7 @@
         ].join('');
     }
 
-    
+
 
 
 </script>
