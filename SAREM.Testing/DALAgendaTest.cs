@@ -73,6 +73,24 @@ namespace SAREM.Testing
                     sexo=Sexo.FEMENINO,
                     nombre="Kali la diosa",
                     PaisID = naciones.First().PaisID
+                },
+                  new Paciente{ PacienteID="50548307",
+                    FN=new DateTime(1990,10,11),
+                    sexo=Sexo.FEMENINO, 
+                    nombre="Valentina Da Silva",
+                    PaisID = naciones.First().PaisID
+                },
+                new Paciente{ PacienteID="50548308",
+                    FN=new DateTime(1990,11,11),
+                    sexo=Sexo.MASCULINO,
+                    nombre="Jorge Perez",
+                    PaisID = naciones.First().PaisID
+                },
+                new Paciente{ PacienteID="51130115",
+                    FN=new DateTime(1990,11,11),
+                    sexo=Sexo.FEMENINO,
+                    nombre="Juana Alvarez",
+                    PaisID = naciones.First().PaisID
                 }
             };
             //lista

@@ -382,7 +382,9 @@
     <Content Include="Content\images\addPac2.png" />
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
+    <Content Include="Content\images\dataConsulta.png" />
     <Content Include="Content\images\password13.png" />
+    <Content Include="Content\images\writing11.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\morris.css" />

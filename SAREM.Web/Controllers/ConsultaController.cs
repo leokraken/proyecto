@@ -15,7 +15,7 @@ namespace SAREM.Web.Controllers
     public class ConsultaController : Controller
     {
         private IDALAgenda agenda = new DALAgenda("test");
-        private IDALPacientes paciente = new DALPacientes("test");
+        private IDALPacientes pacienteDal = new DALPacientes("test");
 
         private static string[] formats = new string[]
         {
@@ -84,6 +84,7 @@ namespace SAREM.Web.Controllers
             public string celular { get; set; }
             public string telefono { get; set; }
             public string sexo { get; set; }
+            public string fechaRegistro { get; set; }
         }
 
         // GET: Consulta
@@ -360,10 +361,29 @@ namespace SAREM.Web.Controllers
         [HttpGet]
         public ActionResult VerPacientes(string idC)
         {
+            long idL = Convert.ToInt64(idC);
+            Consulta c = agenda.obtenerConsulta(idL);
+            String format = "dd/MM/yyyy HH:mm";
+            DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+            DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+            var fI = localVersionFIni.ToString(format);
+
+            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                     c.fecha_fin,
+                         DateTimeKind.Utc);
+            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+            var fFin = localVersionFIni.ToString(format);
+            
             var model = new SAREM.Web.Models.Consulta
             {
                 consultaID = idC,
-
+                fecha_inicio = fI,
+                fecha_fin = fFin,
+                descEspecialidad = c.especialidad.descripcion,
+                localDesc = c.local.nombre,
+                medDesc = c.medico.nombre
             };
 
 
@@ -381,17 +401,40 @@ namespace SAREM.Web.Controllers
             {
 
                 PacienteJson pj = new PacienteJson();
+                Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
-                pj.nombre = p.paciente.nombre;
-                pj.celular = p.paciente.celular;
-                pj.telefono = p.paciente.telefono;
-                pj.sexo = p.paciente.sexo.ToString();
+                pj.nombre = pente.nombre;
+                //pj.celular = pente.celular;
+                //pj.telefono = pente.telefono;
+                //Cambiar por valores reales luego
+                pj.celular = "098258908";
+                pj.telefono = "29014567";
+                pj.sexo = pente.sexo.ToString();
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        p.fecharegistro,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                pj.fechaRegistro = localVersionFIni.ToString(format);
 
-                obj.records.Add(pj);
+                pacientes.Add(pj);
                
             }
 
-            return Json(obj, JsonRequestBehavior.AllowGet);
+            obj.records = pacientes;
+            return Json(obj.records, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetPacientesTenant()
+        {
+           
+            var pacientesTenant = pacienteDal.listarPacientes();
+            var pacientes =
+                    from p in pacientesTenant
+                    select new { PacienteID = p.PacienteID};
+
+            return Json(pacientes, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -405,6 +448,44 @@ namespace SAREM.Web.Controllers
 
 
             return View("VerConsultaPaciente", model);
+        }
+
+        [HttpPost]
+        public JsonResult AddPacienteConsulta(string idC, string idP)
+        {
+
+         
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                agenda.agregarConsultaPaciente(idP, idCC);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+          
+        }
+
+        [HttpPost]
+        public JsonResult CancelPacienteConsulta(string idC, string idP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                agenda.cancelarConsultaPaciente(idP, idCC);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
         }
  
     }

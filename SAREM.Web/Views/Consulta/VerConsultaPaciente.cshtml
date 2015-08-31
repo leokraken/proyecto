@@ -13,9 +13,22 @@
 <script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
 <script src="~/Scripts/mustache.js" type="text/javascript"></script>
 <script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
+<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 
 
-<h3>Pacientes en Consulta</h3>
+<div class="paragraphs">
+    <div class="row">
+        <div class="span4">
+            <div class="clearfix content-heading">
+
+
+                <h3 class="pull-left">Pacientes en Consulta &nbsp &nbsp &nbsp </h3>
+                <img src="~/Content/images/writing11.png" id="dataConsulta" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="right" data-trigger="hover" data-content="Click para ver datos de la Consulta" />
+            </div>
+
+        </div>
+    </div>
+</div>
 <br />
 <div>
 
@@ -37,7 +50,8 @@
                     <img src="~/Content/images/addPac2.png" id="addPac" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente a la Consulta">
                     <br/>
                 </div>
-                <table id="tablaPacientes"></table>
+                <table id="tablaPacientes" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc"></table>
             </div>
                
             
@@ -53,29 +67,302 @@
 
     $(document).ready(function () {
 
-    
+
         $("#addPac").popover({ trigger: "hover" });
+        $("#dataConsulta").popover({ trigger: "hover" });
+
+        
+
+        $("#dataConsulta").click(function () {
+
+            $('#modalDataCons').modal('show');
+        });
+
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                locale: 'es'
+
+            });
+
+        });
 
         $('#tablaPacientes').bootstrapTable({
             url: '@Url.Action("GetPacientes", "Consulta")' + '?idC=' + @Model.consultaID,
+
             columns: [{
                 field: 'PacienteID',
-                title: 'Id'
+                title: 'Id',
+                filterControl:'input',
+                sortable: true
             }, {
+                field: 'fechaRegistro',
+                title: 'Fecha Registro',
+                filterControl:'input',
+                sortable: true
+            },{
                 field: 'nombre',
-                title: 'Nombre'
+                title: 'Nombre',
+                filterControl:'input',
+                sortable: true
             }, {
                 field: 'celular',
-                title: 'Celular'
+                title: 'Celular',
+                filterControl:'input',
+                sortable: true
             },{
                 field: 'telefono',
-                title: 'Teléfono'
-            }, 
+                title: 'Teléfono',
+                filterControl:'input',
+                sortable: true
+            },
             {
                 field: 'sexo',
-                title: 'Sexo'
-            }, 
+                title: 'Sexo',
+                filterControl:'input',
+                sortable: true
+            },
+            {
+                field: 'operate',
+                title: 'Cancelar',
+                align: 'center',
+                events: operateEvents,
+                formatter: operateFormatter
+            }
             ]
         });
+
+        //Guardar Paciente en Consulta
+        $("#agregar").click(function () {
+
+      
+
+            $.ajax({
+                url: '@Url.Action("AddPacienteConsulta", "Consulta")',
+                dataType: "json",
+                type: "POST",
+                data: { idC: @Model.consultaID, idP: $("#idPaciente").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $('#addPacCons').modal('hide');
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+
+                    } else {
+
+                        alert("error agregar Paciente Consulta");
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error agregar');
+                }
+            })
+        });
+
+        //Cancelar consulta paciente
+        $("#cancel").click(function () {
+
+           $.ajax({
+                url: '@Url.Action("CancelPacienteConsulta", "Consulta")',
+                dataType: "json",
+                type: "POST",
+                data: { idC: @Model.consultaID, idP:  $('#idRowCancel').val()},
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+    
+                        $('#modalCancel').modal('hide');
+
+                        $('#tablaPacientes').bootstrapTable('remove', {
+                            field: 'PacienteID',
+                            values: [$('#idRowCancel').val()]
+                        });
+
+                    } else {
+
+                        alert("error cancelar Paciente Consulta");
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error cancelar');
+                }
+            })
+
+        });
     });
+
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if (index % 2 === 0) {
+            return {
+                classes: classes[2]
+            };
+        }
+        return {};
+    }
+
+    function operateFormatter(value, row, index) {
+        return [
+
+            '<a class="remove" href="javascript:void(0)" title="Click para cancelar Consulta">',
+            '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>'
+        ].join('');
+    }
+
+    window.operateEvents = {
+       
+        'click .remove': function (e, value, row, index) {
+
+            $('#idRowCancel').val(row.PacienteID);
+            $('#modalCancel').modal('show');
+        }
+    };
+
+    //Agregar Paciente a la Consulta
+    $("#addPac").click(function () {
+
+        $.ajax({
+            url: '@Url.Action("GetPacientesTenant", "Consulta")',
+            dataType: "json",
+            type: "GET",
+
+
+            cache: false,
+            success: function (data) {
+
+
+                $('#idPaciente').val("");
+
+                var list = [];
+                $.each(data, function(key, value) {
+                   list.push(value.PacienteID);
+                });
+
+                var input = document.getElementById("idPaciente");
+                var awesomplete = new Awesomplete(input, {
+                    minChars: 1,
+                    maxItems: 15,
+                });
+                awesomplete.list = list;
+
+                $('#addPacCons').modal('show');
+            },
+            error: function (xhr) {
+
+                alert('error');
+            }
+        })
+
+    });
+
+    
 </script>
+
+<div class="modal fade" id="addPacCons">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Agregar Paciente Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+                  
+                  
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
+                        <div class="col-sm-8">
+                            <input id="idPaciente" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                        </div>
+                    </div>
+                 
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                <button type="button" class="btn btn-primary" id="agregar">Agregar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalCancel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Cancelar Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <p>Está seguro/a que desea cancelar la consulta ?</p>
+                <input id="idRowCancel" type="hidden" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="cancel">Si</button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDataCons">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Datos Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+
+
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Orígen:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.localDesc" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Especialidad:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.descEspecialidad" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Médico:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.medDesc" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Fecha Inicio:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.fecha_inicio" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Fecha Fin:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.fecha_fin" style="width:280px" disabled />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+              
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
