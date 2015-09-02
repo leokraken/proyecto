@@ -57,7 +57,19 @@
             
             
         </div>
-        <div role="tabpanel" class="tab-pane" id="pacientesEspera">.aSASs</div>
+        <div role="tabpanel" class="tab-pane" id="pacientesEspera">
+            <div class="container">
+                <div class="pull-right">
+                    <br />
+
+                    <img src="~/Content/images/addPac2.png" id="addPacEspera" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente a la Lista de Espera">
+                    <br />
+                </div>
+                <table id="tablaPacientesEspera" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc"></table>
+            </div>
+
+        </div>
       
     </div>
 
@@ -69,9 +81,10 @@
 
 
         $("#addPac").popover({ trigger: "hover" });
+        $("#addPacEspera").popover({ trigger: "hover" });
         $("#dataConsulta").popover({ trigger: "hover" });
 
-        
+
 
         $("#dataConsulta").click(function () {
 
@@ -131,10 +144,58 @@
             ]
         });
 
+        //Cargo tabla de pacientes en espera
+
+        $('#tablaPacientesEspera').bootstrapTable({
+            url: '@Url.Action("GetPacientesEspera", "Consulta")' + '?idC=' + @Model.consultaID,
+
+            columns: [{
+                field: 'PacienteID',
+                title: 'Id',
+                filterControl:'input',
+                sortable: true
+            }, {
+                field: 'fechaRegistro',
+                title: 'Fecha Registro',
+                filterControl:'input',
+                sortable: true
+            },{
+                field: 'nombre',
+                title: 'Nombre',
+                filterControl:'input',
+                sortable: true
+            }, {
+                field: 'celular',
+                title: 'Celular',
+                filterControl:'input',
+                sortable: true
+            },{
+                field: 'telefono',
+                title: 'Teléfono',
+                filterControl:'input',
+                sortable: true
+            },
+            {
+                field: 'sexo',
+                title: 'Sexo',
+                filterControl:'input',
+                sortable: true
+            },
+            {
+                field: 'operate',
+                title: 'Eliminar',
+                align: 'center',
+                events: operateEventsLE,
+                formatter: operateFormatterLE
+            }
+            ]
+        });
+
+
         //Guardar Paciente en Consulta
         $("#agregar").click(function () {
 
-      
+
 
             $.ajax({
                 url: '@Url.Action("AddPacienteConsulta", "Consulta")',
@@ -162,10 +223,42 @@
             })
         });
 
+        //Guardar paciente en lista de espera
+        $("#agregarEspera").click(function () {
+
+
+
+            $.ajax({
+                url: '@Url.Action("AddPacienteConsultaEspera", "Consulta")',
+                dataType: "json",
+                type: "POST",
+                data: { idC: @Model.consultaID, idP: $("#idPacienteEspera").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $('#addPacConsEspera').modal('hide');
+                        $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
+
+                    } else {
+
+                        alert("error agregar Paciente Consulta Lista de Espera");
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error agregar lista de espera');
+                }
+            })
+        });
+
+
         //Cancelar consulta paciente
         $("#cancel").click(function () {
 
-           $.ajax({
+            $.ajax({
                 url: '@Url.Action("CancelPacienteConsulta", "Consulta")',
                 dataType: "json",
                 type: "POST",
@@ -175,7 +268,7 @@
                 success: function (data) {
 
                     if (data.success) {
-    
+
                         $('#modalCancel').modal('hide');
 
                         $('#tablaPacientes').bootstrapTable('remove', {
@@ -195,6 +288,41 @@
             })
 
         });
+
+
+        //Eliminar Paciente de Lista de Espera
+        $("#delete").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("EliminarPacienteConsultaLE", "Consulta")',
+                dataType: "json",
+                type: "POST",
+                data: { idC: @Model.consultaID, idP:  $('#idRowDel').val()},
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $('#modalDelLE').modal('hide');
+
+                        $('#tablaPacientesEspera').bootstrapTable('remove', {
+                            field: 'PacienteID',
+                            values: [$('#idRowDel').val()]
+                        });
+
+                    } else {
+
+                        alert("error eliminar Paciente Lista de Espera");
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error eliminar');
+                }
+            })
+
+        });
     });
 
     function rowStyle(row, index) {
@@ -208,6 +336,7 @@
         return {};
     }
 
+    //Pacientes en Consulta
     function operateFormatter(value, row, index) {
         return [
 
@@ -217,8 +346,18 @@
         ].join('');
     }
 
+    //Pacientes en lista de espera
+    function operateFormatterLE(value, row, index) {
+        return [
+
+            '<a class="remove" href="javascript:void(0)" title="Click para eliminar Paciente">',
+            '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>'
+        ].join('');
+    }
+
     window.operateEvents = {
-       
+
         'click .remove': function (e, value, row, index) {
 
             $('#idRowCancel').val(row.PacienteID);
@@ -226,44 +365,116 @@
         }
     };
 
+    window.operateEventsLE = {
+
+        'click .remove': function (e, value, row, index) {
+
+            $('#idRowDel').val(row.PacienteID);
+            $('#modalDelLE').modal('show');
+        }
+    };
+
     //Agregar Paciente a la Consulta
     $("#addPac").click(function () {
 
-        $.ajax({
-            url: '@Url.Action("GetPacientesTenant", "Consulta")',
-            dataType: "json",
-            type: "GET",
+        if ( $('#tablaPacientes').bootstrapTable('getData').length == 10) {
+
+            $('#pText').text("Ya existen 10 pacientes en Consulta. No se pueden ingresar más.")
+            
+            $('#modalAlerta').modal('show');
+            
+
+        } else {
 
 
-            cache: false,
-            success: function (data) {
+            $.ajax({
+                url: '@Url.Action("GetPacientesTenant", "Consulta")',
+                dataType: "json",
+                type: "GET",
 
 
-                $('#idPaciente').val("");
+                cache: false,
+                success: function (data) {
 
-                var list = [];
-                $.each(data, function(key, value) {
-                   list.push(value.PacienteID);
-                });
 
-                var input = document.getElementById("idPaciente");
-                var awesomplete = new Awesomplete(input, {
-                    minChars: 1,
-                    maxItems: 15,
-                });
-                awesomplete.list = list;
+                    $('#idPaciente').val("");
 
-                $('#addPacCons').modal('show');
-            },
-            error: function (xhr) {
+                    var list = [];
+                    $.each(data, function(key, value) {
+                        list.push(value.PacienteID);
+                    });
 
-                alert('error');
-            }
-        })
+                    var input = document.getElementById("idPaciente");
+                    var awesomplete = new Awesomplete(input, {
+                        minChars: 1,
+                        maxItems: 15,
+                    });
+                    awesomplete.list = list;
+
+                    $('#addPacCons').modal('show');
+                },
+                error: function (xhr) {
+
+                    alert('error');
+                }
+            })
+
+        }//Else
+    });
+
+  
+    //Agregar Paciente a Lista de espera
+    $("#addPacEspera").click(function () {
+
+        if ( $('#tablaPacientesEspera').bootstrapTable('getData').length == 3) {
+
+            $('#pText').text("Ya existen 3 pacientes en Lista de Espera. No se pueden ingresar más.")
+            
+            $('#modalAlerta').modal('show');
+            
+
+        } else {
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetPacientesTenant", "Consulta")',
+                dataType: "json",
+                type: "GET",
+
+
+                cache: false,
+                success: function (data) {
+
+
+                    $('#idPacienteEspera').val("");
+
+                    var list = [];
+                    $.each(data, function(key, value) {
+                        list.push(value.PacienteID);
+                    });
+
+                    var input = document.getElementById("idPacienteEspera");
+                    var awesomplete = new Awesomplete(input, {
+                        minChars: 1,
+                        maxItems: 15,
+                    });
+                    awesomplete.list = list;
+
+                    $('#addPacConsEspera').modal('show');
+                },
+                error: function (xhr) {
+
+                    alert('error');
+                }
+            })
+
+        }//else
 
     });
 
-    
+   
+
 </script>
 
 <div class="modal fade" id="addPacCons">
@@ -295,6 +506,36 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- Modal agregar paciente a lista de espera -->
+<div class="modal fade" id="addPacConsEspera">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Agregar Paciente Lista de Espera</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+
+
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
+                        <div class="col-sm-8">
+                            <input id="idPacienteEspera" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                <button type="button" class="btn btn-primary" id="agregarEspera">Agregar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Modal Cancelar Paciente Consulta -->
 <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalCancel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -310,6 +551,46 @@
                 <button type="button" class="btn btn-default" id="cancel">Si</button>
 
                 <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Eliminar Paciente Lista de Espera -->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalDelLE">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Eliminar Paciente Lista de Espera</h4>
+            </div>
+            <div class="modal-body">
+                <p>Está seguro/a que desea eliminar al Paciente de la Lista de Espera ?</p>
+                <input id="idRowDel" type="hidden" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="delete">Si</button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Alerta Cantidad de pacientes -->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalAlerta">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Alerta</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pText"></p>
+                
+            </div>
+            <div class="modal-footer">
+          
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>

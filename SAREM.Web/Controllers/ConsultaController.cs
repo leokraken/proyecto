@@ -438,16 +438,38 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetPacientesEspera(string idC)
+        public JsonResult GetPacientesEspera(string idC)
         {
-            var model = new SAREM.Web.Models.Consulta
+            long idL = Convert.ToInt64(idC);
+            Pacientes obj = new Pacientes();
+            List<PacienteJson> pacientes = new List<PacienteJson>();
+            Consulta c = agenda.obtenerConsulta(idL);
+            foreach (PacienteConsultaEspera p in c.pacientesespera)
             {
-                consultaID = idC
 
-            };
+                PacienteJson pj = new PacienteJson();
+                Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
+                pj.PacienteID = p.PacienteID;
+                pj.nombre = pente.nombre;
+                //pj.celular = pente.celular;
+                //pj.telefono = pente.telefono;
+                //Cambiar por valores reales luego
+                pj.celular = "098258908";
+                pj.telefono = "29014567";
+                pj.sexo = pente.sexo.ToString();
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        p.fecha,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                pj.fechaRegistro = localVersionFIni.ToString(format);
 
+                pacientes.Add(pj);
 
-            return View("VerConsultaPaciente", model);
+            }
+
+            obj.records = pacientes;
+            return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -470,6 +492,27 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpPost]
+        public JsonResult AddPacienteConsultaEspera(string idC, string idP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                agenda.agregarConsultaPacienteEspera(idP, idCC);
+               
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+
+        [HttpPost]
         public JsonResult CancelPacienteConsulta(string idC, string idP)
         {
 
@@ -478,6 +521,26 @@ namespace SAREM.Web.Controllers
             {
                 long idCC = Convert.ToInt64(idC);
                 agenda.cancelarConsultaPaciente(idP, idCC);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+
+        [HttpPost]
+        public JsonResult EliminarPacienteConsultaLE(string idC, string idP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                agenda.eliminarPacienteConsultaLE(idP, idCC);
                 return Json(new { success = true });
             }
             catch

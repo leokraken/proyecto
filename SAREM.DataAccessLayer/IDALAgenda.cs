@@ -24,5 +24,7 @@ namespace SAREM.DataAccessLayer
         Local obtenerLocal(long LocalID);
         Especialidad obtenerEspecialidad(long EspecialidadID);
         Medico obtenerMedico(string FuncionarioID);
+        void agregarConsultaPacienteEspera(string PacienteID, long ConsultaID);
+        void eliminarPacienteConsultaLE(string PacienteID, long ConsultaID);
     }
 }

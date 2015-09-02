@@ -10,6 +10,7 @@ namespace SAREM.DataAccessLayer
         private SARMContext db = null;
         private static int DAY=24;
         private static int MAX_PACIENTES = 10;
+        private static int MAX_PACIENTES_ESPERA = 3;
         
         public DALAgenda(string tenant)
         {
@@ -40,9 +41,10 @@ namespace SAREM.DataAccessLayer
                     else
                     {
                         //agrego a lista de espera
-                        var espera = new PacienteConsultaEspera { ConsultaID=consulta.ConsultaID, PacienteID=paciente.PacienteID, fecha= DateTime.UtcNow };
-                        db.pacienteespera.Add(espera);
-                        db.SaveChanges();
+                        //var espera = new PacienteConsultaEspera { ConsultaID=consulta.ConsultaID, PacienteID=paciente.PacienteID, fecha= DateTime.UtcNow };
+                        //db.pacienteespera.Add(espera);
+                        //db.SaveChanges();
+                        throw new Exception("Ya existen 10 Pacientes en Consulta");
                     }
                 }
                 else
@@ -54,6 +56,63 @@ namespace SAREM.DataAccessLayer
                 throw new Exception("No existe paciente");
             }
         }
+
+        //Agregar Paciente a Lista de Espera
+        public void agregarConsultaPacienteEspera(string PacienteID, long ConsultaID)
+        {
+             //check if exists
+            Paciente paciente = db.pacientes.Find(PacienteID);
+            if (paciente != null)
+            {
+                Consulta consulta = db.consultas.Find(ConsultaID);
+                if (consulta != null)
+                {
+                    int numpacientes = db.consultas.Include("pacientesespera")
+                                    .Where(c => c.ConsultaID == ConsultaID)
+                                    .Single().pacientesespera.Count;
+
+                    if (numpacientes < MAX_PACIENTES_ESPERA)
+                    {
+                        //agrego a lista de espera
+                        var espera = new PacienteConsultaEspera { ConsultaID = consulta.ConsultaID, PacienteID = paciente.PacienteID, fecha = DateTime.UtcNow };
+                        db.pacienteespera.Add(espera);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new Exception("Ya existen 3 Pacientes en lista de espera");
+                    }
+
+                } else{
+
+                    throw new Exception("No existe consulta");
+                }
+            }
+            else
+            {
+                throw new Exception("No existe paciente");
+            }
+
+        }
+
+
+        //Eliminar Paciente Lista de Espera
+        public void eliminarPacienteConsultaLE(string PacienteID, long ConsultaID)
+        {
+            if (db.consultas.Any(c => c.ConsultaID == ConsultaID)
+                && db.pacientes.Any(p => p.PacienteID == PacienteID))
+            {
+
+
+                db.pacienteespera.Remove(db.pacienteespera.Where(c => c.ConsultaID == ConsultaID && c.PacienteID == PacienteID).Single());
+                db.SaveChanges();
+            }
+            else
+            {
+                throw new Exception("No existe consulta o paciente");
+            }
+        }
+
         public void cancelarConsultaPaciente(string PacienteID, long ConsultaID)
         {
             if (db.consultas.Any(c => c.ConsultaID == ConsultaID)
@@ -66,6 +125,7 @@ namespace SAREM.DataAccessLayer
                 };
                 db.consultascanceladas.Add(cancelar);
                 //extraer de la lista de consultas
+                
                 db.consultasagendadas.Remove(db.consultasagendadas.Where(c => c.ConsultaID == ConsultaID && c.PacienteID == PacienteID).Single());
                 db.SaveChanges();
             }
