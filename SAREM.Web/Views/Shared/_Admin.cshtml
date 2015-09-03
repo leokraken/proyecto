@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    <title>@ViewBag.Title - SAREM</title>
     @Styles.Render("~/Content/css")
     @Styles.Render("~/ContentEsp/css")
     @Styles.Render("~/Content/fontawesome")
@@ -82,19 +82,16 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
+                    <li class="active" id="idLi">
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Consultas <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
-                            <li>
-                                <a href="#" id="crearConsulta">Crear Consulta</a>
+                            <li >
+                                <a class="active" href='@Url.Action("Create", "Consulta")'>Crear Consulta</a>
                             </li>
-                            <li>
-                                <a href="#">Modificar Consultas</a>
+                            <li >
+                                <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "VerConsultas" ? "active" : "")"  href='@Url.Action("VerConsultas", "Consulta")'>Ver Consultas - <br /> Modificar Consultas - <br />Cancelar Consultas - <br /> Ver Pacientes Consulta</a>
                             </li>
-                            <li>
 
-                                <a href="#">Eliminar Consultas</a>
-                            </li>
                         </ul>
                     </li>
              
@@ -103,11 +100,13 @@
             </div>
             <!-- /.navbar-collapse -->
         </nav>
+  
         <div id="page-wrapper">
             <div id="target" class="container-fluid">
-                @RenderBody()
+               @RenderBody()
             </div>
         </div>
+
        
     </div>
     <!-- /#wrapper -->
@@ -118,24 +117,10 @@
     <script>
     $(document).ready(function () {
 
-        $("#crearConsulta").click(function () {
 
-
-            $.ajax({
-                url: '@Url.Action("Create", "Consulta")',
-                type: "GET",
-                cache: false,
-                success: function (data) {
-                    //Fill div with results
-                    $("#target").html(data);
-                },
-                error: function (xhr, status, error) {
-                    alert(xhr.responseText);
-                }
-            });
-
-        });
-
+        $('li > a').find('a[href="' + location.pathname + '"]')
+        .closest('li').addClass('active');
+      
     });
 
     </script>

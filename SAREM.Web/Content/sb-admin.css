@@ -133,13 +133,15 @@ ul.alert-dropdown {
         width: 225px;
     }
 
-    .side-nav li a:hover,
   
+    .side-nav li a:hover,
     .side-nav li a:focus {
         outline: none;
         background-color: #00004C !important;
     }
+
 }
+
 
 .side-nav>li>ul {
     padding: 0;
@@ -151,6 +153,7 @@ ul.alert-dropdown {
     text-decoration: none;
     color: #fff;
 }
+
 
 .side-nav>li>ul>li>a:hover {
     color: #fff;
