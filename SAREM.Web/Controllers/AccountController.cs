@@ -79,7 +79,7 @@ namespace SAREM.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("Index", "Tecnico");
+                    return RedirectToAction("VerConsultas", "Consulta");
                     //return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

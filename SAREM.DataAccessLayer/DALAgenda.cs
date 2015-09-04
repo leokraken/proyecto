@@ -29,11 +29,21 @@ namespace SAREM.DataAccessLayer
                                      .Where(c => c.ConsultaID == ConsultaID)
                                      .Single().pacientes.Count;
 
+               
                 if (consulta != null)
                 {
                     //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
+                  
                     if (numpacientes < MAX_PACIENTES)
                     {
+
+                        var conscans = db.consultascanceladas.Single(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
+                        if (conscans != null)
+                        {
+                            db.consultascanceladas.Remove(conscans);
+                            db.SaveChanges();
+                        }
+                    
                         PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = PacienteID, fecharegistro = DateTime.UtcNow };
                         db.consultasagendadas.Add(pca);
                         db.SaveChanges();
@@ -111,6 +121,54 @@ namespace SAREM.DataAccessLayer
             {
                 throw new Exception("No existe consulta o paciente");
             }
+        }
+
+        //Mueve los pacientes de la LE a la consulta
+        public void moverPacientesLEConsulta(List<string> pacientesIDs, long ConsultaID)
+        {
+
+            List<PacienteConsultaEspera> listEspera = new List<PacienteConsultaEspera>();
+
+            foreach (string PacienteID in pacientesIDs)
+            {
+                if (db.consultas.Any(c => c.ConsultaID == ConsultaID)
+                    && db.pacientes.Any(p => p.PacienteID == PacienteID))
+                {
+
+
+                    PacienteConsultaEspera pEspera = db.pacienteespera.First(i => (i.PacienteID == PacienteID) && (i.ConsultaID == ConsultaID));
+                    listEspera.Add(pEspera);
+                }
+                else
+                {
+                    throw new Exception("No existe consulta o paciente");
+                }
+            }
+
+            //Ordeno por fecha de registro de manera ascendiente
+            var pacientesListOrdered = listEspera.OrderBy(x => x.fecha).ToList();
+            foreach (PacienteConsultaEspera pEspera in pacientesListOrdered)
+            {
+                this.eliminarPacienteConsultaLE(pEspera.PacienteID, pEspera.ConsultaID);
+                Consulta consulta = db.consultas.Find(ConsultaID);
+                int numpacientes = db.consultas.Include("pacientes")
+                                     .Where(c => c.ConsultaID == ConsultaID)
+                                     .Single().pacientes.Count;
+
+                if (numpacientes < MAX_PACIENTES)
+                {
+                    PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = pEspera.PacienteID, fecharegistro = pEspera.fecha };
+                    db.consultasagendadas.Add(pca);
+                    db.SaveChanges();
+
+                }
+                else
+                {
+                    throw new Exception("Ya existen 10 Pacientes en Consulta");
+                }
+
+            }
+            
         }
 
         public void cancelarConsultaPaciente(string PacienteID, long ConsultaID)
@@ -322,6 +380,22 @@ namespace SAREM.DataAccessLayer
             Medico med = query;
             return med;
 
+        }
+
+        public ICollection<Paciente> listarPacientesNotInConsulta(long ConsultaID)
+        {
+         
+            if (!db.consultas.Any(c => c.ConsultaID == ConsultaID))
+                throw new Exception("No existe consulta");
+            else
+            {
+                var result = db.pacientes.Where(p => (!db.consultasagendadas.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID))) 
+                    &&
+                    (!db.pacienteespera.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID))) 
+                    
+                    );
+                return result.ToList();
+            }
         }
 
     }

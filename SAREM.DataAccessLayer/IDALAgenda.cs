@@ -26,5 +26,7 @@ namespace SAREM.DataAccessLayer
         Medico obtenerMedico(string FuncionarioID);
         void agregarConsultaPacienteEspera(string PacienteID, long ConsultaID);
         void eliminarPacienteConsultaLE(string PacienteID, long ConsultaID);
+        void moverPacientesLEConsulta(List<string> pacientesIDs, long ConsultaID);
+        ICollection<Paciente> listarPacientesNotInConsulta(long ConsultaID);
     }
 }

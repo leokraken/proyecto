@@ -86,10 +86,10 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Consultas <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
                             <li >
-                                <a class="active" href='@Url.Action("Create", "Consulta")'>Crear Consulta</a>
+                                <a  href='@Url.Action("Create", "Consulta")'>Crear Consulta</a>
                             </li>
                             <li >
-                                <a class="@(ViewContext.RouteData.Values["Action"].ToString() == "VerConsultas" ? "active" : "")"  href='@Url.Action("VerConsultas", "Consulta")'>Ver Consultas - <br /> Modificar Consultas - <br />Cancelar Consultas - <br /> Ver Pacientes Consulta</a>
+                                <a  href='@Url.Action("VerConsultas", "Consulta")'>Ver Consultas - <br /> Modificar Consultas - <br />Cancelar Consultas - <br /> Ver Pacientes Consulta</a>
                             </li>
 
                         </ul>

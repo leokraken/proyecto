@@ -426,12 +426,12 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetPacientesTenant()
+        public JsonResult GetPacientesNotInConsulta(string idC)
         {
-           
-            var pacientesTenant = pacienteDal.listarPacientes();
+            long idL = Convert.ToInt64(idC);
+            var pacientesNotInConsulta = agenda.listarPacientesNotInConsulta(idL);
             var pacientes =
-                    from p in pacientesTenant
+                    from p in pacientesNotInConsulta
                     select new { PacienteID = p.PacienteID};
 
             return Json(pacientes, JsonRequestBehavior.AllowGet);
@@ -541,6 +541,27 @@ namespace SAREM.Web.Controllers
             {
                 long idCC = Convert.ToInt64(idC);
                 agenda.eliminarPacienteConsultaLE(idP, idCC);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+
+        [HttpPost]
+        public JsonResult MoverPacientesConsultaLE(string idC, List<string> idsP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+
+                agenda.moverPacientesLEConsulta(idsP, idCC);
                 return Json(new { success = true });
             }
             catch
