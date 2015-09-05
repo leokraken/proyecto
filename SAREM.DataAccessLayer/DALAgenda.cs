@@ -34,10 +34,10 @@ namespace SAREM.DataAccessLayer
                 {
                     //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
                   
-                    if (numpacientes < MAX_PACIENTES)
+                    if (numpacientes <= MAX_PACIENTES)
                     {
 
-                        var conscans = db.consultascanceladas.Single(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
+                        var conscans = db.consultascanceladas.SingleOrDefault(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
                         if (conscans != null)
                         {
                             db.consultascanceladas.Remove(conscans);
@@ -81,7 +81,7 @@ namespace SAREM.DataAccessLayer
                                     .Where(c => c.ConsultaID == ConsultaID)
                                     .Single().pacientesespera.Count;
 
-                    if (numpacientes < MAX_PACIENTES_ESPERA)
+                    if (numpacientes <= MAX_PACIENTES_ESPERA)
                     {
                         //agrego a lista de espera
                         var espera = new PacienteConsultaEspera { ConsultaID = consulta.ConsultaID, PacienteID = paciente.PacienteID, fecha = DateTime.UtcNow };
@@ -176,6 +176,13 @@ namespace SAREM.DataAccessLayer
             if (db.consultas.Any(c => c.ConsultaID == ConsultaID)
                 && db.pacientes.Any(p => p.PacienteID == PacienteID))
             {
+                var conscans = db.consultascanceladas.SingleOrDefault(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
+                if (conscans != null)
+                {
+                    db.consultascanceladas.Remove(conscans);
+                    db.SaveChanges();
+                }
+              
                 var cancelar = new PacienteConsultaCancelar {
                     ConsultaID = ConsultaID,
                     PacienteID = PacienteID,
@@ -183,8 +190,9 @@ namespace SAREM.DataAccessLayer
                 };
                 db.consultascanceladas.Add(cancelar);
                 //extraer de la lista de consultas
-                
                 db.consultasagendadas.Remove(db.consultasagendadas.Where(c => c.ConsultaID == ConsultaID && c.PacienteID == PacienteID).Single());
+                
+               
                 db.SaveChanges();
             }
             else
@@ -389,12 +397,17 @@ namespace SAREM.DataAccessLayer
                 throw new Exception("No existe consulta");
             else
             {
-                var result = db.pacientes.Where(p => (!db.consultasagendadas.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID))) 
-                    &&
-                    (!db.pacienteespera.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID))) 
-                    
-                    );
-                return result.ToList();
+                //var result = db.pacientes.Where(p => (!db.consultasagendadas.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID.Equals(p.PacienteID))))
+                //    && (!db.pacienteespera.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID.Equals(p.PacienteID)))));
+
+                var result = (from p in db.pacientes
+                              where (!db.consultasagendadas.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID)) &&
+                              !db.pacienteespera.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == p.PacienteID)))
+                             select p).ToList();
+
+               
+
+                return result;
             }
         }
 
