@@ -34,7 +34,7 @@ namespace SAREM.DataAccessLayer
                 {
                     //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
                   
-                    if (numpacientes <= MAX_PACIENTES)
+                    if (numpacientes < MAX_PACIENTES)
                     {
 
                         var conscans = db.consultascanceladas.SingleOrDefault(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
@@ -81,7 +81,7 @@ namespace SAREM.DataAccessLayer
                                     .Where(c => c.ConsultaID == ConsultaID)
                                     .Single().pacientesespera.Count;
 
-                    if (numpacientes <= MAX_PACIENTES_ESPERA)
+                    if (numpacientes < MAX_PACIENTES_ESPERA)
                     {
                         //agrego a lista de espera
                         var espera = new PacienteConsultaEspera { ConsultaID = consulta.ConsultaID, PacienteID = paciente.PacienteID, fecha = DateTime.UtcNow };
