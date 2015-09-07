@@ -170,7 +170,7 @@
     <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\NotificationsController.cs" />
+    <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\TecnicoController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -383,6 +383,7 @@
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\dataConsulta.png" />
+    <Content Include="Content\images\Notis.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\images\progression.png" />
     <Content Include="Content\images\progressionDis.png" />
@@ -936,10 +937,10 @@
     <Content Include="Views\Consulta\VerConsultas.cshtml" />
     <Content Include="Views\Consulta\VerConsultasNew.cshtml" />
     <Content Include="Views\Consulta\VerConsultaPaciente.cshtml" />
+    <Content Include="Views\Notificacion\VerNotificaciones.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Notifications\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

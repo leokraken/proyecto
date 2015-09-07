@@ -421,7 +421,7 @@ namespace SAREM.Web.Controllers
                
             }
 
-            obj.records = pacientes;
+            obj.records = pacientes.OrderBy(x => x.fechaRegistro).ToList(); ;
             return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 
@@ -468,7 +468,7 @@ namespace SAREM.Web.Controllers
 
             }
 
-            obj.records = pacientes;
+            obj.records = pacientes.OrderBy(x => x.fechaRegistro).ToList();
             return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 

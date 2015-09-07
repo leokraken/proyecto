@@ -66,6 +66,7 @@
                         </ul>
                     </div>
                 </div>*@
+              
                 <div class="pull-right">
                     <br />
 
@@ -73,7 +74,7 @@
                     <br/>
                 </div>
                 <table id="tablaPacientes" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="asc"></table>
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-show-footer="true"></table>
             </div>
                
             
@@ -99,7 +100,7 @@
                 </div>
               
                 <table id="tablaPacientesEspera" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="asc"  ></table>
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" ></table>
             </div>
 
         </div>
@@ -260,33 +261,29 @@
                 field: 'PacienteID',
                 title: 'Id',
                 filterControl:'input',
-                sortable: true
+                footerFormatter: totalTextFormatter
             }, {
                 field: 'fechaRegistro',
                 title: 'Fecha Registro',
                 filterControl:'input',
-                sortable: true
+                footerFormatter: totalNameFormatter
             },{
                 field: 'nombre',
                 title: 'Nombre',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             }, {
                 field: 'celular',
                 title: 'Celular',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },{
                 field: 'telefono',
                 title: 'Teléfono',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },
             {
                 field: 'sexo',
                 title: 'Sexo',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },
             {
                 field: 'operate',
@@ -307,34 +304,28 @@
             columns: [ {
                 field: 'PacienteID',
                 title: 'Id',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             }, {
                 field: 'fechaRegistro',
                 title: 'Fecha Registro',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },{
                 field: 'nombre',
                 title: 'Nombre',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             }, {
                 field: 'celular',
                 title: 'Celular',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },{
                 field: 'telefono',
                 title: 'Teléfono',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },
             {
                 field: 'sexo',
                 title: 'Sexo',
-                filterControl:'input',
-                sortable: true
+                filterControl:'input'
             },
             {
                 field: 'operate',
@@ -541,7 +532,13 @@
 
     
 
+    function totalTextFormatter(data) {
+        return '<b>Total </b>';
+    }
 
+    function totalNameFormatter(data) {
+        return '<span class="badge">'+data.length+'</span>';
+    }
     
 
     //Pasar pacientes lista de espera a consulta

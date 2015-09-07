@@ -147,8 +147,10 @@ namespace SAREM.DataAccessLayer
 
             //Ordeno por fecha de registro de manera ascendiente
             var pacientesListOrdered = listEspera.OrderBy(x => x.fecha).ToList();
+            
             foreach (PacienteConsultaEspera pEspera in pacientesListOrdered)
             {
+                
                 this.eliminarPacienteConsultaLE(pEspera.PacienteID, pEspera.ConsultaID);
                 Consulta consulta = db.consultas.Find(ConsultaID);
                 int numpacientes = db.consultas.Include("pacientes")
@@ -157,7 +159,7 @@ namespace SAREM.DataAccessLayer
 
                 if (numpacientes < MAX_PACIENTES)
                 {
-                    PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = pEspera.PacienteID, fecharegistro = pEspera.fecha };
+                    PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = pEspera.PacienteID, fecharegistro = DateTime.UtcNow };
                     db.consultasagendadas.Add(pca);
                     db.SaveChanges();
 

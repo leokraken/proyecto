@@ -16,5 +16,6 @@ namespace SAREM.DataAccessLayer
         ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID);
         ICollection<Comunicacion> listarComunicaciones();
         void agregarNotificacionConsulta(DataNotificacionConsulta dnc);
+        ICollection<Evento> listarEventos();
     }
 }

@@ -119,5 +119,13 @@ namespace SAREM.DataAccessLayer
         }
 
    
+        //Obtener todas las notificaciones
+        public ICollection<Evento> listarEventos()
+        {
+            //Entidades sin objetos dependencia 'datatypes'
+            var query = from e in db.eventos
+                        select e;
+            return query.ToList();
+        }
     }
 }
