@@ -17,10 +17,12 @@ namespace SARM.DataAccessLayer
         {
             using(var db = new SAREMAdminContext())
             {
-                //db.dropSchema("test");
-                SARMContext.createTenant("test");
-                IDALAgenda idal = new DALAgenda("test");
-                idal.listarLocales();
+                string schema = "test";
+                Console.WriteLine("Delete schema: " + schema);
+                db.dropSchema(schema);
+                Console.WriteLine("Create schema: "+ schema);
+                SARMContext.createTenant(schema);
+
             }
             Console.WriteLine("Proceso finalizado...");
             Console.Read();

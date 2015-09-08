@@ -25,12 +25,13 @@ namespace SAREM.Testing
             };
 
         private static List<Rango> rangos = new List<Rango> { 
-                new Rango{ limitei=56, limites=70, nombre="Rango1", sexo=Sexo.FEMENINO},
-                new Rango{ limitei=18, limites=45, nombre="Rango2", sexo=Sexo.FEMENINO}
+                new Rango{ limitei=56, limites=70, nombre="Rango1" },
+                new Rango{ limitei=18, limites=45, nombre="Rango2" }
             };
+
         private static List<Evento> eventos = new List<Evento> { 
-                new EventoSecuencial{EventoID=1, nombre="Evento1", mensaje="Mensaje1", dias=1, rango=rangos[0]},
-                new EventoSecuencial{EventoID=2, nombre="Evento2", mensaje="Mensaje2", dias=1, rango=rangos[0]},
+                new EventoObligatorio{EventoID=1, nombre="Evento1" },
+                new EventoObligatorio{EventoID=2, nombre="Evento2" }
             };
 
         [ClassInitialize]
@@ -267,7 +268,7 @@ namespace SAREM.Testing
             });
 
             //listar eventos
-            var ev = inot.listarEventosPosibles(PacienteID);
+            var ev = inot.listarEventosOpcionales(PacienteID);
             Assert.AreEqual(ev.Count, 0);
             try
             {

@@ -36,9 +36,9 @@ namespace SAREM.Web.Controllers
             foreach (Evento e in eventos)
             {
                 EventoJSON ejson = new EventoJSON();
-                ejson.dias = e.dias.ToString();
+                //ejson.dias = e.dias.ToString();
                 ejson.EventoID = e.EventoID.ToString();
-                ejson.mensaje = e.mensaje;
+                //ejson.mensaje = e.mensaje;
                 ejson.nombre = e.nombre;
                 lista.Add(ejson);
             }

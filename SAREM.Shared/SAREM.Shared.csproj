@@ -55,10 +55,8 @@
     <Compile Include="Entities\Consulta.cs" />
     <Compile Include="Entities\Especialidad.cs" />
     <Compile Include="Entities\Evento.cs" />
-    <Compile Include="Entities\EventoAcotado.cs" />
-    <Compile Include="Entities\EventoPersonalizado.cs" />
-    <Compile Include="Entities\EventoSecuencial.cs" />
-    <Compile Include="Entities\EventoNotificacion.cs" />
+    <Compile Include="Entities\EventoObligatorio.cs" />
+    <Compile Include="Entities\EventoOpcional.cs" />
     <Compile Include="Entities\EventoPacienteComunicacion.cs" />
     <Compile Include="Entities\Funcionario.cs" />
     <Compile Include="Entities\Local.cs" />
@@ -70,7 +68,6 @@
     <Compile Include="Entities\Paciente.cs" />
     <Compile Include="Entities\PacienteConsultaAgenda.cs" />
     <Compile Include="Entities\PacienteConsultaCancelar.cs" />
-    <Compile Include="Entities\PacienteEvento.cs" />
     <Compile Include="Entities\Parte.cs" />
     <Compile Include="enums\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

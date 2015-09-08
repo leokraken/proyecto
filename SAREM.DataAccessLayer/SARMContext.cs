@@ -28,7 +28,6 @@ namespace SAREM.DataAccessLayer
         public DbSet<Paciente> pacientes { get; set; }
         public DbSet<PacienteConsultaAgenda> consultasagendadas { get; set; }
         public DbSet<PacienteConsultaCancelar> consultascanceladas { get; set; }
-        public DbSet<PacienteEvento> eventospacientes { get; set; }
         public DbSet<Parte> partes { get; set; }
         public DbSet<Rango> rangos { get; set; }
         public DbSet<Referencia> referencias { get; set; }
@@ -65,17 +64,17 @@ namespace SAREM.DataAccessLayer
                 .ToTable("Consultas", schemaName);
             
             builder.Entity<Pais>().ToTable("Paises", schemaName);
-
             builder.Entity<Especialidad>().ToTable("Especialidades", schemaName);
-            //estatico notificacion
+
             builder.Entity<Evento>()
-                .Map<EventoAcotado>(ee => ee.Requires("TipoEvento").HasValue(0))
-                .Map<EventoSecuencial>(ee => ee.Requires("TipoEvento").HasValue(1))
-                .Map<EventoNotificacion>(en => en.Requires("TipoEvento").HasValue(2))
+                .Map<EventoObligatorio>(ee => ee.Requires("TipoEvento").HasValue(0))
+                .Map<EventoOpcional>(ee => ee.Requires("TipoEvento").HasValue(1))
                 .ToTable("Eventos", schemaName);
+
             //medicos, etc
             builder.Entity<Funcionario>().ToTable("Funcionarios", schemaName);
             builder.Entity<Paciente>().ToTable("Pacientes", schemaName);
+            
             builder.Entity<EventoPacienteComunicacion>().ToTable("EventoPacienteComunicacion", schemaName);
 
 
@@ -85,8 +84,6 @@ namespace SAREM.DataAccessLayer
                 .WithRequired(pc => pc.paciente);
 
             
-            builder.Entity<PacienteEvento>().ToTable("EventosPaciente", schemaName)
-                .HasKey(k => new { k.PacienteID, k.EventoID, k.ComunicacionID });
             builder.Entity<Parte>().ToTable("Partes", schemaName);
             builder.Entity<Rango>().ToTable("Rangos", schemaName);
             builder.Entity<Referencia>().ToTable("Referencias", schemaName)
@@ -146,11 +143,12 @@ namespace SAREM.DataAccessLayer
                     me.MapRightKey("PacienteID");
                     me.ToTable("AusenciasPacientes", schemaName);
                 });*/
-            
-
+            // 
             builder.Entity<Evento>()
                 .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
             builder.Entity<Paciente>()
+                .HasMany<EventoPacienteComunicacion>(e => e.eventos);
+            builder.Entity<Comunicacion>()
                 .HasMany<EventoPacienteComunicacion>(e => e.eventos);
 
             builder.Entity<PacienteConsultaEspera>().ToTable("PacientesEspera", schemaName);
@@ -186,7 +184,6 @@ namespace SAREM.DataAccessLayer
                         {
                             throw E;//new Exception("El esquema ya existe");
                         }
-
                     }
                 }
             }

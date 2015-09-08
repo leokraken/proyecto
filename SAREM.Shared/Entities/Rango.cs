@@ -8,15 +8,14 @@ namespace SAREM.Shared.Entities
     public class Rango
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ID { get; set; }
+        public long RangoID { get; set; }
         [Required]
         public string nombre { get; set; }
-        [Required]
+        [Required, Range(18, 110)]
         public short limitei { get; set; }
-        [Required]
+        [Required, Range(18, 110)]
         public short limites { get; set; }
-        public Sexo sexo { get; set; }
-
-        public virtual ICollection<EventoPersonalizado> eventos { get; set; }
+        
+        public virtual ICollection<EventoOpcional> eventos { get; set; }
     }
 }

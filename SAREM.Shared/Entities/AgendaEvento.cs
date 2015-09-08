@@ -19,7 +19,7 @@ namespace SAREM.Shared.Entities
         [ForeignKey("ConsultaID")]
         public virtual Consulta consulta { get; set; }
         [ForeignKey("EventoID")]
-        public virtual EventoNotificacion evento { get; set; }
+        public virtual EventoObligatorio evento { get; set; }
         public DateTime fechanotificacion { get; set; }
     }
 }

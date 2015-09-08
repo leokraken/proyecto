@@ -12,10 +12,16 @@ namespace SAREM.DataAccessLayer
     {
         void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID);
         //lista los eventos dado un PacienteID, segun sexo y rango de edades
-        ICollection<Evento> listarEventosPosibles(string PacienteID);
-        ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID);
+        ICollection<Evento> listarEventosOpcionales(string PacienteID);
+        ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID);
         ICollection<Comunicacion> listarComunicaciones();
         void agregarNotificacionConsulta(DataNotificacionConsulta dnc);
         ICollection<Evento> listarEventos();
+
+        //crud eventos
+        Evento obtenerEvento(long EventoID);
+        void crearEvento(Evento e);
+        void eliminarEvento(long EventoID);
+        void modificarEvento(Evento evento);
     }
 }

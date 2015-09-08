@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SAREM.Shared.Entities
@@ -11,5 +12,6 @@ namespace SAREM.Shared.Entities
         public string nombre { get; set; }
         public string metadata { get; set; }
 
+        public virtual ICollection<EventoPacienteComunicacion> eventos { get; set; }
     }
 }

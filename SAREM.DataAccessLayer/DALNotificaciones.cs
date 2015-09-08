@@ -4,6 +4,7 @@ using SAREM.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,8 +24,7 @@ namespace SAREM.DataAccessLayer
 
         public void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID)
         {
-            EventoPersonalizado e = db.eventos.Include("rangos").OfType<EventoPersonalizado>().Where(ev => ev.EventoID == EventoID).First();
-
+            EventoOpcional e = db.eventos.Include("rangos").OfType<EventoOpcional>().Where(ev => ev.EventoID == EventoID).First();
             Paciente p = db.pacientes.Find(PacienteID);
             Comunicacion c = db.comunicaciones.Find(ComunicacionID);
 
@@ -34,26 +34,11 @@ namespace SAREM.DataAccessLayer
                 int edad = now.Year - p.FN.Year;
                 if (p.FN > now.AddYears(-edad)) edad--;
 
-                bool ok = false;
-                if (e is EventoSecuencial)
+                if (edad >= e.rango.limitei && edad <= e.rango.limites && e.sexo == p.sexo)
                 {
-                    EventoSecuencial e2 = db.eventos.Include("rango").OfType<EventoSecuencial>().Where(ev => ev.EventoID == EventoID).First(); 
-
-                    if (edad >= e2.rango.limitei && edad <= e2.rango.limites && e2.rango.sexo == p.sexo)
-                    {
-                        ok = true;
-                    }
-                }
-                else
-                {
-                    EventoAcotado ea = db.eventos.OfType<EventoAcotado>().Where(ev => ev.EventoID == EventoID).First();
-                    if(ea.sexo == p.sexo)
-                        ok=true;
-                }
-
-                if (ok)
-                {
-                    EventoPacienteComunicacion epc = new EventoPacienteComunicacion { ComunicacionID = ComunicacionID, EventoID = EventoID, PacienteID = PacienteID };
+                    EventoPacienteComunicacion epc = new EventoPacienteComunicacion { ComunicacionID = ComunicacionID, 
+                                                                                      EventoID = EventoID, 
+                                                                                      PacienteID = PacienteID };
                     db.eventopacientecomunicacion.Add(epc);
                     db.SaveChanges();
                 }
@@ -69,14 +54,14 @@ namespace SAREM.DataAccessLayer
         }
 
         //lista los eventos dado un PacienteID, segun sexo y rango de edades
-        public ICollection<Evento> listarEventosPosibles(string PacienteID)
+        public ICollection<Evento> listarEventosOpcionales(string PacienteID)
         {
             List<Evento> eventos = new List<Evento>();
             Paciente p = db.pacientes.Find(PacienteID);
             if (p != null)
             {
-                List<EventoSecuencial> eventossec = db.eventos.Include("rango").OfType<EventoSecuencial>().ToList(); 
-                foreach (var e in eventossec)
+                var eventosop = db.eventos.Include("rango").OfType<EventoOpcional>().ToList(); 
+                foreach (var e in eventosop)
                 {
                     if (p.FN.Year >= e.rango.limitei && p.FN.Year <= e.rango.limites)
                     {
@@ -92,14 +77,11 @@ namespace SAREM.DataAccessLayer
             return eventos;
         }
 
-        public ICollection<EventoPacienteComunicacion> listarEventosSuscriptoPaciente(string PacienteID)
+        public ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID)
         {
-            var query = from p in db.eventopacientecomunicacion
-                            //.Include("paciente")
-                            .Include("comunicacion")
-                            .Include("evento")
+            var query = from p in db.eventopacientecomunicacion.Include("evento")
                         where p.PacienteID == PacienteID
-                        select p;
+                        select p.evento;
             return query.ToList();
         }
 
@@ -111,11 +93,13 @@ namespace SAREM.DataAccessLayer
         public void agregarNotificacionConsulta(DataNotificacionConsulta dnc)
         {
             //inserto en el bus
+            throw new NotImplementedException();
+            /*
             string QueueName = "notificaciones";
             string connectionString = ConfigurationManager.ConnectionStrings["sarembus"].ConnectionString;
             QueueClient Client = QueueClient.CreateFromConnectionString(connectionString, QueueName);
             var message = new BrokeredMessage(dnc) { ScheduledEnqueueTimeUtc =dnc.fecha };
-            Client.Send(message);
+            Client.Send(message);*/
         }
 
    
@@ -127,5 +111,47 @@ namespace SAREM.DataAccessLayer
                         select e;
             return query.ToList();
         }
+
+        #region CRUD Eventos
+        //crud eventos
+        public Evento obtenerEvento(long EventoID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                return db.eventos.Find(EventoID);
+            }
+        }
+        
+        public void crearEvento(Evento e)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                db.eventos.Add(e);
+                db.SaveChanges();
+            }
+        }
+        
+        public void eliminarEvento(long EventoID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                Evento e = db.eventos.Find(EventoID);
+                if (e != null)
+                {
+                    db.eventos.Remove(e);
+                    db.SaveChanges();
+                }
+            }
+        }
+        
+        public void modificarEvento(Evento evento)
+        {
+            db.eventos.Attach(evento);
+            db.Entry<Evento>(evento).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+        #endregion 
+
+
     }
 }
