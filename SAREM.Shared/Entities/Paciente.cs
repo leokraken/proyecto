@@ -28,5 +28,6 @@ namespace SAREM.Shared.Entities
         public virtual ICollection<PacienteConsultaAusencia> consultasausentes { get; set; }
         public virtual ICollection<PacienteConsultaEspera> consultasespera { get; set; }
         public virtual ICollection<EventoPacienteComunicacion> eventos { get; set; }
+        public virtual Medico medico { get; set;}
     }
 }
