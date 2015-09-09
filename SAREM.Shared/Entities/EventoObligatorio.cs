@@ -12,6 +12,7 @@ namespace SAREM.Shared.Entities
     public class EventoObligatorio : Evento
     {
         [Required]
-        DateTime fechanotificacion { get; set; }
+        public DateTime fechanotificacion { get; set; }
+        public string mensaje { get; set; }
     }
 }

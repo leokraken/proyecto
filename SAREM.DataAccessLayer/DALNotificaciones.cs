@@ -34,7 +34,7 @@ namespace SAREM.DataAccessLayer
                 int edad = now.Year - p.FN.Year;
                 if (p.FN > now.AddYears(-edad)) edad--;
 
-                if (edad >= e.rango.limitei && edad <= e.rango.limites && e.sexo == p.sexo)
+                if (e.edades.Contains(edad) && e.sexo == p.sexo)
                 {
                     EventoPacienteComunicacion epc = new EventoPacienteComunicacion { ComunicacionID = ComunicacionID, 
                                                                                       EventoID = EventoID, 
@@ -60,10 +60,10 @@ namespace SAREM.DataAccessLayer
             Paciente p = db.pacientes.Find(PacienteID);
             if (p != null)
             {
-                var eventosop = db.eventos.Include("rango").OfType<EventoOpcional>().ToList(); 
+                var eventosop = db.eventos.OfType<EventoOpcional>().ToList(); 
                 foreach (var e in eventosop)
                 {
-                    if (p.FN.Year >= e.rango.limitei && p.FN.Year <= e.rango.limites)
+                    if (e.edades.Contains(p.FN.Year))
                     {
                         eventos.Add(e);
                         break;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SAREM.Shared.Entities
 {
@@ -21,6 +22,7 @@ namespace SAREM.Shared.Entities
         [Required]
         public Sexo sexo { get; set; }
         public bool sansion { get; set; }
+        public string FuncionarioID { get; set; }
 
         public virtual Pais nacion { get; set; }
         public virtual ICollection<PacienteConsultaAgenda> agendadas { get; set; }
@@ -28,6 +30,7 @@ namespace SAREM.Shared.Entities
         public virtual ICollection<PacienteConsultaAusencia> consultasausentes { get; set; }
         public virtual ICollection<PacienteConsultaEspera> consultasespera { get; set; }
         public virtual ICollection<EventoPacienteComunicacion> eventos { get; set; }
+        [ForeignKey("FuncionarioID")]
         public virtual Medico medico { get; set;}
     }
 }

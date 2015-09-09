@@ -28,5 +28,10 @@ namespace SAREM.DataAccessLayer
         void eliminarPacienteConsultaLE(string PacienteID, long ConsultaID);
         void moverPacientesLEConsulta(List<string> pacientesIDs, long ConsultaID);
         ICollection<Paciente> listarPacientesNotInConsulta(long ConsultaID);
+    
+        //
+        ICollection<Paciente> obtenerPacientesConsulta(long ConsultaID);
+        ICollection<Paciente> obtenerPacientesConsultaEspera(long ConsultaID);
+
     }
 }

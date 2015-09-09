@@ -71,7 +71,6 @@
     <Compile Include="Entities\Parte.cs" />
     <Compile Include="enums\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Entities\Rango.cs" />
     <Compile Include="Entities\Referencia.cs" />
   </ItemGroup>
   <ItemGroup>

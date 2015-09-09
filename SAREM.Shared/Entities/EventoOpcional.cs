@@ -8,11 +8,11 @@ namespace SAREM.Shared.Entities
 {
     public class EventoOpcional : Evento
     {
-        public long RangoID { get; set; }
+        //public long RangoID { get; set; }
         public string edadesarray { get; set; }
 
-        [ForeignKey("RangoID")]
-        public virtual Rango rango { get; set; }
+        //[ForeignKey("RangoID")]
+        //public virtual Rango rango { get; set; }
 
         //No normalizado...
         [NotMapped]

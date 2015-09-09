@@ -18,10 +18,16 @@ namespace SARM.DataAccessLayer
             using(var db = new SAREMAdminContext())
             {
                 string schema = "test";
-                Console.WriteLine("Delete schema: " + schema);
-                db.dropSchema(schema);
-                Console.WriteLine("Create schema: "+ schema);
-                SARMContext.createTenant(schema);
+                var idal = new DALAgenda(schema);
+                var pacientes = idal.obtenerPacientesConsulta(2);
+                foreach (var p in pacientes)
+                {
+                    Console.WriteLine(p.PacienteID + p.nombre);
+                }
+                //Console.WriteLine("Delete schema: " + schema);
+                //db.dropSchema(schema);
+                //Console.WriteLine("Create schema: "+ schema);
+                //SARMContext.createTenant(schema);
 
             }
             Console.WriteLine("Proceso finalizado...");

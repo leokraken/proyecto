@@ -29,7 +29,7 @@ namespace SAREM.DataAccessLayer
         public DbSet<PacienteConsultaAgenda> consultasagendadas { get; set; }
         public DbSet<PacienteConsultaCancelar> consultascanceladas { get; set; }
         public DbSet<Parte> partes { get; set; }
-        public DbSet<Rango> rangos { get; set; }
+        //public DbSet<Rango> rangos { get; set; }
         public DbSet<Referencia> referencias { get; set; }
         public DbSet<Pais> paises { get; set; }
         public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
@@ -85,7 +85,6 @@ namespace SAREM.DataAccessLayer
 
             
             builder.Entity<Parte>().ToTable("Partes", schemaName);
-            builder.Entity<Rango>().ToTable("Rangos", schemaName);
             builder.Entity<Referencia>().ToTable("Referencias", schemaName)
                 .HasKey(k => new { k.PacienteID, k.FuncionarioID});
 

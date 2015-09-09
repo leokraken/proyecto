@@ -24,14 +24,14 @@ namespace SAREM.Testing
                 new Comunicacion{ ID=1, nombre="SMS", metadata="Mensaje SMS"}
             };
 
-        private static List<Rango> rangos = new List<Rango> { 
-                new Rango{ limitei=56, limites=70, nombre="Rango1" },
-                new Rango{ limitei=18, limites=45, nombre="Rango2" }
+        private static List<EventoObligatorio> eventos = new List<EventoObligatorio> { 
+                new EventoObligatorio{EventoID=1, nombre="Evento1", mensaje="Tal vez muera manana", fechanotificacion=DateTime.Now },
+                new EventoObligatorio{EventoID=2, nombre="Evento2", mensaje="Debe visitar su medico referencia", fechanotificacion= DateTime.Now }
             };
 
-        private static List<Evento> eventos = new List<Evento> { 
-                new EventoObligatorio{EventoID=1, nombre="Evento1" },
-                new EventoObligatorio{EventoID=2, nombre="Evento2" }
+        private static List<EventoOpcional> eventosop = new List<EventoOpcional> { 
+                new EventoOpcional{EventoID=3, nombre="EventoOpcional1", edades= new List<int>{19, 20, 21,23,24,25,26} },
+                new EventoOpcional{EventoID=4, nombre="EventoOpcional2", edades= new List<int>{30, 40, 50} }
             };
 
         [ClassInitialize]
@@ -98,7 +98,7 @@ namespace SAREM.Testing
             pacientes.ForEach(p => db.pacientes.Add(p));
             db.SaveChanges();
     
-            //custom
+            //custom agrego 20 pacientes
             List<Paciente> customs = new List<Paciente>();
             for (int i = 0; i < 20; i++)
             {
@@ -184,13 +184,16 @@ namespace SAREM.Testing
             db.SaveChanges();
             Debug.WriteLine("Comunicaciones agregados...");
 
-            rangos.ForEach(r => db.rangos.Add(r));
-            db.SaveChanges();
-            Debug.WriteLine("Rangos agregados...");
-
             eventos.ForEach(e => db.eventos.Add(e));
             db.SaveChanges();
             Debug.WriteLine("Eventos agregados...");
+
+
+            //al paciente 13 le asigno un medico de referencia.
+            var pac = db.pacientes.Find("13");
+            pac.FuncionarioID = funcionarios[0].FuncionarioID;
+            db.SaveChanges();
+
         }
 
         [TestMethod]
@@ -220,9 +223,17 @@ namespace SAREM.Testing
 
          
             //agrego a la consulta 2 todos los pacientes
+
             foreach (var p in db.pacientes)
             {
-                iagenda.agregarConsultaPaciente(p.PacienteID, 2);
+                try
+                {
+                    iagenda.agregarConsultaPaciente(p.PacienteID, 2);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("El paciente "+p.PacienteID +" no ha sido agregado maximo superado en consulta...");
+                }
             }
 
             //listo consultas paciente
@@ -272,12 +283,11 @@ namespace SAREM.Testing
             Assert.AreEqual(ev.Count, 0);
             try
             {
-                inot.suscribirPacienteEvento(eventos[0].EventoID, PacienteID, com[0].ID);
-
+                inot.suscribirPacienteEvento(eventosop[1].EventoID, PacienteID, com[0].ID);
             }
             catch (Exception e)
             {
-                Console.WriteLine("OK Prueba correcta::" + e.Message);
+                Console.WriteLine("OK Prueba correcta::Al evento 0 opcional tiene un rango permitido" + e.Message);
             }
 
             try

@@ -8,13 +8,16 @@ namespace SAREM.DataAccessLayer
     public class DALAgenda: IDALAgenda
     {
         private SARMContext db = null;
+        private string tenant;
         private static int DAY=24;
         private static int MAX_PACIENTES = 10;
         private static int MAX_PACIENTES_ESPERA = 3;
+
         
         public DALAgenda(string tenant)
         {
             db = SARMContext.getTenant(tenant);
+            this.tenant = tenant;
         }
 
         //MQ
@@ -54,7 +57,7 @@ namespace SAREM.DataAccessLayer
                         //var espera = new PacienteConsultaEspera { ConsultaID=consulta.ConsultaID, PacienteID=paciente.PacienteID, fecha= DateTime.UtcNow };
                         //db.pacienteespera.Add(espera);
                         //db.SaveChanges();
-                        throw new Exception("Ya existen 10 Pacientes en Consulta");
+                        throw new Exception("Ya existen 10 Pacientes en Consulta::"+numpacientes);
                     }
                 }
                 else
@@ -412,6 +415,26 @@ namespace SAREM.DataAccessLayer
                 return result;
             }
         }
+
+        public ICollection<Paciente> obtenerPacientesConsulta(long ConsultaID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta")
+                    .OrderByDescending(x => (x.paciente.FuncionarioID != null && x.paciente.FuncionarioID == x.consulta.FuncionarioID))
+                    .ThenBy(x => x.fecharegistro).Select(p => p.paciente).ToList();
+                return pacientesOrdered;
+            }          
+        }
+
+        public ICollection<Paciente> obtenerPacientesConsultaEspera(long ConsultaID)
+        {
+            var pacientesOrdered = db.pacienteespera.Include("paciente").Include("consulta")
+                    .OrderByDescending(x => (x.paciente.FuncionarioID != null && x.paciente.FuncionarioID == x.consulta.FuncionarioID))
+                    .ThenBy(x => x.fecha).Select(p => p.paciente).ToList();
+            return pacientesOrdered;
+        }
+
 
     }
 }
