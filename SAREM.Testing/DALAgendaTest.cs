@@ -132,7 +132,11 @@ namespace SAREM.Testing
             //funcionarios
             List<Medico> funcionarios = new List<Medico>
             {
-                new Medico {FuncionarioID="17299999", nombre="Medico1", especialidades=especialidades}
+                new Medico {FuncionarioID="17299999", nombre="Medico1", especialidades=especialidades},
+                new Medico {FuncionarioID="17299998", nombre="Medico2", especialidades=especialidades},
+                new Medico {FuncionarioID="17299997", nombre="Medico3", especialidades=especialidades},
+                new Medico {FuncionarioID="17299996", nombre="Medico4", especialidades=especialidades},
+                new Medico {FuncionarioID="17299995", nombre="Medico5", especialidades=especialidades}
             };
             funcionarios.ForEach(f => db.funcionarios.Add(f));
             db.SaveChanges();
@@ -192,6 +196,17 @@ namespace SAREM.Testing
             //al paciente 13 le asigno un medico de referencia.
             var pac = db.pacientes.Find("13");
             pac.FuncionarioID = funcionarios[0].FuncionarioID;
+            pac = db.pacientes.Find("10");
+            pac.FuncionarioID = funcionarios[0].FuncionarioID;
+            pac = db.pacientes.Find("1");
+            pac.FuncionarioID = funcionarios[0].FuncionarioID;
+
+            pac = db.pacientes.Find("2");
+            pac.FuncionarioID = funcionarios[1].FuncionarioID;
+            pac = db.pacientes.Find("3");
+            pac.FuncionarioID = funcionarios[1].FuncionarioID;
+            pac = db.pacientes.Find("4");
+            pac.FuncionarioID = funcionarios[1].FuncionarioID;
             db.SaveChanges();
 
         }
