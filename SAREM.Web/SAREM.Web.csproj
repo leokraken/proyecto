@@ -820,6 +820,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.3.0.debug.js" />
+    <Content Include="Scripts\knockout-3.3.0.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.ar.min.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.az.min.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.bg.min.js" />
@@ -938,6 +940,7 @@
     <Content Include="Views\Consulta\VerConsultasNew.cshtml" />
     <Content Include="Views\Consulta\VerConsultaPaciente.cshtml" />
     <Content Include="Views\Notificacion\VerNotificaciones.cshtml" />
+    <Content Include="Views\Notificacion\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

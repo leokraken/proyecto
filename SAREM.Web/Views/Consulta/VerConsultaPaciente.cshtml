@@ -257,14 +257,14 @@
         $('#tablaPacientes').bootstrapTable({
             url: '@Url.Action("GetPacientes", "Consulta")' + '?idC=' + @Model.consultaID,
 
-            columns: [{
-                field: 'PacienteID',
-                title: 'Id',
-                filterControl:'input',
-                footerFormatter: totalTextFormatter
-            }, {
+            columns: [ {
                 field: 'numero',
                 title: 'Número',
+                filterControl:'input',
+                footerFormatter: totalTextFormatter
+            },{
+                field: 'PacienteID',
+                title: 'Id Paciente',
                 filterControl:'input',
                 footerFormatter: totalNameFormatter
             },{
@@ -305,15 +305,15 @@
         $('#tablaPacientesEspera').bootstrapTable({
             url: '@Url.Action("GetPacientesEspera", "Consulta")' + '?idC=' + @Model.consultaID,
 
-            columns: [ {
-                field: 'PacienteID',
-                title: 'Id',
-                filterControl:'input'
-            }, {
+            columns: [  {
                 field: 'numero',
                 title: 'Número',
                 filterControl:'input'
               
+            },{
+                field: 'PacienteID',
+                title: 'Id Paciente',
+                filterControl:'input'
             },{
                 field: 'fechaRegistro',
                 title: 'Fecha Registro',

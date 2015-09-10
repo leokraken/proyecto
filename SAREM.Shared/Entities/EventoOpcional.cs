@@ -10,6 +10,7 @@ namespace SAREM.Shared.Entities
     {
         //public long RangoID { get; set; }
         public string edadesarray { get; set; }
+        public string mensaje { get; set; }
 
         //[ForeignKey("RangoID")]
         //public virtual Rango rango { get; set; }
