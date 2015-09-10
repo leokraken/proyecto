@@ -85,6 +85,7 @@ namespace SAREM.Web.Controllers
             public string telefono { get; set; }
             public string sexo { get; set; }
             public string fechaRegistro { get; set; }
+            public string numero { get; set; }
         }
 
         // GET: Consulta
@@ -396,9 +397,14 @@ namespace SAREM.Web.Controllers
             long idL = Convert.ToInt64(idC);
             Pacientes obj = new Pacientes();
             List<PacienteJson> pacientes = new List<PacienteJson>();
-            Consulta c = agenda.obtenerConsulta(idL);
-            foreach (PacienteConsultaAgenda p in c.pacientes)
+
+            var pacientesConsulta = agenda.obtenerConsulta(idL).pacientes;
+            var pacientesOrdered = agenda.obtenerPacientesConsulta(idL);
+            int nro = 1;
+            foreach (Paciente p in pacientesOrdered)
             {
+
+                var pC = pacientesConsulta.First(x =>( x.PacienteID == p.PacienteID &&  x.ConsultaID == idL));
 
                 PacienteJson pj = new PacienteJson();
                 Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
@@ -412,16 +418,17 @@ namespace SAREM.Web.Controllers
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                        p.fecharegistro,
+                        pC.fecharegistro,
                             DateTimeKind.Utc);
                 DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
                 pj.fechaRegistro = localVersionFIni.ToString(format);
-
+                pj.numero = nro.ToString();
+                nro++;
                 pacientes.Add(pj);
                
             }
 
-            obj.records = pacientes.OrderBy(x => x.fechaRegistro).ToList(); ;
+            obj.records = pacientes;
             return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 
@@ -443,10 +450,13 @@ namespace SAREM.Web.Controllers
             long idL = Convert.ToInt64(idC);
             Pacientes obj = new Pacientes();
             List<PacienteJson> pacientes = new List<PacienteJson>();
-            Consulta c = agenda.obtenerConsulta(idL);
-            foreach (PacienteConsultaEspera p in c.pacientesespera)
+           
+            var pacientesConsulta = agenda.obtenerConsulta(idL).pacientesespera;
+            var pacientesEspOrdered = agenda.obtenerPacientesConsultaEspera(idL);
+            int nro = 1;
+            foreach (Paciente p in pacientesEspOrdered)
             {
-
+                var pC = pacientesConsulta.First(x => (x.PacienteID == p.PacienteID && x.ConsultaID == idL));
                 PacienteJson pj = new PacienteJson();
                 Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
@@ -459,16 +469,17 @@ namespace SAREM.Web.Controllers
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                        p.fecha,
+                        pC.fecha,
                             DateTimeKind.Utc);
                 DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
                 pj.fechaRegistro = localVersionFIni.ToString(format);
-
+                pj.numero = nro.ToString();
+                nro++;
                 pacientes.Add(pj);
 
             }
 
-            obj.records = pacientes.OrderBy(x => x.fechaRegistro).ToList();
+            obj.records = pacientes;
             return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 
