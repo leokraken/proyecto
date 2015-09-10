@@ -427,10 +427,11 @@
 
                         $('#modalCancel').modal('hide');
 
-                        $('#tablaPacientes').bootstrapTable('remove', {
-                            field: 'PacienteID',
-                            values: [$('#idRowCancel').val()]
-                        });
+                        //$('#tablaPacientes').bootstrapTable('remove', {
+                        //    field: 'PacienteID',
+                        //    values: [$('#idRowCancel').val()]
+                        //});
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
 
                     } else {
 
@@ -462,11 +463,12 @@
 
                         $('#modalDelLE').modal('hide');
 
-                        $('#tablaPacientesEspera').bootstrapTable('remove', {
-                            field: 'PacienteID',
-                            values: [$('#idRowDel').val()]
-                        });
+                        //$('#tablaPacientesEspera').bootstrapTable('remove', {
+                        //    field: 'PacienteID',
+                        //    values: [$('#idRowDel').val()]
+                        //});
 
+                        $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
                     } else {
 
                         alert("error eliminar Paciente Lista de Espera");
@@ -583,10 +585,12 @@
 
                 if (data.success) {
 
-                    $('#tablaPacientesEspera').bootstrapTable('remove', {
-                        field: 'PacienteID',
-                        values: ids
-                    });
+                    //$('#tablaPacientesEspera').bootstrapTable('remove', {
+                    //    field: 'PacienteID',
+                    //    values: ids
+                    //});
+                    $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
+
                     $remove.prop('disabled', true);
                     $remove.attr('src','/Content/images/progressionDis.png');
                     $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
