@@ -160,7 +160,7 @@ namespace SAREM.Web.Controllers
 
                 especialidades.Add(new SelectListItem { Text = e.descripcion, Value = e.EspecialidadID.ToString() });
             }
-            return Json(new SelectList(especialidades, "Value", "Text"));
+            return Json(new SelectList(especialidades, "Value", "Text"), JsonRequestBehavior.AllowGet);
           
         }
 

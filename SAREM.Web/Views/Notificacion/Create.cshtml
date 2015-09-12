@@ -4,10 +4,17 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
+
+<link rel="stylesheet" href="~/Scripts/Boostrap-Select/dist/css/bootstrap-select.css">
+<link rel="stylesheet" href="~/Content/awesomplete.css">
 @Scripts.Render("~/bundles/jquery")
 <script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/Scripts/Boostrap-Select/js/bootstrap-select.js"></script>
 <script src="~/Scripts/knockout-3.3.0.js" type="text/javascript"></script>
+
+<script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
+
 
 <ol class="breadcrumb">
     <li><a href="#">Notificaciones</a></li>
@@ -22,134 +29,181 @@
                 <h3 class="pull-left">Crear Evento &nbsp &nbsp &nbsp &nbsp </h3>
                 <img src="~/Content/images/Notis.png" />
             </div>
-
+        
         </div>
     </div>
 </div>
-<hr />
+
 @using (Html.BeginForm())
-    {
-    <div class="form-horizontal">
-        <div class="form-group">
-            <label class="control-label col-md-2">Tipo:</label>
-            <div class="col-md-10">
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Seleccione...
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <li><a href="#" id="obligatorio">Obligatorio</a></li>
-                        <li><a href="#" id="opcional">Opcional</a></li>
+{
+     <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#dg" data-toggle="tab">Datos Generales</a></li>
+        
+        <li role="presentation" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                Tipo de Evento <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#tipo" data-toggle="tab" id="Ob">Obligatorio</a></li>
+                <li><a href="#tipo" data-toggle="tab" id="Op">Opcional</a></li>
+            </ul>
+        </li>
+    </ul>
 
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="dg">
+                <br /><br />
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Nombre:</label>
+                        <div class="col-md-10">
+                            <input id="nombre" class="form-control" placeholder="Ingrese un Nombre" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Sexo:</label>
+                        <div class="col-md-10">
+                            <select id="sexo" class="selectpicker" title="Seleccione..." data-width="280px">
 
-        <div id="divG" style="display:none">
-            <div class="form-group">
-                <label class="control-label col-md-2">Nombre:</label>
-                <div class="col-md-10">
-                    <input id="nombre" class="form-control" placeholder="Ingrese un Nombre" /> 
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-2">Sexo:</label>
-                <div class="col-md-10">
-                    <select id ="sexo" style="width:280px">
-                        <option value="0" selected>Seleccione...</option>
-                        <option value="F">Femenino</option>
-                        <option value="M">Masculino</option>
-                        <option value="A">Ambos</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-2">Mensaje:</label>
-                <div class="col-md-10">
-                    <textarea rows="4" cols="50" id="msj">
-                   
-                    </textarea>
-                </div>
-            </div>
-        </div>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                                <option value="A">Ambos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Mensaje:</label>
+                        <div class="col-md-10">
+                            <textarea rows="4" cols="50" id="msj"></textarea>
+                        </div>
+                    </div>
 
-        <div id="divOb" style="display:none">
-            <div class="form-group">
-                <label class="control-label col-md-2">Fecha Notificación:</label>
-                <div class="col-md-10">
-                    <input id="fN" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
                 </div>
+
+                
             </div>
-        </div>
-        <div id="divOp" style="display:none">
-            <div class="form-group">
-                <label class="control-label col-md-2">Edades:</label>
-                <div class="col-md-10">
-                    <table class="table table-hover">
-                        <tr>
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                           
-                        </tr>
-                        <tbody data-bind="foreach: contacts">
-                            <tr>
-                                <td>
-                                    <input data-bind='value: firstName' />
-                                    <div><a href='#' data-bind='click: $root.removeContact'>Delete</a></div>
-                                </td>
-                                <td><input data-bind='value: lastName' /></td>
+        <div role="tabpanel" class="tab-pane" id="tipo">
+
+            <div class="form-horizontal">
+                <br /><br />
+                <div id="divOb" style="display:none">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Fecha Notificación:</label>
+                        <div class="col-md-10">
+                            <input id="fN" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
+                        </div>
+                    </div>
+                </div>
+                <div id="divOp" style="display:none">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Edades:</label>
+                        <div class="col-md-10">
+                            <select id="edad" class="selectpicker" title="Seleccione..." data-width="280px">
+
+                                <option value="R">Rango</option>
+                                <option value="M">Manual</option>
+
+                            </select>
+
+                        </div>
+                    </div>
+                    <div id="divOpR">
+                        <div class="form-group">
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-1"><input id="edadIni" class="form-control" placeholder="Edad Inicio" style="width:100px" /></div>
+                            <div class="col-sm-3"><input id="edadFin" class="form-control" placeholder="Edad Fin" style="width:100px" /></div>
+                        </div>
+
+                    </div>
+                    <div id="divOpM" style="display:none">
+                        @*<p>First name: <input data-bind="value: firstName" /></p>
+                        <p>Last name: <input data-bind="value: lastName" /></p>*@
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Edad a agregar:</label>
+                            <div class="col-md-10">
+                               
+                                    <input type="text" class="form-control" data-bind='value:itemToAdd, valueUpdate: "afterkeydown"' />
+                                 
+                                    <img src="~/Content/images/add182.png" data-bind="click: addItem, enable: itemToAdd().length > 0" style="cursor: pointer;" class="img-responsive" />
+                               
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Edades ingresadas:</label>
+                            <div class="col-md-10">
+                                <select style="width:100px;height:150px;" multiple="multiple" height="10" data-bind="options:allItems, selectedOptions:selectedItems"> </select>
+                            </div>
+                          
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2"></label>
+                            <div class="col-md-10">
+                                <input class="btn btn-default" type="button" value="Eliminar" data-bind="click: removeSelected, enable: selectedItems().length > 0">
+                                <input class="btn btn-default" type="button" value="Ordenar" data-bind="click: sortItems, enable: allItems().length > 1" >
                               
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        <button data-bind='click: addContact'>Add a contact</button>
-                        <button data-bind='click: save, enable: contacts().length > 0'>Save to JSON</button>
-                    </p>
 
-                    <textarea data-bind='value: lastSavedJson' rows='5' cols='60' disabled='disabled'> </textarea>
+                            </div>
+                        
+                        
+                        </div>
 
+                     </div>
+                   
                 </div>
+               
             </div>
+       
         </div>
-     </div>
-        @*<div id="espG">
-                <div class="form-group">
-                    <label for="email" class="col-sm-4 control-label">Especialidad :</label>
-                    <div class="col-sm-8" id="especialidadDiv">
-                        <!--<input id="email" class="form-control" type="email" placeholder="Enter Your Email-Id" /> -->
-                    </div>
-                </div>
-            </div>
-            <div id="medG">
-                <div class="form-group">
-                    <label for="email" class="col-sm-4 control-label">Médico :</label>
-                    <div class="col-sm-8" id="medicoDiv">
-                        <!--<input id="email" class="form-control" type="email" placeholder="Enter Your Email-Id" /> -->
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="email" class="col-sm-4 control-label">Fecha Inicio :</label>
-                <div class="col-sm-8">
-                    <input id="fechaInicioM" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="email" class="col-sm-4 control-label">Fecha Fin :</label>
-                <div class="col-sm-8">
-                    <input id="fechaFinM" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
-                </div>
-            </div>
-            <input id="idRow" type="hidden" />*@
-        }
+
+    </div>
+
+   
+    
+  
+}
 
 
 <script>
+
+  
+ 
     $(document).ready(function () {
 
+       
+
+        
+
+        var data_edades = [];
+     
+        for (i = 18; i < 101; i++) {
+            data_edades.push(i.toString());
+            var aux = i.toString();
+           
+        };
+
+       
+        
+     
+       
+      
+        var input1 = document.getElementById("edadIni");
+        var awesompleteI = new Awesomplete(input1, {
+            minChars: 1,
+            maxItems: 5,
+        });
+      
+        var input2 = document.getElementById("edadFin");
+        var awesompleteF = new Awesomplete(input2, {
+            minChars: 1,
+            maxItems: 5,
+        });
+     
+        awesompleteI.list = data_edades;
+        awesompleteF.list = data_edades;
+       
         $(function () {
             $('.datetimepicker').datetimepicker({
                 locale: 'es'
@@ -158,19 +212,53 @@
 
         });
 
-        $("#obligatorio").click(function () {
-            limpiarCamposOb();
-            $("#divG").show();
+        $("#Ob").click(function () {
+            //$("#fN").val("");
             $("#divOb").show();
-            
+            $("#divOp").hide();
         });
 
-        $("#opcional").click(function () {
 
-            $("#divG").show();
+
+        $("#Op").click(function () {
+           // $("#edadIni").val("");
+           //$("#edadFin").val("");
+            $("#divOb").hide();
             $("#divOp").show();
-            
+            $("#divOpR").hide();
+            $("#divOpM").hide();
+            if ($("#edad option:selected").val() == "R") {
+
+                $("#divOpR").show();
+
+            } else if ($("#edad option:selected").val() == "M") {
+
+                $("#divOpM").show();
+            }
+           // $("#edad").val([]);
         });
+
+
+        $("#edad").change(function () {
+
+            $("#divOpR").hide();
+            $("#divOpM").hide();
+            $("#edadIni").val("");
+            $("#edadFin").val("");
+            window.vm.addItem("")
+            window.vm.removeAll();
+          
+            if ($("#edad option:selected").val() == "R") {
+                
+                $("#divOpR").show();
+
+            } else if ($("#edad option:selected").val() == "M") {
+
+                $("#divOpM").show();
+            }
+
+        });
+
 
         function limpiarCamposOb() {
            
@@ -180,44 +268,59 @@
             $("#fN").val("");
             
         }
-    });
 
-</script>
-<script>
+       
+        // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
+        //function AppViewModel() {
+        //    this.firstName = ko.observable("Bert");
+        //    this.lastName = ko.observable("Bertington");
+        //}
 
-    var initialData = [
-    {
-        firstName: "Danny", lastName: "LaRusso"
-    },
-    {
-        firstName: "Sensei", lastName: "Miyagi"
-    }
-    ];
-    var ContactsModel = function (contacts) {
-        var self = this;
-        self.contacts = ko.observableArray(ko.utils.arrayMap(contacts, function (contact) {
-            return { firstName: contact.firstName, lastName: contact.lastName};
-        }));
+        //// Activates knockout.js
+        //window.vm = new AppViewModel()
+        //ko.applyBindings(window.vm);
+       
+        var BetterListModel = function () {
+            this.itemToAdd = ko.observable("");
+            this.allItems = ko.observableArray([]); // Initial items
+            this.selectedItems = ko.observableArray(["Ham"]);                                // Initial selection
 
-        self.addContact = function () {
-            self.contacts.push({
-                firstName: "",
-                lastName: ""
-            });
+            this.addItem = function () {
+                if ((this.itemToAdd().match("[0-9]+")) && (parseInt(this.itemToAdd()) >= 18) && (this.allItems.indexOf(this.itemToAdd()) < 0)) // Prevent blanks and duplicates
+                    this.allItems.push(this.itemToAdd());
+                this.itemToAdd(""); // Clear the text box
+            };
+
+            this.removeSelected = function () {
+                this.allItems.removeAll(this.selectedItems());
+                this.selectedItems([]); // Clear selection
+            };
+
+            this.removeAll = function () {
+                this.allItems([]);
+                this.selectedItems([]); // Clear selection
+            };
+
+            this.sortItems = function () {
+                this.allItems.sort();
+            };
         };
 
-        self.removeContact = function (contact) {
-            self.contacts.remove(contact);
-        };
+        window.vm = new BetterListModel();
+        ko.applyBindings(window.vm);
+
+
+        $("#prueba").click(function () {
+            alert("1");
+            //window.vm.firstName("333")
+            alert(window.vm.allItems());
+            alert("2");
+
+        });
+
 
         
+    });
 
-        self.save = function () {
-            self.lastSavedJson(JSON.stringify(ko.toJS(self.contacts), null, 2));
-        };
-
-        self.lastSavedJson = ko.observable("")
-    };
-
-    ko.applyBindings(new ContactsModel(initialData));
+    
 </script>
