@@ -76,12 +76,12 @@ namespace SAREM.Web.Controllers
 
                     SAREM.Shared.Entities.EventoObligatorio eOb = new SAREM.Shared.Entities.EventoObligatorio();
                     eOb.nombre = e.nombre;
-                    if (eOb.sexo.Equals("A"))
+                    if (e.sexo.Equals("A"))
                     {
                         eOb.sexo = Shared.enums.Sexo.AMBOS;
 
                     }
-                    else if (eOb.sexo.Equals("F"))
+                    else if (e.sexo.Equals("F"))
                     {
                         eOb.sexo = Shared.enums.Sexo.FEMENINO;
                     }
@@ -99,12 +99,12 @@ namespace SAREM.Web.Controllers
                 {
                     SAREM.Shared.Entities.EventoOpcional eOp = new SAREM.Shared.Entities.EventoOpcional();
                     eOp.nombre = e.nombre;
-                    if (eOp.sexo.Equals("A"))
+                    if (e.sexo.Equals("A"))
                     {
                         eOp.sexo = Shared.enums.Sexo.AMBOS;
 
                     }
-                    else if (eOp.sexo.Equals("F"))
+                    else if (e.sexo.Equals("F"))
                     {
                         eOp.sexo = Shared.enums.Sexo.FEMENINO;
                     }
