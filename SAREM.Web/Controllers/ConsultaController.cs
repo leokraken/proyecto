@@ -23,7 +23,7 @@ namespace SAREM.Web.Controllers
             "dd/MM/yyyy HH:mm"    
         };
 
-        private static DateTime ParseDate(string input)
+        public static DateTime ParseDate(string input)
         {
             return DateTime.ParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
         }

@@ -33,9 +33,9 @@
         </div>
     </div>
 </div>
-
+<br />
 @using (Html.BeginForm())
-{
+{   <input id="tipoEvento" type="hidden" />
      <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#dg" data-toggle="tab">Datos Generales</a></li>
@@ -49,6 +49,7 @@
                 <li><a href="#tipo" data-toggle="tab" id="Op">Opcional</a></li>
             </ul>
         </li>
+        <li><a id="save" href="#save" data-toggle="tab">Guardar</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -180,15 +181,10 @@
      
         for (i = 18; i < 101; i++) {
             data_edades.push(i.toString());
-            var aux = i.toString();
-           
+          
         };
 
        
-        
-     
-       
-      
         var input1 = document.getElementById("edadIni");
         var awesompleteI = new Awesomplete(input1, {
             minChars: 1,
@@ -214,6 +210,8 @@
 
         $("#Ob").click(function () {
             //$("#fN").val("");
+          
+            $("#tipoEvento").val("Ob");
             $("#divOb").show();
             $("#divOp").hide();
         });
@@ -222,7 +220,8 @@
 
         $("#Op").click(function () {
            // $("#edadIni").val("");
-           //$("#edadFin").val("");
+            //$("#edadFin").val("");
+            $("#tipoEvento").val("Op");
             $("#divOb").hide();
             $("#divOp").show();
             $("#divOpR").hide();
@@ -317,10 +316,149 @@
             alert("2");
 
         });
+            
+        //Guardar Evento
+        $("#save").click(function () {
+         
+            var edades;
 
+            if ($("#tipoEvento").val() == "Op") {
 
+                if ($("#edad option:selected").val() == "R") {
+
+                    var edades = [];
+                    var inicio;
+                    var fin;
+
+                    if ( parseInt($("#edadIni").val()) <=  parseInt($("#edadFin").val()) ) {
+
+                        inicio = parseInt($("#edadIni").val());
+                        fin = parseInt($("#edadFin").val());
+
+                    } else {
+
+                        fin = parseInt($("#edadIni").val());
+                        inicio = parseInt($("#edadFin").val());
+                    }
+                   
+                    for (i = inicio; i <= fin; i++) {
+
+                        edades.push(i.toString());
+                      
+                    };
+
+                } else if ($("#edad option:selected").val() == "M") {
+
+                    edades = window.vm.allItems();
+
+                }
+            }
+
+        
+         
+            $.ajax({
+                url: '@Url.Action("Create", "Notificacion")',
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    e: {
+                        EventoID: "",
+                        nombre: $("#nombre").val(),
+                        sexo: $("#sexo").find('option:selected').val(),
+                        mensaje: $("textarea#msj").val(),
+                        tipo:  $("#tipoEvento").val(),
+                        fechaNot: $("#fN").val(), edades: edades
+                    }
+                }),
+               
+                async: true,
+                processData: false,
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+                        $("#nombre").val("");
+                        $("textarea#msj").val("");
+                        $("#tipoEvento").val("");
+                        $("#fN").val("");
+                        $("#sexo").val('');
+                        $("#sexo").selectpicker('render');
+                        $("#edadIni").val("");
+                        $("#edadFin").val("");
+                        window.vm.removeAll();
+                        window.vm.itemToAdd("");
+                        $("#edad").val("");
+                        $("#edad").selectpicker('render');
+                        $('#exito').modal('show');
+                        $('a[href="#dg"]').tab('show');
+
+                    } else {
+
+                        $('#text').text("Ha ocurrido un error al Crear el Evento.")
+                        $('#error').modal('show');
+                    }
+                },
+                error: function (xhr) {
+
+                    $('#text').text("Ha ocurrido un error al Crear el Evento.")
+                    alert('error');
+                }
+            });
+            
+
+        });
+
+        $(function () {
+            $("#ok").on('click', function () {
+                $('#exito').modal('hide');
+            });
+        });
+
+        $(function () {
+            $("#ok2").on('click', function () {
+                $('#error').modal('hide');
+            });
+        });
         
     });
 
     
 </script>
+
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="exito">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Crear Evento</h4>
+            </div>
+            <div class="modal-body">
+                <p>El evento ha sido creado con éxito</p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" id="ok">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="error">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Error al Crear Evento</h4>
+            </div>
+            <div class="modal-body">
+                <p id="texto"></p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" id="ok2">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
