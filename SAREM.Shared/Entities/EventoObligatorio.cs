@@ -13,6 +13,5 @@ namespace SAREM.Shared.Entities
     {
         [Required]
         public DateTime fechanotificacion { get; set; }
-        public string mensaje { get; set; }
     }
 }

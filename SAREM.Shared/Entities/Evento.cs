@@ -13,6 +13,7 @@ namespace SAREM.Shared.Entities
         [Required]
         public string nombre { get; set; }
         public Sexo sexo { get; set; }
+        public string mensaje { get; set; }
 
         public virtual ICollection<EventoPacienteComunicacion> pacientes { get; set; }
     }
