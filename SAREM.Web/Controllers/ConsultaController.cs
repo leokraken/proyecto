@@ -1,10 +1,13 @@
-﻿using SAREM.DataAccessLayer;
+﻿using OfficeOpenXml;
+using SAREM.DataAccessLayer;
 using SAREM.Shared.Entities;
 //using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -20,7 +23,8 @@ namespace SAREM.Web.Controllers
         private static string[] formats = new string[]
         {
             "dd/MM/yyyy H:mm",
-            "dd/MM/yyyy HH:mm"    
+            "dd/MM/yyyy HH:mm", 
+            "dd/MM/yyyy hh:mm:ss tt"
         };
 
         public static DateTime ParseDate(string input)
@@ -150,7 +154,155 @@ namespace SAREM.Web.Controllers
             
         }
 
+        [HttpGet]
+        public ActionResult CreateMasivo()
+        {
+            
+            return View("CreateMasivo");
+        }
 
+
+        
+        [HttpGet]
+        public ActionResult DownloadTemplate()
+        {
+
+            string fullPath = Path.Combine(Server.MapPath("~/Template"), "Template-Consulta.xlsx");
+            return File(fullPath, "application/vnd.ms-excel", "Template-Consulta.xlsx");
+          
+           
+        }
+
+        public ActionResult Upload(FormCollection formCollection)
+
+        {
+            if (Request != null)
+            {
+                HttpPostedFileBase file = Request.Files["UploadedFile"];
+
+                if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                {
+                    string fileName = file.FileName;
+                    string fileContentType = file.ContentType;
+                    byte[] fileBytes = new byte[file.ContentLength];
+                    var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+
+                    //Creo las consultas
+                    var consultaList = new List<Consulta>();
+
+                    using (var package = new ExcelPackage(file.InputStream))
+                    {
+                        var currentSheet = package.Workbook.Worksheets;
+                        var workSheet = currentSheet.First();
+                        var noOfCol = workSheet.Dimension.End.Column;
+                        var noOfRow = workSheet.Dimension.End.Row;
+
+                        for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                        {
+                            var c = new Consulta();
+                            Boolean ok = true;
+
+                            for (int columnIterator = 1; (columnIterator <= noOfCol && ok ); columnIterator++) {
+
+                                 
+
+                                 switch (columnIterator)
+                                 {
+                                     case 1:
+                                         //ID LOCAL
+                                         try
+                                         {
+                                             c.LocalID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                             c.local = agenda.obtenerLocal(c.LocalID);
+                                         }
+                                         catch (Exception e)
+                                         {
+                                             ok = false;
+                                         }
+                                      
+                                         break;
+                                     case 2:
+                                         //ID ESPECIALIDAD
+                                         try
+                                         {
+                                             c.EspecialidadID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                             c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
+                                         }
+                                         catch (Exception e)
+                                         {
+                                             ok = false;
+                                         }
+                                         break;
+                                     case 3:
+                                         //ID MEDICO
+                                         try
+                                         {
+                                             string nroDoc = workSheet.Cells[rowIterator, columnIterator].Value.ToString();
+
+                                             if (String.IsNullOrEmpty(nroDoc) || !Regex.IsMatch(nroDoc, @"^\d+$"))
+                                             {
+
+                                                 ok = false;
+
+                                             }
+                                             else
+                                             {
+                                                 c.FuncionarioID = nroDoc;
+                                             }
+                                         }
+                                         catch (Exception e)
+                                         {
+                                             ok = false;
+                                         }
+                                         break;
+                                     case 4:
+                                         //Fecha Inicio
+
+                                     
+                                         try
+                                         {
+                                             c.fecha_inicio = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
+                                          
+                                         }
+                                         catch (Exception e)
+                                         {
+                                             ok = false;
+                                         }
+                                         
+                                         break;
+
+                                     case 5:
+                                         //Fecha Fin
+
+                                        
+                                         try
+                                         {
+                                             c.fecha_fin = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
+                                         }
+                                         catch (Exception e)
+                                         {
+                                             ok = false;
+                                         }
+
+                                         break;
+                                     
+                                 }
+
+                            }
+
+                            if (ok)
+                            {
+                                agenda.agregarConsulta(c);
+                            }
+                           
+                            
+                        }
+                    }
+                }
+            }
+
+            return View("VerConsultasNew");
+        } 
 
         public JsonResult GetEspecialidades(string idLocalidad)
         {
