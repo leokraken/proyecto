@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Crear Consulta Masivo";
+    ViewBag.Title = "Crear Consulta Masiva";
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
@@ -42,19 +42,3 @@
     <button type="submit" class="btn btn-default">Subir Archivo</button>
 }
 
-<script>
-
-    $("#DownloadAttachment").click(function () {
-        $.ajax(
-        {
-            url: '@Url.Action("DownloadTemplate", "Consulta")',
-
-            type: "GET",
-            success: function () {
-                //window.location = '@Url.Action("DownloadAttachment", "PostDetail", new { studentId = 123 })';
-                window.location = @Url.Action("DownloadTemplate", "Consulta");
-            }
-        });
-
-    });
-</script>
