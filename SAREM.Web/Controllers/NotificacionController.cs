@@ -31,23 +31,22 @@ namespace SAREM.Web.Controllers
             return View("VerNotificaciones");
         }
 
-        //Obtener todos los eventos/notificaciones del tenant
-        //public JsonResult GetEventos()
+        //public JsonResult GetEventosOb()
         //{
-        //    //var eventos = notis.listarEventos();
-        //    //List<EventoJSON> lista = new List<EventoJSON>();
+        //    //var eventos = notis.;
+        //    List<EventoJSON> lista = new List<EventoJSON>();
 
-        //    //foreach (Evento e in eventos)
-        //    //{
-        //    //    EventoJSON ejson = new EventoJSON();
-        //    //    //ejson.dias = e.dias.ToString();
-        //    //    ejson.EventoID = e.EventoID.ToString();
-        //    //    //ejson.mensaje = e.mensaje;
-        //    //    ejson.nombre = e.nombre;
-        //    //    lista.Add(ejson);
-        //    //}
+        //    foreach (Evento e in eventos)
+        //    {
+        //        EventoJSON ejson = new EventoJSON();
+        //        //ejson.dias = e.dias.ToString();
+        //        ejson.EventoID = e.EventoID.ToString();
+        //        //ejson.mensaje = e.mensaje;
+        //        ejson.nombre = e.nombre;
+        //        lista.Add(ejson);
+        //    }
 
-        //    //return Json(lista, JsonRequestBehavior.AllowGet);
+        //    return Json(lista, JsonRequestBehavior.AllowGet);
         //}
 
 
