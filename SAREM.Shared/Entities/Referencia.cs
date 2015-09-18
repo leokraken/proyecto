@@ -14,6 +14,7 @@ namespace SAREM.Shared.Entities
         [ForeignKey("FuncionarioID")]
         public virtual Medico medico { get; set; }
 
+        public bool pendiente { get; set; }
         public DateTime fecha { get; set; }
     }
 }

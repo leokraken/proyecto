@@ -349,6 +349,51 @@ namespace SAREM.Testing
 
         }
 
+
+        [TestMethod]
+        public void testReferencia()
+        {
+            IDALReferencias iref= new DALReferencias(tenant);
+            string pacienteID = "50548305";
+            string medicoID = "17299999";
+            iref.agregarReferencia(pacienteID, medicoID);
+
+            var refpendientes = iref.obtenerReferenciasPendientesMedico(medicoID);
+
+            Console.WriteLine("Pacientes pendientes para medico " + medicoID);
+            foreach (var p in refpendientes)
+            {
+                Console.WriteLine(p.PacienteID);
+            }
+
+            Assert.AreEqual(refpendientes.Count, 1);
+            Console.WriteLine("PENDIENTES MEDICO(1)::" + refpendientes.Count);
+
+            //finalizo referencia
+            iref.finalizarReferencia(pacienteID, medicoID);
+
+            //listo que efectivamente sea 0
+            var refpendientespost = iref.obtenerReferenciasPendientesMedico(medicoID);
+            Console.WriteLine("Lista de pacientes referenciados a medico " + medicoID);
+            foreach (var p in refpendientespost)
+            {
+                Console.WriteLine(p.PacienteID);
+            }
+            Assert.AreEqual(refpendientespost.Count, 0);
+            Console.WriteLine("Pacientespendientemedico::(0)"+refpendientespost.Count);
+
+            //finalmente listo los pacientes dado el medico
+            var pacientesmedico = iref.obtenerPacientesReferenciadosMedico(medicoID);
+            Console.WriteLine("Listar pacientes referenciados a medico " + medicoID);
+            foreach (var p in pacientesmedico)
+            {
+                Console.WriteLine(p.PacienteID);
+            }
+            Assert.AreEqual(pacientesmedico.Count, 1);
+            Console.WriteLine("Numero pacientes referenciados medico(1)::" + pacientesmedico.Count);
+
+        }
+
         [ClassCleanup]
         public static void ClassCleanup()
         {

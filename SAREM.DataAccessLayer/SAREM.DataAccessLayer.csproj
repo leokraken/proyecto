@@ -62,9 +62,12 @@
     <Compile Include="DALAgenda.cs" />
     <Compile Include="DALNotificaciones.cs" />
     <Compile Include="DALPacientes.cs" />
+    <Compile Include="DALReferencias.cs" />
+    <Compile Include="FabricaSAREM.cs" />
     <Compile Include="IDALAgenda.cs" />
     <Compile Include="IDALNotificaciones.cs" />
     <Compile Include="IDALPacientes.cs" />
+    <Compile Include="IDALReferencias.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SARMContext.cs" />
