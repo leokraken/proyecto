@@ -42,6 +42,9 @@
     <Reference Include="DHTMLX">
       <HintPath>..\packages\DHTMLX.Scheduler.NET.3.3.3.2\lib\DHTMLX.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -974,6 +977,8 @@
     <Content Include="Views\Consulta\VerConsultaPaciente.cshtml" />
     <Content Include="Views\Notificacion\VerNotificaciones.cshtml" />
     <Content Include="Views\Notificacion\Create.cshtml" />
+    <Content Include="Views\Consulta\CreateMasivo.cshtml" />
+    <Content Include="Template\Template-Consulta.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
