@@ -1,6 +1,7 @@
 ﻿using OfficeOpenXml;
 using SAREM.DataAccessLayer;
 using SAREM.Shared.Entities;
+using SAREM.Web.Models;
 //using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace SAREM.Web.Controllers
 {
     public class ConsultaController : Controller
     {
-        private IDALAgenda agenda = new DALAgenda("test");
-        private IDALPacientes pacienteDal = new DALPacientes("test");
+        private FabricaSAREM fabrica = new FabricaSAREM("test");
+       
 
         private static string[] formats = new string[]
         {
@@ -95,13 +96,14 @@ namespace SAREM.Web.Controllers
         // GET: Consulta
         public ActionResult Index()
         {
-           
+          
             return View();
         }
 
         // GET: Consulta/Details/5
         public ActionResult Details(int id)
-        {
+        { 
+            
             return View();
         }
 
@@ -111,10 +113,10 @@ namespace SAREM.Web.Controllers
         {
             var model = new SAREM.Web.Models.Consulta
             {
-               local = agenda.listarLocales(),
+               local =  fabrica.iagenda.listarLocales(),
                
-               //especialidades = agenda.listarEspecialidades(),
-               //funcionarios = agenda.listarFuncionarios()
+               //especialidades =  fabrica.iagenda.listarEspecialidades(),
+               //funcionarios =  fabrica.iagenda.listarFuncionarios()
             };
 
 
@@ -131,12 +133,12 @@ namespace SAREM.Web.Controllers
               
                 SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                 c.LocalID = Convert.ToInt64(consulta.localID);
-                c.local = agenda.obtenerLocal(c.LocalID);
+                c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
               
                 c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
-                c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
+                c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
                 c.FuncionarioID = consulta.medID;
-                c.medico = agenda.obtenerMedico(c.FuncionarioID);
+                c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
 
                
                 c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
@@ -144,7 +146,7 @@ namespace SAREM.Web.Controllers
                 
 
                
-                agenda.agregarConsulta(c);
+                 fabrica.iagenda.agregarConsulta(c);
               
                 return Json(new { success = true});
             }
@@ -157,8 +159,11 @@ namespace SAREM.Web.Controllers
         [HttpGet]
         public ActionResult CreateMasivo()
         {
-            
-            return View("CreateMasivo");
+            ConsultaMasiva cM = new ConsultaMasiva();
+            cM.success = false;
+            cM.warning = false;
+            cM.danger = false;
+            return View("CreateMasivo",cM);
         }
 
 
@@ -173,9 +178,15 @@ namespace SAREM.Web.Controllers
            
         }
 
+      
         public ActionResult Upload(FormCollection formCollection)
 
         {
+            ConsultaMasiva cM = new ConsultaMasiva();
+            Boolean okConsultas = true;
+            cM.danger = false;
+            cM.warning = false;
+            cM.success = false;
             if (Request != null)
             {
                 HttpPostedFileBase file = Request.Files["UploadedFile"];
@@ -188,7 +199,7 @@ namespace SAREM.Web.Controllers
                     var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
 
                     //Creo las consultas
-                    var consultaList = new List<Consulta>();
+                    var consultaList = new List<SAREM.Shared.Entities.Consulta>();
                     try
                     {
                         using (var package = new ExcelPackage(file.InputStream))
@@ -200,11 +211,17 @@ namespace SAREM.Web.Controllers
 
                             for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                             {
-                                var c = new Consulta();
+                                var c = new SAREM.Shared.Entities.Consulta();
                                 Boolean ok = true;
 
-                                for (int columnIterator = 1; (columnIterator <= noOfCol && ok); columnIterator++)
+                                if(!(workSheet.Cells[rowIterator, 1].Value == null &&
+                                    workSheet.Cells[rowIterator, 2].Value == null &&
+                                    workSheet.Cells[rowIterator, 3].Value == null &&
+                                    workSheet.Cells[rowIterator, 4].Value == null &&
+                                    workSheet.Cells[rowIterator, 5].Value == null ))
                                 {
+                                 for (int columnIterator = 1; (columnIterator <= 5 && ok); columnIterator++)
+                                  {
 
 
 
@@ -214,8 +231,17 @@ namespace SAREM.Web.Controllers
                                             //ID LOCAL
                                             try
                                             {
-                                                c.LocalID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
-                                                c.local = agenda.obtenerLocal(c.LocalID);
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString()))
+                                                {
+                                                
+                                                    c.LocalID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                                    c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
+
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -227,8 +253,14 @@ namespace SAREM.Web.Controllers
                                             //ID ESPECIALIDAD
                                             try
                                             {
-                                                c.EspecialidadID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
-                                                c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString())) { 
+                                                    c.EspecialidadID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                                    c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -239,17 +271,24 @@ namespace SAREM.Web.Controllers
                                             //ID MEDICO
                                             try
                                             {
-                                                string nroDoc = workSheet.Cells[rowIterator, columnIterator].Value.ToString();
-
-                                                if (String.IsNullOrEmpty(nroDoc) || !Regex.IsMatch(nroDoc, @"^\d+$"))
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString()))
                                                 {
+                                                    string nroDoc = workSheet.Cells[rowIterator, columnIterator].Value.ToString();
 
-                                                    ok = false;
+                                                    if (String.IsNullOrEmpty(nroDoc) || !Regex.IsMatch(nroDoc, @"^\d+$"))
+                                                    {
 
+                                                        ok = false;
+
+                                                    }
+                                                    else
+                                                    {
+                                                        c.FuncionarioID = nroDoc;
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    c.FuncionarioID = nroDoc;
+                                                    ok = false;
                                                 }
                                             }
                                             catch (Exception e)
@@ -263,8 +302,14 @@ namespace SAREM.Web.Controllers
 
                                             try
                                             {
-                                                c.fecha_inicio = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
-
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString())) { 
+ 
+                                                    c.fecha_inicio = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -279,7 +324,14 @@ namespace SAREM.Web.Controllers
 
                                             try
                                             {
-                                                c.fecha_fin = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString()))
+                                                {
+                                                    c.fecha_fin = DateTime.Parse(workSheet.Cells[rowIterator, columnIterator].Value.ToString()).ToUniversalTime();
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -291,29 +343,61 @@ namespace SAREM.Web.Controllers
                                     }
 
                                 }
+                               
 
                                 if (ok)
                                 {
-                                    agenda.agregarConsulta(c);
+                                     fabrica.iagenda.agregarConsulta(c);
+                                } else
+                                {
+                                    okConsultas = ok && okConsultas;
+
                                 }
 
-
+                                }
                             }
                         }
                     }
                     catch (Exception e)
-                    {   //Retornar a vista de error
-                        return View("CreateMasivo");
+                    {   
+                        cM.danger = true;
+                        cM.warning = false;
+                        cM.success = false;
+                        return View("CreateMasivo", cM);
                     }
                 }
+                else
+                {
+                    cM.danger = true;
+                    cM.warning = false;
+                    cM.success = false;
+                    return View("CreateMasivo", cM);
+
+                }
             }
-            return View("VerConsultasNew");
+           
+
+            if (okConsultas)
+            {
+                cM.danger = false;
+                cM.warning = false;
+                cM.success = true;
+
+            }
+            else
+            {
+                cM.danger = false;
+                cM.warning = true;
+                cM.success = false;
+            }
+
+            return View("CreateMasivo", cM);
         } 
 
         public JsonResult GetEspecialidades(string idLocalidad)
         {
             List<SelectListItem> especialidades = new List<SelectListItem>();
-            foreach (Especialidad e in agenda.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
+            foreach (Especialidad e in  fabrica.iagenda.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
             {
 
                 especialidades.Add(new SelectListItem { Text = e.descripcion, Value = e.EspecialidadID.ToString() });
@@ -326,7 +410,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetMedicos(string idEspecialidad, string idLocalidad)
         {
             List<SelectListItem> medicos = new List<SelectListItem>();
-            foreach (Funcionario m in agenda.listarMedicosEspecialidadLocal(Convert.ToInt64(idLocalidad), Convert.ToInt64(idEspecialidad)))
+            foreach (Funcionario m in  fabrica.iagenda.listarMedicosEspecialidadLocal(Convert.ToInt64(idLocalidad), Convert.ToInt64(idEspecialidad)))
             {
 
                 medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
@@ -345,10 +429,10 @@ namespace SAREM.Web.Controllers
 
         public JsonResult GetConsultas()
         {
-            var consultas = agenda.listarConsultas();
+            var consultas =  fabrica.iagenda.listarConsultas();
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
            
-            foreach (Consulta c in consultas)
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
             {
                 ConsultaJSON cjson = new ConsultaJSON();
 
@@ -390,8 +474,8 @@ namespace SAREM.Web.Controllers
             long idL = Convert.ToInt64(idC);
             GetLocalEspMedJson obj = new GetLocalEspMedJson();
             List<LocalJson> locales = new List<LocalJson>();
-            Consulta c = agenda.obtenerConsulta(idL);
-            foreach (Local l in agenda.listarLocales()) {
+            SAREM.Shared.Entities.Consulta c =  fabrica.iagenda.obtenerConsulta(idL);
+            foreach (Local l in  fabrica.iagenda.listarLocales()) {
 
                 LocalJson lj = new LocalJson();
                 lj.LocalID = l.LocalID.ToString();
@@ -409,7 +493,7 @@ namespace SAREM.Web.Controllers
             obj.locales = locales;
 
             List<EspecialidadJson> esps = new List<EspecialidadJson>();
-            var espsLocal = agenda.listarEspecialidadesLocal(c.LocalID);
+            var espsLocal =  fabrica.iagenda.listarEspecialidadesLocal(c.LocalID);
             foreach (Especialidad e in espsLocal) {
 
                 EspecialidadJson ejson = new EspecialidadJson();
@@ -432,7 +516,7 @@ namespace SAREM.Web.Controllers
 
 
             List<MedicoJson> meds = new List<MedicoJson>();
-            var medsespsLocal = agenda.listarMedicosEspecialidadLocal(c.LocalID, c.EspecialidadID);
+            var medsespsLocal =  fabrica.iagenda.listarMedicosEspecialidadLocal(c.LocalID, c.EspecialidadID);
 
             foreach (Medico m in medsespsLocal)
             {
@@ -467,12 +551,12 @@ namespace SAREM.Web.Controllers
 
                     SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                     c.LocalID = Convert.ToInt64(consulta.localID);
-                    c.local = agenda.obtenerLocal(c.LocalID);
+                    c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
                     c.ConsultaID = Convert.ToInt64(consulta.consultaID);
                     c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
-                    c.especialidad = agenda.obtenerEspecialidad(c.EspecialidadID);
+                    c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
                     c.FuncionarioID = consulta.medID;
-                    c.medico = agenda.obtenerMedico(c.FuncionarioID);
+                    c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
 
 
                     c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
@@ -480,7 +564,7 @@ namespace SAREM.Web.Controllers
 
 
 
-                    agenda.modificarConsulta(c);
+                     fabrica.iagenda.modificarConsulta(c);
 
                     return Json(new { success = true });
                 }
@@ -507,7 +591,7 @@ namespace SAREM.Web.Controllers
                 // TODO: Add delete logic here
 
                 long idCC = Convert.ToInt64(idC);
-                agenda.eliminarConsulta(idCC);
+                 fabrica.iagenda.eliminarConsulta(idCC);
                 return Json(new { success = true });
             }
             catch
@@ -521,7 +605,7 @@ namespace SAREM.Web.Controllers
         public ActionResult VerPacientes(string idC)
         {
             long idL = Convert.ToInt64(idC);
-            Consulta c = agenda.obtenerConsulta(idL);
+            SAREM.Shared.Entities.Consulta c =  fabrica.iagenda.obtenerConsulta(idL);
             String format = "dd/MM/yyyy HH:mm";
             DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
                         c.fecha_inicio,
@@ -556,8 +640,8 @@ namespace SAREM.Web.Controllers
             Pacientes obj = new Pacientes();
             List<PacienteJson> pacientes = new List<PacienteJson>();
 
-            var pacientesConsulta = agenda.obtenerConsulta(idL).pacientes;
-            var pacientesOrdered = agenda.obtenerPacientesConsulta(idL);
+            var pacientesConsulta =  fabrica.iagenda.obtenerConsulta(idL).pacientes;
+            var pacientesOrdered =  fabrica.iagenda.obtenerPacientesConsulta(idL);
             int nro = 1;
             foreach (Paciente p in pacientesOrdered)
             {
@@ -565,7 +649,7 @@ namespace SAREM.Web.Controllers
                 var pC = pacientesConsulta.First(x =>( x.PacienteID == p.PacienteID &&  x.ConsultaID == idL));
 
                 PacienteJson pj = new PacienteJson();
-                Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
+                Paciente pente = fabrica.ipacientes.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
                 pj.nombre = pente.nombre;
                 //pj.celular = pente.celular;
@@ -594,7 +678,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetPacientesNotInConsulta(string idC)
         {
             long idL = Convert.ToInt64(idC);
-            var pacientesNotInConsulta = agenda.listarPacientesNotInConsulta(idL);
+            var pacientesNotInConsulta =  fabrica.iagenda.listarPacientesNotInConsulta(idL);
             var pacientes =
                     from p in pacientesNotInConsulta
                     select new { PacienteID = p.PacienteID};
@@ -609,14 +693,14 @@ namespace SAREM.Web.Controllers
             Pacientes obj = new Pacientes();
             List<PacienteJson> pacientes = new List<PacienteJson>();
            
-            var pacientesConsulta = agenda.obtenerConsulta(idL).pacientesespera;
-            var pacientesEspOrdered = agenda.obtenerPacientesConsultaEspera(idL);
+            var pacientesConsulta =  fabrica.iagenda.obtenerConsulta(idL).pacientesespera;
+            var pacientesEspOrdered =  fabrica.iagenda.obtenerPacientesConsultaEspera(idL);
             int nro = 1;
             foreach (Paciente p in pacientesEspOrdered)
             {
                 var pC = pacientesConsulta.First(x => (x.PacienteID == p.PacienteID && x.ConsultaID == idL));
                 PacienteJson pj = new PacienteJson();
-                Paciente pente = pacienteDal.obtenerPaciente(p.PacienteID);
+                Paciente pente = fabrica.ipacientes.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
                 pj.nombre = pente.nombre;
                 //pj.celular = pente.celular;
@@ -649,7 +733,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                agenda.agregarConsultaPaciente(idP, idCC);
+                 fabrica.iagenda.agregarConsultaPaciente(idP, idCC);
                 return Json(new { success = true });
             }
             catch
@@ -668,7 +752,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                agenda.agregarConsultaPacienteEspera(idP, idCC);
+                 fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
                
                 return Json(new { success = true });
             }
@@ -689,7 +773,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                agenda.cancelarConsultaPaciente(idP, idCC);
+                 fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
                 return Json(new { success = true });
             }
             catch
@@ -709,7 +793,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                agenda.eliminarPacienteConsultaLE(idP, idCC);
+                 fabrica.iagenda.eliminarPacienteConsultaLE(idP, idCC);
                 return Json(new { success = true });
             }
             catch
@@ -730,7 +814,7 @@ namespace SAREM.Web.Controllers
             {
                 long idCC = Convert.ToInt64(idC);
 
-                agenda.moverPacientesLEConsulta(idsP, idCC);
+                 fabrica.iagenda.moverPacientesLEConsulta(idsP, idCC);
                 return Json(new { success = true });
             }
             catch
