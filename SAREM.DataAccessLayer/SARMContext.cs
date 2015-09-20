@@ -28,14 +28,11 @@ namespace SAREM.DataAccessLayer
         public DbSet<Paciente> pacientes { get; set; }
         public DbSet<PacienteConsultaAgenda> consultasagendadas { get; set; }
         public DbSet<PacienteConsultaCancelar> consultascanceladas { get; set; }
-        public DbSet<Parte> partes { get; set; }
-        //public DbSet<Rango> rangos { get; set; }
         public DbSet<Referencia> referencias { get; set; }
         public DbSet<Pais> paises { get; set; }
         public DbSet<EventoPacienteComunicacion> eventopacientecomunicacion { get; set; }
         public DbSet<MedicoLocal> medicolocal { get; set; }
         public DbSet<PacienteConsultaEspera> pacienteespera { get; set; }
-        public DbSet<PacienteConsultaAusencia> pacienteausentes { get; set; }
 
 
         private SARMContext(DbCompiledModel model, string name): base("Name=sarem", model)
@@ -84,7 +81,7 @@ namespace SAREM.DataAccessLayer
                 .WithRequired(pc => pc.paciente);
 
             
-            builder.Entity<Parte>().ToTable("Partes", schemaName);
+            //builder.Entity<Parte>().ToTable("Partes", schemaName);
             builder.Entity<Referencia>().ToTable("Referencias", schemaName)
                 .HasKey(k => new { k.PacienteID, k.FuncionarioID});
 
@@ -111,16 +108,6 @@ namespace SAREM.DataAccessLayer
                     me.MapRightKey("EspecialidadID");
                     me.ToTable("LocalesEspecialidades", schemaName);
                 });
-            /*
-            builder.Entity<EventoPersonalizado>()
-                .HasMany<Rango>(e => e.rangos)
-                .WithMany(r => r.eventos)
-                .Map(me =>
-                {
-                    me.MapLeftKey("EventoID");
-                    me.MapRightKey("RangoID");
-                    me.ToTable("EventoRangos", schemaName);
-                });*/
 
             builder.Entity<Medico>()
                 .HasMany<Local>(e => e.locales)
@@ -132,17 +119,6 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("MedicoLocal", schemaName);
                 });
 
-            /*
-            builder.Entity<Paciente>()
-                .HasMany<Consulta>(p => p.consultasausentes)
-                .WithMany(c => c.pacientesausencias)
-                .Map(me =>
-                {
-                    me.MapLeftKey("ConsultaID");
-                    me.MapRightKey("PacienteID");
-                    me.ToTable("AusenciasPacientes", schemaName);
-                });*/
-            // 
             builder.Entity<Evento>()
                 .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
             builder.Entity<Paciente>()
@@ -151,8 +127,6 @@ namespace SAREM.DataAccessLayer
                 .HasMany<EventoPacienteComunicacion>(e => e.eventos);
 
             builder.Entity<PacienteConsultaEspera>().ToTable("PacientesEspera", schemaName);
-            builder.Entity<PacienteConsultaAusencia>().ToTable("PacientesAusentes", schemaName);
-
             
             var model = builder.Build(new SqlConnection(con));
             DbCompiledModel compModel = model.Compile();
@@ -191,12 +165,6 @@ namespace SAREM.DataAccessLayer
                 throw;
             }
         }
-
-        //public SARMContext():base(con)
-        //{
-        //    Database.SetInitializer<SARMContext>(null);
-        //}
-
     }
 
     public class SAREMAdminContext : DbContext
@@ -212,7 +180,7 @@ namespace SAREM.DataAccessLayer
             string drop = "drop table [{0}].[{1}]";
             string tables = @"SELECT TABLE_NAME FROM information_schema.tables where TABLE_SCHEMA=@schema";
             string alters = @"select concat('alter table [', @schema, '].[', table_name, '] drop constraint ', constraint_name, ';') from information_schema.table_constraints where table_schema=@schema and constraint_type='FOREIGN KEY'";
-            var schemaslist = this.Database.SqlQuery<string>(alters, new SqlParameter("@schema", schema)).ToListAsync(); //.ToList();
+            var schemaslist = this.Database.SqlQuery<string>(alters, new SqlParameter("@schema", schema)).ToListAsync();
 
             foreach (var s in schemaslist.Result)
             {

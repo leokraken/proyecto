@@ -62,13 +62,11 @@
     <Compile Include="Entities\Local.cs" />
     <Compile Include="Entities\Medico.cs" />
     <Compile Include="Entities\MedicoLocal.cs" />
-    <Compile Include="Entities\PacienteConsultaAusencia.cs" />
     <Compile Include="Entities\PacienteConsultaEspera.cs" />
     <Compile Include="Entities\Pais.cs" />
     <Compile Include="Entities\Paciente.cs" />
     <Compile Include="Entities\PacienteConsultaAgenda.cs" />
     <Compile Include="Entities\PacienteConsultaCancelar.cs" />
-    <Compile Include="Entities\Parte.cs" />
     <Compile Include="enums\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\Referencia.cs" />

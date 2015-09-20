@@ -60,11 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DALAgenda.cs" />
+    <Compile Include="DALLocales.cs" />
     <Compile Include="DALNotificaciones.cs" />
     <Compile Include="DALPacientes.cs" />
     <Compile Include="DALReferencias.cs" />
     <Compile Include="FabricaSAREM.cs" />
     <Compile Include="IDALAgenda.cs" />
+    <Compile Include="IDALLocales.cs" />
     <Compile Include="IDALNotificaciones.cs" />
     <Compile Include="IDALPacientes.cs" />
     <Compile Include="IDALReferencias.cs" />

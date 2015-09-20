@@ -12,6 +12,7 @@ namespace SAREM.DataAccessLayer
         public IDALNotificaciones inotificaciones { get; set; }
         public IDALPacientes ipacientes { get; set; }
         public IDALReferencias ireferencias { get; set; }
+        public IDALLocales ilocales { get; set; }
 
         public FabricaSAREM(string tenant)
         {
@@ -19,6 +20,7 @@ namespace SAREM.DataAccessLayer
             inotificaciones = new DALNotificaciones(tenant);
             ipacientes = new DALPacientes(tenant);
             ireferencias = new DALReferencias(tenant);
+            ilocales = new DALLocales(tenant);
         }
     }
 }

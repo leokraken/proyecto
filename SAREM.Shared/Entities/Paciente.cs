@@ -27,7 +27,6 @@ namespace SAREM.Shared.Entities
         public virtual Pais nacion { get; set; }
         public virtual ICollection<PacienteConsultaAgenda> agendadas { get; set; }
         public virtual ICollection<PacienteConsultaCancelar> canceladas { get; set; }
-        public virtual ICollection<PacienteConsultaAusencia> consultasausentes { get; set; }
         public virtual ICollection<PacienteConsultaEspera> consultasespera { get; set; }
         public virtual ICollection<EventoPacienteComunicacion> eventos { get; set; }
         [ForeignKey("FuncionarioID")]

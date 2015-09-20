@@ -189,6 +189,7 @@ namespace SAREM.Testing
             Debug.WriteLine("Comunicaciones agregados...");
 
             eventos.ForEach(e => db.eventos.Add(e));
+            eventosop.ForEach(e => db.eventos.Add(e));
             db.SaveChanges();
             Debug.WriteLine("Eventos agregados...");
 
@@ -392,6 +393,38 @@ namespace SAREM.Testing
             Assert.AreEqual(pacientesmedico.Count, 1);
             Console.WriteLine("Numero pacientes referenciados medico(1)::" + pacientesmedico.Count);
 
+        }
+
+        [TestMethod]
+        public void testParteDiario()
+        {
+            string medicoID = "17299999";
+            FabricaSAREM factory = new FabricaSAREM(tenant);
+            var partes = factory.iagenda.obtenerParteDiario(medicoID, DateTime.UtcNow);
+
+            //ajusto ausencia y diagnostico
+            foreach (var parte in partes)
+            {
+                foreach (var c in parte.pacientes)
+                {
+                    factory.iagenda.actualizarParteDiario(c.ConsultaID, c.PacienteID, "Se le complica ...", true);
+
+                    Console.WriteLine(c.paciente.PacienteID + c.paciente.nombre);
+                    Console.WriteLine("Ausencia::" + c.ausencia.ToString());
+                    Console.WriteLine("Diagnostico::" + c.diagnostico);
+                }
+            }
+            
+
+            //debe fallar
+            try
+            {
+                var pde = factory.iagenda.obtenerParteDiario(medicoID, DateTime.UtcNow.AddDays(1));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("OK::" + e.Message);
+            }
         }
 
         [ClassCleanup]

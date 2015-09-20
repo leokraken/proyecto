@@ -2,17 +2,14 @@
 using SAREM.DataAccessLayer;
 using SAREM.Shared.Entities;
 using SAREM.Web.Models;
-//using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 
 namespace SAREM.Web.Controllers
 {
@@ -113,7 +110,7 @@ namespace SAREM.Web.Controllers
         {
             var model = new SAREM.Web.Models.Consulta
             {
-               local =  fabrica.iagenda.listarLocales(),
+               local =  fabrica.ilocales.listarLocales(),
                
                //especialidades =  fabrica.iagenda.listarEspecialidades(),
                //funcionarios =  fabrica.iagenda.listarFuncionarios()
@@ -133,7 +130,7 @@ namespace SAREM.Web.Controllers
               
                 SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                 c.LocalID = Convert.ToInt64(consulta.localID);
-                c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
+                c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
               
                 c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
                 c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
@@ -235,7 +232,7 @@ namespace SAREM.Web.Controllers
                                                 {
                                                 
                                                     c.LocalID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
-                                                    c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
+                                                    c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
 
                                                 }
                                                 else
@@ -475,7 +472,7 @@ namespace SAREM.Web.Controllers
             GetLocalEspMedJson obj = new GetLocalEspMedJson();
             List<LocalJson> locales = new List<LocalJson>();
             SAREM.Shared.Entities.Consulta c =  fabrica.iagenda.obtenerConsulta(idL);
-            foreach (Local l in  fabrica.iagenda.listarLocales()) {
+            foreach (Local l in  fabrica.ilocales.listarLocales()) {
 
                 LocalJson lj = new LocalJson();
                 lj.LocalID = l.LocalID.ToString();
@@ -551,7 +548,7 @@ namespace SAREM.Web.Controllers
 
                     SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                     c.LocalID = Convert.ToInt64(consulta.localID);
-                    c.local =  fabrica.iagenda.obtenerLocal(c.LocalID);
+                    c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
                     c.ConsultaID = Convert.ToInt64(consulta.consultaID);
                     c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
                     c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);

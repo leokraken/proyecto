@@ -24,7 +24,7 @@ namespace SAREM.DataAccessLayer
 
         public void suscribirPacienteEvento(long EventoID, string PacienteID, long ComunicacionID)
         {
-            EventoOpcional e = db.eventos.Include("rangos").OfType<EventoOpcional>().Where(ev => ev.EventoID == EventoID).First();
+            Evento e = db.eventos.Where(ev => ev.EventoID == EventoID).First();
             Paciente p = db.pacientes.Find(PacienteID);
             Comunicacion c = db.comunicaciones.Find(ComunicacionID);
 
@@ -34,7 +34,7 @@ namespace SAREM.DataAccessLayer
                 int edad = now.Year - p.FN.Year;
                 if (p.FN > now.AddYears(-edad)) edad--;
 
-                if (e.edades.Contains(edad) && e.sexo == p.sexo)
+                if (e is EventoObligatorio || (e is EventoOpcional && ((EventoOpcional) e).edades.Contains(edad) && e.sexo == p.sexo))
                 {
                     EventoPacienteComunicacion epc = new EventoPacienteComunicacion { ComunicacionID = ComunicacionID, 
                                                                                       EventoID = EventoID, 
