@@ -50,6 +50,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -62,12 +64,14 @@
     <Compile Include="DALAgenda.cs" />
     <Compile Include="DALLocales.cs" />
     <Compile Include="DALNotificaciones.cs" />
+    <Compile Include="DALOpenEMPI.cs" />
     <Compile Include="DALPacientes.cs" />
     <Compile Include="DALReferencias.cs" />
     <Compile Include="FabricaSAREM.cs" />
     <Compile Include="IDALAgenda.cs" />
     <Compile Include="IDALLocales.cs" />
     <Compile Include="IDALNotificaciones.cs" />
+    <Compile Include="IDALOpenEMPI.cs" />
     <Compile Include="IDALPacientes.cs" />
     <Compile Include="IDALReferencias.cs" />
     <Compile Include="Program.cs" />
