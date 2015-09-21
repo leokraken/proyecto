@@ -124,18 +124,16 @@ namespace SAREM.Web.Controllers
         [HttpPost]
         public JsonResult Create(SAREM.Web.Models.Consulta consulta)
         {
-
             if (ModelState.IsValid)
-            {
-              
+            {   
                 SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                 c.LocalID = Convert.ToInt64(consulta.localID);
-                c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
+                //c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
               
                 c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
-                c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
+                //c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
                 c.FuncionarioID = consulta.medID;
-                c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
+                //c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
 
                
                 c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
@@ -143,7 +141,7 @@ namespace SAREM.Web.Controllers
                 
 
                
-                 fabrica.iagenda.agregarConsulta(c);
+                fabrica.iagenda.agregarConsulta(c);
               
                 return Json(new { success = true});
             }
