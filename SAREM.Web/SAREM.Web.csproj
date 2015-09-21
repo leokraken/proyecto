@@ -173,6 +173,7 @@
     <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MedicoRefController.cs" />
     <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\TecnicoController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -388,11 +389,13 @@
     <Content Include="Content\images\addPac2.png" />
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
+    <Content Include="Content\images\aproveAll.png" />
     <Content Include="Content\images\dataConsulta.png" />
     <Content Include="Content\images\Notis.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\images\progression.png" />
     <Content Include="Content\images\progressionDis.png" />
+    <Content Include="Content\images\solicitudes.png" />
     <Content Include="Content\images\writing11.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
@@ -980,6 +983,7 @@
     <Content Include="Views\Notificacion\Create.cshtml" />
     <Content Include="Views\Consulta\CreateMasivo.cshtml" />
     <Content Include="Template\Template-Consulta.xlsx" />
+    <Content Include="Views\MedicoRef\VerSolicitudRefMedico.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
