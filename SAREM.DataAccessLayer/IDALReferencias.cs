@@ -10,10 +10,11 @@ namespace SAREM.DataAccessLayer
     public interface IDALReferencias
     {
         ICollection<Paciente> obtenerPacientesReferenciadosMedico(string medicoID);
-        ICollection<Paciente> obtenerReferenciasPendientesMedico(string medicoID);
+        ICollection<Referencia> obtenerReferenciasPendientesMedico(string medicoID);
         ICollection<Referencia> obtenerTodasReferencias();
 
         void agregarReferencia(string PacienteID, string MedicoID);
         void finalizarReferencia(string PacienteID, string MedicoID);
+        void denegarReferencia(string PacienteID, string MedicoID);
     }
 }

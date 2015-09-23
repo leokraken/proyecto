@@ -24,13 +24,13 @@ namespace SAREM.DataAccessLayer
                 return query.ToList();
             }
         }
-        public ICollection<Paciente> obtenerReferenciasPendientesMedico(string medicoID)
+        public ICollection<Referencia> obtenerReferenciasPendientesMedico(string medicoID)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
                 var query = from r in db.referencias.Include("paciente")
                             where r.FuncionarioID == medicoID && r.pendiente
-                            select r.paciente;
+                            select r;
                 return query.ToList();
             }
         }
@@ -87,6 +87,18 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public void denegarReferencia(string PacienteID, string MedicoID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                Referencia r = (from re in db.referencias
+                                where re.FuncionarioID == MedicoID && re.PacienteID == PacienteID
+                                select re).Single();
+                db.referencias.Remove(r);
+                db.SaveChanges();
+            }
+
+        }
 
 
     }
