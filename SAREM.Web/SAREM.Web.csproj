@@ -395,6 +395,7 @@
     <Content Include="Content\images\AproveYes.png" />
     <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
+    <Content Include="Content\images\list-1.png" />
     <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
     <Content Include="Content\images\password13.png" />
@@ -992,6 +993,7 @@
     <Content Include="Template\Template-Consulta.xlsx" />
     <Content Include="Views\MedicoRef\VerSolicitudRefMedico.cshtml" />
     <Content Include="Views\MedicoRef\VerSolicitudesAceptadas.cshtml" />
+    <Content Include="Views\Consulta\VerParteDiario.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

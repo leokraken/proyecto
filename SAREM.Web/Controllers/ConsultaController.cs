@@ -819,6 +819,14 @@ namespace SAREM.Web.Controllers
 
 
         }
+
+        //Parte Diario
+        [HttpGet]
+        public ActionResult VerParteDiario()
+        {
+            
+            return View();
+        }
  
     }
 }
