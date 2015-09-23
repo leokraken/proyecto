@@ -15,12 +15,12 @@ namespace SAREM.DataAccessLayer
             this.tenant = tenant;
         }
 
-        public ICollection<Paciente> obtenerPacientesReferenciadosMedico(string medicoID)
+        public ICollection<Referencia> obtenerPacientesReferenciadosMedico(string medicoID)
         {
             using(var db = SARMContext.getTenant(tenant)){
                 var query = from r in db.referencias.Include("paciente")
                             where r.FuncionarioID == medicoID && !r.pendiente
-                            select r.paciente;
+                            select r;
                 return query.ToList();
             }
         }
