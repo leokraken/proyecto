@@ -1,0 +1,225 @@
+﻿
+@{
+    ViewBag.Title = "Solicitudes de Referencia Médico";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/boostrap-table/src/bootstrap-table.css">
+<link rel="stylesheet" href="~/Content/awesomplete.css">
+
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
+<script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
+<script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
+<script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
+<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+
+<ol class="breadcrumb">
+    <li><a href="#">Médico de Referencia</a></li>
+    <li class="active">Ver Solicitudes Pendientes</li>
+</ol>
+
+<div class="paragraphs">
+    <div class="row">
+        <div class="span4">
+            <div class="content-heading" style="margin-left:17px !important;">
+
+                <h3 class="pull-left">Solicitudes Pendientes &nbsp </h3>
+                <img src="~/Content/images/solicitudes.png" />
+            </div>
+
+        </div>
+    </div>
+</div>
+<br />
+
+   
+<div class="panel panel-info">
+                <div class="panel-heading">Médico</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="email" class="control-label col-md-2">Nro de Documento:</label>
+                        <div class="col-md-10">
+                            <input id="idMedico" class="form-control" style="width:280px" />
+                        </div>
+                    </div>
+                </div>
+</div>
+
+ <div id="divPacientes">
+     <div class="pull-right" id="divAddPE">
+         <br />
+
+         <img src="~/Content/images/aproveAll.png" id="aprobar" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para aprobar todas las solicitudes">
+         <br />
+     </div>
+     <table id="tablaPacientes" data-filter-control="true" data-pagination="true" data-side-pagination="client"
+            data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" ></table>
+ </div>    
+
+<script>
+    $(document).ready(function () {
+
+        var $remove = $('#aprobar');
+    
+        $("#divPacientes").hide();
+        $("#aprobar").popover({ trigger: "hover" });
+
+        var input1 = document.getElementById("idMedico");
+        var awesomplete = new Awesomplete(input1, {
+            minChars: 1,
+            maxItems: 15,
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetMedicos", "MedicoRef")',
+            dataType: "json",
+            type: "GET",
+            cache: false,
+            success: function (data) {
+
+
+                var list = [];
+                $.each(data, function (key, value) {
+                    list.push(value.MedicoID);
+                });
+
+                awesomplete.list = list;
+
+
+            },
+            error: function (xhr) {
+
+                alert('error');
+            }
+        });
+
+        
+        $("#idMedico").change(function () {
+            
+            
+
+            $('#tablaPacientes').bootstrapTable({
+                url: '@Url.Action("GetPacientes", "MedicoRef")' + '?idM=' + $("#idMedico").val(),
+
+                columns: [{
+                    field: 'PacienteID',
+                    title: 'Id Paciente',
+                    filterControl: 'input',
+                    sortable: true
+                }, {
+                    field: 'nombre',
+                    title: 'Nombre',
+                    filterControl: 'input',
+                    sortable: true
+                }, {
+                    field: 'celular',
+                    title: 'Celular',
+                    filterControl: 'input',
+                    sortable: true
+                }, {
+                    field: 'telefono',
+                    title: 'Teléfono',
+                    filterControl: 'input',
+                    sortable: true
+                },
+                {
+                    field: 'sexo',
+                    title: 'Sexo',
+                    filterControl: 'input',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Aprobar',
+                    align: 'center',
+                    events: operateEventsLE,
+                    formatter: operateFormatterLE
+                },
+
+                ]
+            });
+
+            
+            $('#tablaPacientes').bootstrapTable("refresh", { silent: true, url: '@Url.Action("GetPacientes", "MedicoRef")' + '?idM=' + $("#idMedico").val() });
+            $("#divPacientes").show();
+        });
+
+        
+
+       
+        $remove.click(function () {
+            var ids = getIdSelections();
+            alert("en remove");
+            alert(selections);
+            var ids = selections;
+            $('#tablaPacientes').bootstrapTable('remove', {
+                field: 'PacienteID',
+                values: ids
+            });
+            $remove.prop('disabled', true);
+        });
+
+        //Pacientes en lista de espera
+        function operateFormatterLE(value, row, index) {
+            return [
+
+                '<a class="aprove" href="javascript:void(0)" title="Click para Aprobar Referencia">',
+                '<i class="glyphicon glyphicon-ok"></i>',
+                '</a>'
+            ].join('');
+        }
+
+        window.operateEventsLE = {
+
+            'click .aprove': function (e, value, row, index) {
+
+               
+                if( row.PacienteID && $("#idMedico").val() ) {
+                   
+               
+                $.ajax({
+                    url: '@Url.Action("AprobarReferencia", "MedicoRef")',
+                    dataType: "json",
+                    type: "POST",
+                    data: { idM: $("#idMedico").val(), idP: row.PacienteID },
+
+                    cache: false,
+                    success: function (data) {
+
+                        if (data.success) {
+
+                            $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+
+                        } else {
+
+                            alert("error al aprobar referencia tipo 2");
+                        }
+                    },
+                    error: function (xhr) {
+
+                        alert('error al aprobar referencia tipo 1');
+                    }
+                })
+
+                }
+              
+            }
+        };
+     
+    })
+
+   
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if (index % 2 === 0) {
+            return {
+                classes: classes[2]
+            };
+        }
+        return {};
+    }
+    
+</script>

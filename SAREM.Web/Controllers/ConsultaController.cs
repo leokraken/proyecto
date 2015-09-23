@@ -230,7 +230,7 @@ namespace SAREM.Web.Controllers
                                                 {
                                                 
                                                     c.LocalID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
-                                                    c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
+                                                   // c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
 
                                                 }
                                                 else
@@ -250,7 +250,7 @@ namespace SAREM.Web.Controllers
                                             {
                                                 if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString())) { 
                                                     c.EspecialidadID = Convert.ToInt64(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
-                                                    c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
+                                                   // c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
                                                 }
                                                 else
                                                 {
@@ -546,12 +546,12 @@ namespace SAREM.Web.Controllers
 
                     SAREM.Shared.Entities.Consulta c = new SAREM.Shared.Entities.Consulta();
                     c.LocalID = Convert.ToInt64(consulta.localID);
-                    c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
+                    //c.local =  fabrica.ilocales.obtenerLocal(c.LocalID);
                     c.ConsultaID = Convert.ToInt64(consulta.consultaID);
                     c.EspecialidadID = Convert.ToInt64(consulta.especialidadID);
-                    c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
+                    //c.especialidad =  fabrica.iagenda.obtenerEspecialidad(c.EspecialidadID);
                     c.FuncionarioID = consulta.medID;
-                    c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
+                    //c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
 
 
                     c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
@@ -559,7 +559,7 @@ namespace SAREM.Web.Controllers
 
 
 
-                     fabrica.iagenda.modificarConsulta(c);
+                    fabrica.iagenda.modificarConsulta(c);
 
                     return Json(new { success = true });
                 }
