@@ -15,6 +15,8 @@ namespace SAREM.Shared.Entities
         public virtual Medico medico { get; set; }
 
         public bool pendiente { get; set; }
-        public DateTime fecha { get; set; }
+        public DateTime fecha_solicitud { get; set; }
+        public DateTime ? fecha_confirmacion { get; set; }
+
     }
 }

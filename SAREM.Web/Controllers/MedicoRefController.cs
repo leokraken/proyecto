@@ -56,14 +56,14 @@ namespace SAREM.Web.Controllers
 
                 var pacientes = fabrica.ireferencias.obtenerReferenciasPendientesMedico(idM);
                 List<PacienteJson> pacientesjs = new List<PacienteJson>();
-                foreach (Paciente p in pacientes)
+                foreach (Referencia r in pacientes)
                 {
                     PacienteJson pjs = new PacienteJson();
-                    pjs.PacienteID = p.PacienteID;
-                    pjs.sexo = p.sexo.ToString();
-                    pjs.nombre = p.nombre;
-                    pjs.telefono = p.telefono;
-                    pjs.celular = p.celular;
+                    pjs.PacienteID = r.paciente.PacienteID;
+                    pjs.sexo = r.paciente.sexo.ToString();
+                    pjs.nombre = r.paciente.nombre;
+                    pjs.telefono = r.paciente.telefono;
+                    pjs.celular = r.paciente.celular;
                    
                     pacientesjs.Add(pjs);
 

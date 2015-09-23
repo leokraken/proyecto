@@ -60,7 +60,7 @@ namespace SAREM.DataAccessLayer
 
                 if (paciente != null && medico != null)
                 {
-                    Referencia referencia = new Referencia { fecha=DateTime.UtcNow, PacienteID=PacienteID, pendiente=true, FuncionarioID=MedicoID };
+                    Referencia referencia = new Referencia { fecha_solicitud = DateTime.UtcNow, PacienteID=PacienteID, pendiente=true, FuncionarioID=MedicoID };
                     db.referencias.Add(referencia);
                     db.SaveChanges();
                 }
@@ -83,6 +83,7 @@ namespace SAREM.DataAccessLayer
                     throw new Exception("No existe tramite de referencia");
                 }
                 referencia.pendiente = false;
+                referencia.fecha_confirmacion = DateTime.UtcNow;
                 db.SaveChanges();
             }
         }
