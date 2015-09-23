@@ -16,7 +16,7 @@ namespace SAREM.Shared.Entities
 
         public bool pendiente { get; set; }
         public DateTime fecha_solicitud { get; set; }
-        public DateTime ? fecha_confirmacion { get; set; }
+        public DateTime? fecha_confirmacion { get; set; }
 
     }
 }

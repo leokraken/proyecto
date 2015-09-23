@@ -356,9 +356,11 @@ namespace SAREM.Testing
         {
             IDALReferencias iref= new DALReferencias(tenant);
             string pacienteID = "50548305";
+            string pacienteID2 = "51130115";
+            string pacienteID3 = "50548306";
             string medicoID = "17299999";
             iref.agregarReferencia(pacienteID, medicoID);
-
+        
             var refpendientes = iref.obtenerReferenciasPendientesMedico(medicoID);
 
             Console.WriteLine("Pacientes pendientes para medico " + medicoID);
@@ -392,6 +394,9 @@ namespace SAREM.Testing
             }
             Assert.AreEqual(pacientesmedico.Count, 1);
             Console.WriteLine("Numero pacientes referenciados medico(1)::" + pacientesmedico.Count);
+
+            iref.agregarReferencia(pacienteID2, medicoID);
+            iref.agregarReferencia(pacienteID3, medicoID);
 
         }
 

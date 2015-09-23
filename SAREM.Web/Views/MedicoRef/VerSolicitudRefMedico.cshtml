@@ -49,23 +49,36 @@
 </div>
 
  <div id="divPacientes">
-     <div class="pull-right" id="divAddPE">
+    
+     
+     <div class="pull-right" id="divAproveAll">
          <br />
-
-         <img src="~/Content/images/aproveAll.png" id="aprobar" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para aprobar todas las solicitudes">
+         <div class="btn-group" role="group" aria-label="...">
+             <button type="button" class="btn btn-primary" id="aprobar"><i class="glyphicon glyphicon-ok"></i> Aprobar Todo </button>
+             <button type="button" class="btn btn-default" id="denegar"><i class="glyphicon glyphicon-remove"></i> Denegar Todo</button>
+             
+         </div>
+         <br />
          <br />
      </div>
-     <table id="tablaPacientes" data-filter-control="true" data-pagination="true" data-side-pagination="client"
-            data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" ></table>
+     <br />
+     <div>
+         <table id="tablaPacientes" data-filter-control="true" data-pagination="true" data-side-pagination="client"
+                data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
+     </div>
  </div>    
 
 <script>
     $(document).ready(function () {
 
-        var $remove = $('#aprobar');
-    
+
+
+        var $aprobar = $('#aprobar');
+        var $denegar = $('#denegar');
+
         $("#divPacientes").hide();
         $("#aprobar").popover({ trigger: "hover" });
+        $("#aprobarNo").popover({ trigger: "hover" });
 
         var input1 = document.getElementById("idMedico");
         var awesomplete = new Awesomplete(input1, {
@@ -96,17 +109,24 @@
             }
         });
 
-        
-        $("#idMedico").change(function () {
-            
-            
 
+
+        $("#idMedico").change(function () {
+
+
+            //Ver de validar CI
+            $('#tablaPacientes').bootstrapTable('destroy');
             $('#tablaPacientes').bootstrapTable({
                 url: '@Url.Action("GetPacientes", "MedicoRef")' + '?idM=' + $("#idMedico").val(),
 
                 columns: [{
                     field: 'PacienteID',
                     title: 'Id Paciente',
+                    filterControl: 'input',
+                    sortable: true
+                }, {
+                    field: 'fechaSolicitud',
+                    title: 'Fecha de Solicitud',
                     filterControl: 'input',
                     sortable: true
                 }, {
@@ -136,32 +156,122 @@
                     align: 'center',
                     events: operateEventsLE,
                     formatter: operateFormatterLE
+                }, {
+                    field: 'operate2',
+                    title: 'Denegar',
+                    align: 'center',
+                    events: operateEvents,
+                    formatter: operateFormatter
                 },
 
                 ]
             });
 
-            
-            $('#tablaPacientes').bootstrapTable("refresh", { silent: true, url: '@Url.Action("GetPacientes", "MedicoRef")' + '?idM=' + $("#idMedico").val() });
+
+            // $('#tablaPacientes').bootstrapTable("refresh", { silent: true, url: '@Url.Action("GetPacientes", "MedicoRef")' + '?idM=' + $("#idMedico").val() });
+            $("#divAproveAll").hide();
+           
+
+            $.ajax({
+                url: '@Url.Action("GetPacientes", "MedicoRef")',
+                dataType: "json",
+                type: "GET",
+                data: { idM: $("#idMedico").val()},
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.length > 0) {
+                        $("#divAproveAll").show();
+                       
+                    }
+                  
+                },
+                error: function (xhr) {
+
+                    //alert('error al aprobar referencia tipo 1');
+                }
+            })
+          
+
             $("#divPacientes").show();
         });
 
-        
 
-       
-        $remove.click(function () {
-            var ids = getIdSelections();
-            alert("en remove");
-            alert(selections);
-            var ids = selections;
-            $('#tablaPacientes').bootstrapTable('remove', {
-                field: 'PacienteID',
-                values: ids
-            });
-            $remove.prop('disabled', true);
+
+
+        $aprobar.click(function () {
+           
+            $.ajax({
+                url: '@Url.Action("AprobarAllRef", "MedicoRef")',
+                dataType: "json",
+                type: "POST",
+                data: { idM: $("#idMedico").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $("#divAproveAll").hide();
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                       
+                      
+
+                       
+                    } else {
+
+                        alert('error al aprobar todas las referencias tipo 2');
+
+                    }
+                   
+
+                },
+                error: function (xhr) {
+
+                   alert('error al aprobar todas las referencia tipo 1');
+                }
+            })
+         
         });
 
-        //Pacientes en lista de espera
+        $denegar.click(function () {
+
+            $.ajax({
+                url: '@Url.Action("DenegarAllRef", "MedicoRef")',
+                dataType: "json",
+                type: "POST",
+                data: { idM: $("#idMedico").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $("#divAproveAll").hide();
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+
+
+
+
+                    } else {
+
+                        alert('error al denegar todas las referencias tipo 2');
+
+                    }
+
+
+                },
+                error: function (xhr) {
+
+                    alert('error al denegar todas las referencia tipo 1');
+                }
+            })
+
+        });
+
+
+       
         function operateFormatterLE(value, row, index) {
             return [
 
@@ -171,46 +281,103 @@
             ].join('');
         }
 
+        function operateFormatter(value, row, index) {
+            return [
+
+                '<a class="denegar" href="javascript:void(0)" title="Click para Denegar Referencia">',
+                '<i class="glyphicon glyphicon-remove"></i>',
+                '</a>'
+            ].join('');
+        }
+
         window.operateEventsLE = {
 
             'click .aprove': function (e, value, row, index) {
 
-               
+
                 if( row.PacienteID && $("#idMedico").val() ) {
-                   
-               
+
+
                 $.ajax({
                     url: '@Url.Action("AprobarReferencia", "MedicoRef")',
-                    dataType: "json",
-                    type: "POST",
-                    data: { idM: $("#idMedico").val(), idP: row.PacienteID },
+                        dataType: "json",
+                        type: "POST",
+                        data: { idM: $("#idMedico").val(), idP: row.PacienteID },
 
-                    cache: false,
-                    success: function (data) {
+                        cache: false,
+                        success: function (data) {
 
-                        if (data.success) {
+                            if (data.success) {
 
-                            $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                                $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                                if ($('#tablaPacientes').bootstrapTable('getData').length <= 0) {
 
-                        } else {
+                                    $("#divAproveAll").hide();
+                                  
+                                }
 
-                            alert("error al aprobar referencia tipo 2");
+                            } else {
+
+                                alert("error al aprobar referencia tipo 2");
+                            }
+                        },
+                        error: function (xhr) {
+
+                            alert('error al aprobar referencia tipo 1');
                         }
-                    },
-                    error: function (xhr) {
-
-                        alert('error al aprobar referencia tipo 1');
-                    }
-                })
+                    })
 
                 }
-              
+
             }
         };
-     
+
+        window.operateEvents = {
+
+            'click .denegar': function (e, value, row, index) {
+
+
+                if (row.PacienteID && $("#idMedico").val()) {
+
+                    
+
+                    $.ajax({
+                        url: '@Url.Action("DenegarReferencia", "MedicoRef")',
+                        dataType: "json",
+                        type: "POST",
+                        data: { idM: $("#idMedico").val(), idP: row.PacienteID },
+
+                        cache: false,
+                        success: function (data) {
+
+                            if (data.success) {
+
+                                $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                                if ($('#tablaPacientes').bootstrapTable('getData').length <= 0) {
+
+                                    $("#divAproveAll").hide();
+                                    $("#divAproveAllNo").hide();
+                                }
+
+                            } else {
+
+                                alert("error al denegar referencia tipo 2");
+                            }
+                        },
+                        error: function (xhr) {
+
+                            alert('error al denegar referencia tipo 1');
+                        }
+                    })
+
+                }
+
+            }
+        };
+
     })
 
-   
+
     function rowStyle(row, index) {
         var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
@@ -221,5 +388,5 @@
         }
         return {};
     }
-    
+
 </script>

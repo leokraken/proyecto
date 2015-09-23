@@ -390,7 +390,11 @@
     <Content Include="Content\images\agenda.png" />
     <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\aproveAll.png" />
+    <Content Include="Content\images\AproveAll2.png" />
+    <Content Include="Content\images\aproveNo.png" />
+    <Content Include="Content\images\AproveYes.png" />
     <Content Include="Content\images\dataConsulta.png" />
+    <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\images\progression.png" />

@@ -21,7 +21,7 @@ namespace SAREM.Web.Controllers
             public string celular { get; set; }
             public string telefono { get; set; }
             public string sexo { get; set; }
-            public string fechaSol { get; set; }
+            public string fechaSolicitud { get; set; }
         }
 
 
@@ -64,7 +64,13 @@ namespace SAREM.Web.Controllers
                     pjs.nombre = r.paciente.nombre;
                     pjs.telefono = r.paciente.telefono;
                     pjs.celular = r.paciente.celular;
-                   
+                    String format = "dd/MM/yyyy HH:mm";
+                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            r.fecha_solicitud,
+                                DateTimeKind.Utc);
+                    DateTime localVersionFSol = runtimeKnowsThisIsUtc.ToLocalTime();
+                    pjs.fechaSolicitud = localVersionFSol.ToString(format);
+                     
                     pacientesjs.Add(pjs);
 
                 }
@@ -86,6 +92,65 @@ namespace SAREM.Web.Controllers
             {
 
                 fabrica.ireferencias.finalizarReferencia(idP, idM);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult DenegarReferencia(string idM, string idP)
+        {
+            try
+            {
+
+                fabrica.ireferencias.denegarReferencia(idP, idM);
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult AprobarAllRef(string idM)
+        {
+            try
+            {
+                var refs = fabrica.ireferencias.obtenerReferenciasPendientesMedico(idM);
+                foreach (Referencia r in refs)
+                {
+                    fabrica.ireferencias.finalizarReferencia(r.PacienteID, idM);
+                }
+               
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult DenegarAllRef(string idM)
+        {
+            try
+            {
+                var refs = fabrica.ireferencias.obtenerReferenciasPendientesMedico(idM);
+                foreach (Referencia r in refs)
+                {
+                    fabrica.ireferencias.denegarReferencia(r.PacienteID,idM);
+                }
+
                 return Json(new { success = true });
             }
             catch
