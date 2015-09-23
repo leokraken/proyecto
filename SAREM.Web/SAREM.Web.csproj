@@ -393,6 +393,7 @@
     <Content Include="Content\images\AproveAll2.png" />
     <Content Include="Content\images\aproveNo.png" />
     <Content Include="Content\images\AproveYes.png" />
+    <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
     <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
@@ -400,6 +401,8 @@
     <Content Include="Content\images\progression.png" />
     <Content Include="Content\images\progressionDis.png" />
     <Content Include="Content\images\solicitudes.png" />
+    <Content Include="Content\images\text format3.png" />
+    <Content Include="Content\images\verified9.png" />
     <Content Include="Content\images\writing11.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
@@ -988,6 +991,7 @@
     <Content Include="Views\Consulta\CreateMasivo.cshtml" />
     <Content Include="Template\Template-Consulta.xlsx" />
     <Content Include="Views\MedicoRef\VerSolicitudRefMedico.cshtml" />
+    <Content Include="Views\MedicoRef\VerSolicitudesAceptadas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

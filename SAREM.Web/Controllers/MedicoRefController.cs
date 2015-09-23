@@ -22,6 +22,7 @@ namespace SAREM.Web.Controllers
             public string telefono { get; set; }
             public string sexo { get; set; }
             public string fechaSolicitud { get; set; }
+            public string fechaAprobacion { get; set; }
         }
 
 
@@ -33,6 +34,11 @@ namespace SAREM.Web.Controllers
         public ActionResult VerSolicitudes()
         {
             return View("VerSolicitudRefMedico");
+        }
+
+        public ActionResult VerSolicitudesAceptadas()
+        {
+            return View();
         }
 
         [HttpGet]
@@ -81,6 +87,50 @@ namespace SAREM.Web.Controllers
                 return Json(new { success = false });
             }
            
+        }
+
+
+        [HttpGet]
+        public JsonResult GetPacientesAprobados(string idM)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                var pacientes = fabrica.ireferencias.obtenerPacientesReferenciadosMedico(idM);
+                List<PacienteJson> pacientesjs = new List<PacienteJson>();
+                foreach (Referencia r in pacientes)
+                {
+                    PacienteJson pjs = new PacienteJson();
+                    pjs.PacienteID = r.paciente.PacienteID;
+                    pjs.sexo = r.paciente.sexo.ToString();
+                    pjs.nombre = r.paciente.nombre;
+                    pjs.telefono = r.paciente.telefono;
+                    pjs.celular = r.paciente.celular;
+                    String format = "dd/MM/yyyy HH:mm";
+                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            r.fecha_solicitud,
+                                DateTimeKind.Utc);
+                    DateTime localVersionFSol = runtimeKnowsThisIsUtc.ToLocalTime();
+                    pjs.fechaSolicitud = localVersionFSol.ToString(format);
+                   
+                   
+                    DateTime fConf = r.fecha_confirmacion ?? DateTime.Now;
+                    runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                                fConf,
+                                DateTimeKind.Utc);
+                    DateTime localVersionFApr = runtimeKnowsThisIsUtc.ToLocalTime();
+                    pjs.fechaAprobacion = localVersionFApr.ToString(format);
+                    pacientesjs.Add(pjs);
+
+                }
+                return Json(pacientesjs, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
         }
 
         [HttpPost]
