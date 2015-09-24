@@ -171,7 +171,8 @@
             'click .pacientes': function (e, value, row, index) {
 
 
-                alert(row.idC);
+                var url = '/Consulta/VerParteDiarioPacientes' + '?idC=' + row.idC;
+                location.href = url;
 
                
 

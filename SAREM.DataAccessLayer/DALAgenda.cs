@@ -449,6 +449,17 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public ICollection<Paciente> obtenerPacientesConsultaFueraLista(long ConsultaID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta").Where(x => (x.ConsultaID == ConsultaID && x.fueralista == true))
+                    .OrderByDescending(x => (x.paciente.FuncionarioID != null && x.paciente.FuncionarioID == x.consulta.FuncionarioID))
+                    .ThenBy(x => x.fecharegistro).Select(p => p.paciente).ToList();
+                return pacientesOrdered;
+            }
+        }
+
 
         // Por definicion el parte diario corresponde a la consulta de un medico
         // dada una fecha.
@@ -485,6 +496,20 @@ namespace SAREM.DataAccessLayer
                 db.Entry(pca).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
+        }
+
+        public PacienteConsultaAgenda obtenerPacienteConsulta(long ConsultaID, string PacienteID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = from c in db.consultasagendadas
+                            where c.ConsultaID == ConsultaID && c.PacienteID == PacienteID
+                            select c;
+                PacienteConsultaAgenda con = query.Single();
+              
+                return con;
+            }
+
         }
 
     }

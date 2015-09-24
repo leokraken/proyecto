@@ -670,6 +670,50 @@ namespace SAREM.Web.Controllers
             return Json(obj.records, JsonRequestBehavior.AllowGet);
         }
 
+        //Obtener pacientes fuera de lista
+        [HttpGet]
+        public JsonResult GetPacientesFE(string idC)
+        {
+            long idL = Convert.ToInt64(idC);
+            Pacientes obj = new Pacientes();
+            List<PacienteJson> pacientes = new List<PacienteJson>();
+
+            var pacientesConsulta = fabrica.iagenda.obtenerConsulta(idL).pacientes;
+            var pacientesOrdered = fabrica.iagenda.obtenerPacientesConsultaFueraLista(idL);
+            int nro = 1;
+            foreach (Paciente p in pacientesOrdered)
+            {
+
+                var pC = pacientesConsulta.First(x => (x.PacienteID == p.PacienteID && x.ConsultaID == idL));
+
+                PacienteJson pj = new PacienteJson();
+                Paciente pente = fabrica.ipacientes.obtenerPaciente(p.PacienteID);
+                pj.PacienteID = p.PacienteID;
+                pj.nombre = pente.nombre;
+                pj.celular = pente.celular;
+                pj.telefono = pente.telefono;
+                //Cambiar por valores reales luego
+                //pj.celular = "098258908";
+                //pj.telefono = "29014567";
+                pj.sexo = pente.sexo.ToString();
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        pC.fecharegistro,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                pj.fechaRegistro = localVersionFIni.ToString(format);
+                pj.numero = nro.ToString();
+                nro++;
+                pacientes.Add(pj);
+
+            }
+
+            obj.records = pacientes;
+            return Json(obj.records, JsonRequestBehavior.AllowGet);
+        }
+
+
+
         [HttpGet]
         public JsonResult GetPacientesNotInConsulta(string idC)
         {
@@ -871,5 +915,82 @@ namespace SAREM.Web.Controllers
             }
            
         }
+
+        [HttpGet]
+        public ActionResult VerParteDiarioPacientes(string idC)
+        {
+            long idL = Convert.ToInt64(idC);
+            SAREM.Shared.Entities.Consulta c = fabrica.iagenda.obtenerConsulta(idL);
+            String format = "dd/MM/yyyy HH:mm";
+            DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+            DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+            var fI = localVersionFIni.ToString(format);
+
+            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                     c.fecha_fin,
+                         DateTimeKind.Utc);
+            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+            var fFin = localVersionFIni.ToString(format);
+
+            var model = new SAREM.Web.Models.Consulta
+            {
+                consultaID = idC,
+                fecha_inicio = fI,
+                fecha_fin = fFin,
+                descEspecialidad = c.especialidad.descripcion,
+                localDesc = c.local.nombre,
+                medDesc = c.medico.nombre
+            };
+            return View("VerPacientesParteDiario",model);
+        }
+
+        [HttpGet]
+        public JsonResult GetDiagnostigoAusencia(string idC, string idP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+
+                var consulta = fabrica.iagenda.obtenerPacienteConsulta(idCC, idP);
+                return Json(new { diagnostico = consulta.diagnostico, ausencia = consulta.ausencia }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult ActualizarParteDiario(string idC, string idP, string diagnostico, string ausencia)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                Boolean aBool = false;
+
+                if (ausencia == "1")
+                {
+                    aBool = true;
+                }
+
+                fabrica.iagenda.actualizarParteDiario(idCC, idP, diagnostico, aBool); 
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
     }
 }

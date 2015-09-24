@@ -398,6 +398,7 @@
     <Content Include="Content\images\list-1.png" />
     <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
+    <Content Include="Content\images\pacientes.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\images\progression.png" />
     <Content Include="Content\images\progressionDis.png" />
@@ -994,6 +995,7 @@
     <Content Include="Views\MedicoRef\VerSolicitudRefMedico.cshtml" />
     <Content Include="Views\MedicoRef\VerSolicitudesAceptadas.cshtml" />
     <Content Include="Views\Consulta\VerParteDiario.cshtml" />
+    <Content Include="Views\Consulta\VerPacientesParteDiario.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
