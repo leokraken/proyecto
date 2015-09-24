@@ -36,24 +36,33 @@
 <br />
 
 <div class="panel panel-info">
-    <div class="panel-heading">Parte Diario <i class="fa fa-search"></i></div>
+    <div class="panel-heading"><button type="button" class="btn btn-info" id="parteDiario">Buscar  &nbsp &nbsp  <i class="fa fa-search"></i></button> </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-xs-6 col-md-3"><label for="email" class="control-label">Nro de Documento Médico:</label></div>
-            <div class="col-xs-6 col-md-3"><input id="idMedico" class="form-control"  /></div>
+            <div class="col-xs-6 col-md-3"><input id="idMedico" class="form-control" /></div>
             <div class="col-xs-6 col-md-2"><label for="fecha" class="control-label">Fecha:</label></div>
-            <div class="col-xs-6 col-md-4"><input id="fecha" class="form-control datetimepicker"/></div>
+            <div class="col-xs-6 col-md-4"><input id="fecha" class="form-control datetimepicker" style="width:200px;" /></div>
             
         </div>
+       
     </div>
 </div>
 
-
+<div id="divParteDiario">
+    <div>
+        <table id="tablaConsultas" data-filter-control="true" data-pagination="true" data-side-pagination="client"
+               data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
+    </div>
+</div> 
 
 
 <script>
 
     $(document).ready(function () {
+
+        $("#divParteDiario").hide();
+
 
         $(function () {
             $('.datetimepicker').datetimepicker({
@@ -63,7 +72,122 @@
             });
 
         });
+
+        var input1 = document.getElementById("idMedico");
+        var awesomplete = new Awesomplete(input1, {
+            minChars: 1,
+            maxItems: 15,
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetMedicos", "MedicoRef")',
+            dataType: "json",
+            type: "GET",
+            cache: false,
+            success: function (data) {
+
+
+                var list = [];
+                $.each(data, function (key, value) {
+                    list.push(value.MedicoID);
+                });
+
+                awesomplete.list = list;
+
+
+            },
+            error: function (xhr) {
+
+                //alert('error autocomplete');
+            }
+        });
+
+
+        $("#parteDiario").click(function () {
+
+            if ($("#idMedico").val() && $("#fecha").val()) {
+
+                $('#tablaConsultas').bootstrapTable('destroy');
+                $('#tablaConsultas').bootstrapTable({
+                    url: '@Url.Action("GetParteDiario", "Consulta")' + '?MedicoID=' + $("#idMedico").val() + "&fecha=" + $("#fecha").val(),
+
+                    columns: [{
+                        field: 'idC',
+                        title: 'Id Consulta',
+                        visible: false
+                    }, {
+                        field: 'origen',
+                        title: 'Orígen',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'especialidad',
+                        title: 'Especialidad',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'medico',
+                        title: 'Médico',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'fechaInicio',
+                        title: 'Fecha Inicio',
+                        filterControl: 'input',
+                        sortable: true
+                    },
+                    {
+                        field: 'fechaFin',
+                        title: 'Fecha Fin',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'operate',
+                        title: 'Ver Pacientes',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    },
+
+                    ]
+                });
+
+                $("#divParteDiario").show();
+            }
+
+        });
+
+        function operateFormatter(value, row, index) {
+            return [
+
+                '<a class="pacientes" href="javascript:void(0)" title="Click para Ver Pacientes">',
+                '<i class="fa fa-users"></i>',
+                '</a>'
+            ].join('');
+        }
+
+        window.operateEvents = {
+
+            'click .pacientes': function (e, value, row, index) {
+
+
+                alert(row.idC);
+
+               
+
+            }
+        };
     })
 
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if (index % 2 === 0) {
+            return {
+                classes: classes[2]
+            };
+        }
+        return {};
+    }
     
 </script>

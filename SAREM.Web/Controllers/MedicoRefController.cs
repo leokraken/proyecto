@@ -115,7 +115,7 @@ namespace SAREM.Web.Controllers
                     pjs.fechaSolicitud = localVersionFSol.ToString(format);
                    
                    
-                    DateTime fConf = r.fecha_confirmacion ?? DateTime.Now;
+                    DateTime fConf = r.fecha_confirmacion ?? DateTime.UtcNow;
                     runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
                                 fConf,
                                 DateTimeKind.Utc);

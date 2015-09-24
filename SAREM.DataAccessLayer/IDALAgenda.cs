@@ -6,7 +6,7 @@ namespace SAREM.DataAccessLayer
 {
     public interface IDALAgenda
     {
-        void agregarConsultaPaciente(string PacienteID, long ConsultaID);
+        void agregarConsultaPaciente(string PacienteID, long ConsultaID, Boolean fueraLista);
         void cancelarConsultaPaciente(string PacienteID, long ConsultaID);
         void ausenciaConsultaPaciente(string PacienteID, long ConsultaID);
         void agregarConsulta(Consulta consulta);

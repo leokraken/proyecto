@@ -17,7 +17,7 @@ namespace SAREM.DataAccessLayer
         }
 
         //MQ
-        public void agregarConsultaPaciente(string PacienteID, long ConsultaID)
+        public void agregarConsultaPaciente(string PacienteID, long ConsultaID, Boolean fueraLista)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
@@ -44,7 +44,7 @@ namespace SAREM.DataAccessLayer
                                 db.SaveChanges();
                             }
 
-                            PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = PacienteID, fecharegistro = DateTime.UtcNow };
+                            PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = PacienteID, fecharegistro = DateTime.UtcNow , fueralista = fueraLista};
                             db.consultasagendadas.Add(pca);
                             db.SaveChanges();
                         }
@@ -458,7 +458,9 @@ namespace SAREM.DataAccessLayer
             {
                 if (fecha.Date <= DateTime.UtcNow.Date)
                 {
-                    var query = from c in db.consultas.Include("medico").Include("pacientes.paciente")
+                    var query = from c in db.consultas.Include("especialidad")
+                            .Include("medico")
+                            .Include("local").Include("pacientes.paciente")
                                 where c.FuncionarioID == MedicoID && fecha.Date == fecha.Date
                                 select c;
                     return query.ToList();

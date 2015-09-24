@@ -22,7 +22,8 @@ namespace SAREM.Web.Controllers
         {
             "dd/MM/yyyy H:mm",
             "dd/MM/yyyy HH:mm", 
-            "dd/MM/yyyy hh:mm:ss tt"
+            "dd/MM/yyyy hh:mm:ss tt",
+            "dd/MM/yyyy"
         };
 
         public static DateTime ParseDate(string input)
@@ -647,11 +648,11 @@ namespace SAREM.Web.Controllers
                 Paciente pente = fabrica.ipacientes.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
                 pj.nombre = pente.nombre;
-                //pj.celular = pente.celular;
-                //pj.telefono = pente.telefono;
+                pj.celular = pente.celular;
+                pj.telefono = pente.telefono;
                 //Cambiar por valores reales luego
-                pj.celular = "098258908";
-                pj.telefono = "29014567";
+                //pj.celular = "098258908";
+                //pj.telefono = "29014567";
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
@@ -698,11 +699,11 @@ namespace SAREM.Web.Controllers
                 Paciente pente = fabrica.ipacientes.obtenerPaciente(p.PacienteID);
                 pj.PacienteID = p.PacienteID;
                 pj.nombre = pente.nombre;
-                //pj.celular = pente.celular;
-                //pj.telefono = pente.telefono;
+                pj.celular = pente.celular;
+                pj.telefono = pente.telefono;
                 //Cambiar por valores reales luego
-                pj.celular = "098258908";
-                pj.telefono = "29014567";
+                //pj.celular = "098258908";
+                //pj.telefono = "29014567";
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
@@ -728,7 +729,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                 fabrica.iagenda.agregarConsultaPaciente(idP, idCC);
+                 fabrica.iagenda.agregarConsultaPaciente(idP, idCC, false);
                 return Json(new { success = true });
             }
             catch
@@ -827,6 +828,48 @@ namespace SAREM.Web.Controllers
             
             return View();
         }
- 
+
+        // Obtener parte diario
+        [HttpGet]
+        public JsonResult GetParteDiario(string MedicoID, string fecha)
+        {
+            try
+            {
+                var consultas = fabrica.iagenda.obtenerParteDiario(MedicoID,ParseDate(fecha).ToUniversalTime());
+                List<ConsultaJSON> consjs = new List<ConsultaJSON>();
+                foreach (SAREM.Shared.Entities.Consulta c in consultas)
+                {
+                    ConsultaJSON cjson = new ConsultaJSON();
+
+                    cjson.idC = c.ConsultaID.ToString();
+                    cjson.origen = c.local.nombre;
+                    cjson.especialidad = c.especialidad.descripcion;
+                    cjson.medico = c.medico.nombre;
+
+                    String format = "dd/MM/yyyy HH:mm";
+                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            c.fecha_inicio,
+                                DateTimeKind.Utc);
+                    DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                    cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                    runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                           c.fecha_fin,
+                               DateTimeKind.Utc);
+                    localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                    cjson.fechaFin = localVersionFIni.ToString(format);
+
+                    consjs.Add(cjson);
+                
+                }
+                return Json(consjs, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+           
+        }
     }
 }
