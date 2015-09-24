@@ -71,7 +71,7 @@
                 </div>
 
                 <table id="tablaPacientesFE" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-show-footer="true"></table>
             </div>
 
         </div>
@@ -237,7 +237,7 @@
     function operateFormatter(value, row, index) {
         return [
 
-            '<a class="diagnostico" href="javascript:void(0)" title="Click para Agregar/Modificar Dignóstico y Ausencia">',
+            '<a class="diagnostico" href="javascript:void(0)" title="Click para Agregar/Modificar Diagnóstico y Ausencia">',
             '<i class="glyphicon glyphicon-pencil"></i>',
             '</a>'
         ].join('');
@@ -291,7 +291,7 @@
     function operateFormatterFE(value, row, index) {
         return [
 
-            '<a class="remove" href="javascript:void(0)" title="Click eliminar paciente">',
+            '<a class="remove" href="javascript:void(0)" title="Click para eliminar paciente">',
             '<i class="glyphicon glyphicon-remove"></i>',
             '</a>'
         ].join('');
@@ -313,7 +313,15 @@
     function totalNameFormatter(data) {
         return '<span class="badge">'+data.length+'</span>';
     }
-    
+ 
+    //function totalTextFormatter2(data) {
+    //    return '<b>Total </b>';
+    //}
+
+    //function totalNameFormatter2(data) {
+    //    return '<span class="badge">'+data.length+'</span>';
+    //}
+
     function rowStyle(row, index) {
         var classes = ['active', 'success', 'info', 'warning', 'danger'];
 
