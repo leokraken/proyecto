@@ -234,7 +234,7 @@ namespace SAREM.Testing
             foreach (var c in consultas)
             {
                 if(c.ConsultaID!=2)
-                    iagenda.agregarConsultaPaciente(CI, c.ConsultaID);
+                    iagenda.agregarConsultaPaciente(CI, c.ConsultaID,false);
             }
 
          
@@ -244,7 +244,7 @@ namespace SAREM.Testing
             {
                 try
                 {
-                    iagenda.agregarConsultaPaciente(p.PacienteID, 2);
+                    iagenda.agregarConsultaPaciente(p.PacienteID, 2,false);
                 }
                 catch (Exception e)
                 {

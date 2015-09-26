@@ -309,11 +309,31 @@
                             if (data.success) {
 
                                 $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
-                                if ($('#tablaPacientes').bootstrapTable('getData').length <= 0) {
 
-                                    $("#divAproveAll").hide();
-                                  
-                                }
+                                $.ajax({
+                                    url: '@Url.Action("GetPacientes", "MedicoRef")',
+                                    dataType: "json",
+                                    type: "GET",
+                                    data: { idM: $("#idMedico").val() },
+
+                                    cache: false,
+                                    success: function (data) {
+
+                                        if (data.length > 0) {
+                                            $("#divAproveAll").show();
+
+                                        } else {
+
+                                            $("#divAproveAll").hide();
+                                        }
+
+                                    },
+                                    error: function (xhr) {
+
+                                        //alert('error al aprobar referencia tipo 1');
+                                    }
+                                })
+                               
 
                             } else {
 
@@ -352,11 +372,29 @@
                             if (data.success) {
 
                                 $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
-                                if ($('#tablaPacientes').bootstrapTable('getData').length <= 0) {
+                                $.ajax({
+                                    url: '@Url.Action("GetPacientes", "MedicoRef")',
+                                    dataType: "json",
+                                    type: "GET",
+                                    data: { idM: $("#idMedico").val() },
 
-                                    $("#divAproveAll").hide();
-                                    $("#divAproveAllNo").hide();
-                                }
+                                    cache: false,
+                                    success: function (data) {
+
+                                        if (data.length > 0) {
+                                            $("#divAproveAll").show();
+
+                                        } else {
+
+                                            $("#divAproveAll").hide();
+                                        }
+
+                                    },
+                                    error: function (xhr) {
+
+                                        //alert('error al aprobar referencia tipo 1');
+                                    }
+                                })
 
                             } else {
 

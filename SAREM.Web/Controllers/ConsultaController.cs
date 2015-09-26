@@ -89,6 +89,7 @@ namespace SAREM.Web.Controllers
             public string sexo { get; set; }
             public string fechaRegistro { get; set; }
             public string numero { get; set; }
+            public string fueradeLista { get; set; }
         }
 
         // GET: Consulta
@@ -650,6 +651,14 @@ namespace SAREM.Web.Controllers
                 pj.nombre = pente.nombre;
                 pj.celular = pente.celular;
                 pj.telefono = pente.telefono;
+                if (pC.fueralista)
+                {
+                    pj.fueradeLista = "Si";
+                }
+                else
+                {
+                    pj.fueradeLista = "No";
+                }
                 //Cambiar por valores reales luego
                 //pj.celular = "098258908";
                 //pj.telefono = "29014567";
@@ -692,6 +701,14 @@ namespace SAREM.Web.Controllers
                 pj.nombre = pente.nombre;
                 pj.celular = pente.celular;
                 pj.telefono = pente.telefono;
+                if (pC.fueralista)
+                {
+                    pj.fueradeLista = "Si";
+                }
+                else
+                {
+                    pj.fueradeLista = "No";
+                }
                 //Cambiar por valores reales luego
                 //pj.celular = "098258908";
                 //pj.telefono = "29014567";
@@ -983,6 +1000,42 @@ namespace SAREM.Web.Controllers
 
                 fabrica.iagenda.actualizarParteDiario(idCC, idP, diagnostico, aBool); 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult AgregarPacienteFE(string idC, string idP)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                fabrica.iagenda.agregarConsultaPaciente(idP,idCC,true);
+
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpGet]
+        public JsonResult GetParametrosConsulta()
+        {
+            try
+            {
+                var dtp = fabrica.iagenda.obtenerParametrosConsulta();
+                return Json(new { max_pacientes = dtp.maxPacientesConsulta, max_pacientes_esp = dtp.maxPacientesListaEspera }, JsonRequestBehavior.AllowGet);
             }
             catch
             {

@@ -1,4 +1,5 @@
 ﻿using SAREM.Shared.Entities;
+using SAREM.Shared.Datatypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace SAREM.DataAccessLayer
                     {
                         //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
 
-                        if (numpacientes < MAX_PACIENTES)
+                        if ((numpacientes < MAX_PACIENTES) || fueraLista)
                         {
 
                             var conscans = db.consultascanceladas.SingleOrDefault(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
@@ -509,6 +510,15 @@ namespace SAREM.DataAccessLayer
               
                 return con;
             }
+
+        }
+
+        public DataParametros obtenerParametrosConsulta()
+        {
+            DataParametros d = new DataParametros();
+            d.maxPacientesConsulta = MAX_PACIENTES;
+            d.maxPacientesListaEspera = MAX_PACIENTES_ESPERA;
+            return d;
 
         }
 

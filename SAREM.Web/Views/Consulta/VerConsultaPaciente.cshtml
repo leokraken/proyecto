@@ -125,6 +125,26 @@
             maxItems: 15,
         });
 
+        //Inicializo parametros de consulta
+        var max_pacientes;
+        var max_pac_esp;
+        $.ajax({
+            url: '@Url.Action("GetParametrosConsulta", "Consulta")',
+            dataType: "json",
+            type: "GET",
+            cache: false,
+            success: function (data) {
+
+                max_pacientes = data.max_pacientes;
+                max_pac_esp = data.max_pacientes_esp;
+            },
+            error: function (xhr) {
+
+                //alert('error');
+            }
+        })
+
+
         //$('#tabPE').click(function (e) {
         //    if ($('#tablaPacientes').bootstrapTable('getData').length < 10) {
 
@@ -163,9 +183,9 @@
         //Agregar Paciente a la Consulta
         $("#addPac").click(function () {
 
-            if ( $('#tablaPacientes').bootstrapTable('getData').length >= 10) {
+            if ( $('#tablaPacientes').bootstrapTable('getData').length >= max_pacientes) {
 
-                $('#pText').text("Ya existen 10 pacientes en Consulta. No se pueden ingresar más.")
+                $('#pText').text("Ya existen al menos " + max_pacientes + " pacientes en Consulta. No se pueden ingresar más.")
 
                 $('#modalAlerta').modal('show');
 
@@ -210,9 +230,9 @@
         //Agregar Paciente a Lista de espera
         $("#addPacEspera").click(function () {
 
-            if ( $('#tablaPacientesEspera').bootstrapTable('getData').length >= 3) {
+            if ( $('#tablaPacientesEspera').bootstrapTable('getData').length >= max_pac_esp) {
 
-                $('#pText').text("Ya existen 3 pacientes en Lista de Espera. No se pueden ingresar más.")
+                $('#pText').text("Ya existen "+ max_pac_esp +" pacientes en Lista de Espera. No se pueden ingresar más.")
 
                 $('#modalAlerta').modal('show');
 
@@ -279,15 +299,17 @@
                 field: 'celular',
                 title: 'Celular',
                 filterControl:'input'
-            },{
-                field: 'telefono',
-                title: 'Teléfono',
-                filterControl:'input'
             },
             {
                 field: 'sexo',
                 title: 'Sexo',
                 filterControl:'input'
+            },
+            {
+                  field: 'fueradeLista',
+                  title: 'Fuera de Lista',
+                  width: 30,
+                  filterControl:'input'
             },
             {
                 field: 'operate',
@@ -325,10 +347,6 @@
             }, {
                 field: 'celular',
                 title: 'Celular',
-                filterControl:'input'
-            },{
-                field: 'telefono',
-                title: 'Teléfono',
                 filterControl:'input'
             },
             {

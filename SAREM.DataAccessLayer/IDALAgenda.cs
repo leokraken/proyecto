@@ -1,4 +1,5 @@
-﻿using SAREM.Shared.Entities;
+﻿using SAREM.Shared.Datatypes;
+using SAREM.Shared.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -37,5 +38,8 @@ namespace SAREM.DataAccessLayer
         void actualizarParteDiario(long ConsultaID, string PacienteID, string diagnostico, bool ausencia);
         //Obtengo diagnostico y ausencia de paciente en consulta
         PacienteConsultaAgenda obtenerPacienteConsulta(long ConsultaID, string PacienteID);
+
+        //obtener parametros consulta, max pacientes consulta y max pacientes lista de espera
+        DataParametros obtenerParametrosConsulta();
     }
 }
