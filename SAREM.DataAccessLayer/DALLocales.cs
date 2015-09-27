@@ -37,5 +37,19 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        //TODO test
+
+        public ICollection<Local> listarLocales(long EspecialidadID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = (from c in db.consultas.Include("local")
+                             where c.EspecialidadID == EspecialidadID
+                             select c.local).Distinct();
+                return query.ToList();
+
+            }
+        }
+
     }
 }

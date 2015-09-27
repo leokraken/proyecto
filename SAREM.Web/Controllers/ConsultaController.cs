@@ -394,7 +394,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetEspecialidades(string idLocalidad)
         {
             List<SelectListItem> especialidades = new List<SelectListItem>();
-            foreach (Especialidad e in  fabrica.iagenda.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
+            foreach (Especialidad e in  fabrica.iespecialidades.listarEspecialidadesLocal(Convert.ToInt64(idLocalidad)))
             {
 
                 especialidades.Add(new SelectListItem { Text = e.descripcion, Value = e.EspecialidadID.ToString() });
@@ -407,7 +407,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetMedicos(string idEspecialidad, string idLocalidad)
         {
             List<SelectListItem> medicos = new List<SelectListItem>();
-            foreach (Funcionario m in  fabrica.iagenda.listarMedicosEspecialidadLocal(Convert.ToInt64(idLocalidad), Convert.ToInt64(idEspecialidad)))
+            foreach (Funcionario m in  fabrica.imedicos.listarMedicosEspecialidadLocal(Convert.ToInt64(idLocalidad), Convert.ToInt64(idEspecialidad)))
             {
 
                 medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
@@ -490,7 +490,7 @@ namespace SAREM.Web.Controllers
             obj.locales = locales;
 
             List<EspecialidadJson> esps = new List<EspecialidadJson>();
-            var espsLocal =  fabrica.iagenda.listarEspecialidadesLocal(c.LocalID);
+            var espsLocal =  fabrica.iespecialidades.listarEspecialidadesLocal(c.LocalID);
             foreach (Especialidad e in espsLocal) {
 
                 EspecialidadJson ejson = new EspecialidadJson();
@@ -513,7 +513,7 @@ namespace SAREM.Web.Controllers
 
 
             List<MedicoJson> meds = new List<MedicoJson>();
-            var medsespsLocal =  fabrica.iagenda.listarMedicosEspecialidadLocal(c.LocalID, c.EspecialidadID);
+            var medsespsLocal =  fabrica.imedicos.listarMedicosEspecialidadLocal(c.LocalID, c.EspecialidadID);
 
             foreach (Medico m in medsespsLocal)
             {

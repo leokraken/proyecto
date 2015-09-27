@@ -15,6 +15,7 @@ namespace SAREM.Shared.Entities
         public virtual Paciente paciente { get; set; }
         public virtual Consulta consulta { get; set; }
 
+        public DateTime? turno { get; set; }
         public string diagnostico { get; set; }
         public DateTime fecharegistro { get; set; }
         public bool fueralista { get; set; }

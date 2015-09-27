@@ -62,14 +62,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DALAgenda.cs" />
+    <Compile Include="DALEspecialidades.cs" />
     <Compile Include="DALLocales.cs" />
+    <Compile Include="DALMedicos.cs" />
     <Compile Include="DALNotificaciones.cs" />
     <Compile Include="DALOpenEMPI.cs" />
     <Compile Include="DALPacientes.cs" />
     <Compile Include="DALReferencias.cs" />
     <Compile Include="FabricaSAREM.cs" />
     <Compile Include="IDALAgenda.cs" />
+    <Compile Include="IDALEspecialidades.cs" />
     <Compile Include="IDALLocales.cs" />
+    <Compile Include="IDALMedicos.cs" />
     <Compile Include="IDALNotificaciones.cs" />
     <Compile Include="IDALOpenEMPI.cs" />
     <Compile Include="IDALPacientes.cs" />

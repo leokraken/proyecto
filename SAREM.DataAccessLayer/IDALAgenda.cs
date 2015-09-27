@@ -8,6 +8,9 @@ namespace SAREM.DataAccessLayer
     public interface IDALAgenda
     {
         void agregarConsultaPaciente(string PacienteID, long ConsultaID, Boolean fueraLista);
+        //TODO test
+        DateTime ? agregarConsultaPaciente(string PacienteID, long ConsultaID);
+
         void cancelarConsultaPaciente(string PacienteID, long ConsultaID);
         void ausenciaConsultaPaciente(string PacienteID, long ConsultaID);
         void agregarConsulta(Consulta consulta);
@@ -17,13 +20,11 @@ namespace SAREM.DataAccessLayer
         ICollection<Consulta> listarConsultasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasCanceladasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasAusentesPaciente(string PacienteID);
-        ICollection<Especialidad> listarEspecialidades();
+        ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID);
+
+
         ICollection<Funcionario> listarFuncionarios();
-        ICollection<Especialidad> listarEspecialidadesLocal(long LocalID);
-        ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID);
         Consulta obtenerConsulta(long ConsultaID);
-        Especialidad obtenerEspecialidad(long EspecialidadID);
-        Medico obtenerMedico(string FuncionarioID);
         void agregarConsultaPacienteEspera(string PacienteID, long ConsultaID);
         void eliminarPacienteConsultaLE(string PacienteID, long ConsultaID);
         void moverPacientesLEConsulta(List<string> pacientesIDs, long ConsultaID);

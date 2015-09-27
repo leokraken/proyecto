@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace SAREM.DataAccessLayer
 {
-    public interface IDALLocales
+    public interface IDALMedicos
     {
-        ICollection<Local> listarLocales();
-        Local obtenerLocal(long LocalID);
-        ICollection<Local> listarLocales(long EspecialidadID);
-
+        ICollection<Medico> listarMedicosEspecialidadLocal(long LocalID, long EspecialidadID);
+        Medico obtenerMedico(string FuncionarioID);
     }
 }

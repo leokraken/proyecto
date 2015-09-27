@@ -6,16 +6,16 @@ using SAREM.Shared.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using SAREM.Shared.enums;
+using SAREM.Shared.Excepciones;
 
 namespace SAREM.Testing
 {
     [TestClass]
     public class DALAgendaTest
     {
-        private static IDALAgenda iagenda = null;
-        private static IDALNotificaciones inot = null;
-        private static SARMContext db = null;
         private static string tenant = "test";
+        private static SARMContext db = null;
+        private static FabricaSAREM fabrica = new FabricaSAREM(tenant);
 
         //datos
         private static List<Comunicacion> comunicaciones = new List<Comunicacion> { 
@@ -50,8 +50,7 @@ namespace SAREM.Testing
             }
             
             db = SARMContext.getTenant(tenant);
-            iagenda = new DALAgenda(tenant);
-            inot = new DALNotificaciones(tenant);
+
 
             List<Pais> naciones = new List<Pais>
             {
@@ -160,21 +159,21 @@ namespace SAREM.Testing
                 new Consulta {
                     EspecialidadID = especialidades[0].EspecialidadID,
                     fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(30),
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
                     FuncionarioID=funcionarios[0].FuncionarioID,
                     LocalID=1
                 },
                 new Consulta {
                     EspecialidadID = especialidades[1].EspecialidadID,
                     fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(32),
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
                     FuncionarioID=funcionarios[0].FuncionarioID,
                     LocalID=2
                 },
                 new Consulta {
                     EspecialidadID = especialidades[2].EspecialidadID,
                     fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(60),
+                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
                     FuncionarioID=funcionarios[0].FuncionarioID,
                     LocalID=1
                 }
@@ -234,7 +233,7 @@ namespace SAREM.Testing
             foreach (var c in consultas)
             {
                 if(c.ConsultaID!=2)
-                    iagenda.agregarConsultaPaciente(CI, c.ConsultaID,false);
+                    fabrica.iagenda.agregarConsultaPaciente(CI, c.ConsultaID,false);
             }
 
          
@@ -244,7 +243,7 @@ namespace SAREM.Testing
             {
                 try
                 {
-                    iagenda.agregarConsultaPaciente(p.PacienteID, 2,false);
+                    fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, 2,false);
                 }
                 catch (Exception e)
                 {
@@ -254,7 +253,7 @@ namespace SAREM.Testing
 
             //listo consultas paciente
             Debug.WriteLine("Consultas paciente " + CI);
-            var cpacientes = iagenda.listarConsultasPaciente(CI);
+            var cpacientes = fabrica.iagenda.listarConsultasPaciente(CI);
             foreach (var c in cpacientes)
             {
                 Debug.WriteLine(c.ConsultaID+c.fecha_inicio.ToString());
@@ -269,15 +268,15 @@ namespace SAREM.Testing
             Debug.WriteLine("TEST::Cancelar Consulta");
             var consulta = db.consultas.First();
             Debug.WriteLine(consulta.ConsultaID);
-            iagenda.cancelarConsultaPaciente(ci, consulta.ConsultaID);
+            fabrica.iagenda.cancelarConsultaPaciente(ci, consulta.ConsultaID);
 
             Debug.WriteLine("Consultas canceladas paciente "+ ci);
-            var canceladas = iagenda.listarConsultasCanceladasPaciente(ci);
+            var canceladas = fabrica.iagenda.listarConsultasCanceladasPaciente(ci);
             canceladas.ToList().ForEach(c => Debug.WriteLine(c.ConsultaID));
             Assert.AreEqual(canceladas.Count(), 1);
 
             //Pruebo que cancelando consulta, las consultas del paciente son 2
-            var marcadas = iagenda.listarConsultasPaciente(ci);
+            var marcadas = fabrica.iagenda.listarConsultasPaciente(ci);
             //Assert.AreEqual(marcadas.Count, 2);
             Console.WriteLine("Consultas marcadas: " + marcadas.Count);
         }
@@ -287,7 +286,7 @@ namespace SAREM.Testing
         {
             string PacienteID = "50548305";
             //Listar comunicaciones
-            List<Comunicacion> com = inot.listarComunicaciones().ToList();
+            List<Comunicacion> com = fabrica.inotificaciones.listarComunicaciones().ToList();
             com.ForEach(c =>
             {
                 Console.WriteLine("ID: " + c.ID + " Nombre:" + c.nombre);
@@ -295,11 +294,11 @@ namespace SAREM.Testing
             });
 
             //listar eventos
-            var ev = inot.listarEventosOpcionales(PacienteID);
+            var ev = fabrica.inotificaciones.listarEventosOpcionales(PacienteID);
             Assert.AreEqual(ev.Count, 0);
             try
             {
-                inot.suscribirPacienteEvento(eventosop[1].EventoID, PacienteID, com[0].ID);
+                fabrica.inotificaciones.suscribirPacienteEvento(eventosop[1].EventoID, PacienteID, com[0].ID);
             }
             catch (Exception e)
             {
@@ -308,7 +307,7 @@ namespace SAREM.Testing
 
             try
             {
-                inot.suscribirPacienteEvento(eventos[0].EventoID, "50548306", com[0].ID);
+                fabrica.inotificaciones.suscribirPacienteEvento(eventos[0].EventoID, "50548306", com[0].ID);
             }
             catch (Exception e)
             {
@@ -320,7 +319,7 @@ namespace SAREM.Testing
         [TestMethod]
         public void listarEspecialidadesLocalTest()
         {
-            var especialidades = iagenda.listarEspecialidadesLocal(1).ToList();
+            var especialidades = fabrica.iespecialidades.listarEspecialidadesLocal(1).ToList();
             especialidades.ForEach(e => Console.WriteLine(e.EspecialidadID));
 
         }
@@ -328,14 +327,14 @@ namespace SAREM.Testing
         [TestMethod]
         public void listarMedicosEspecialidadLocalTest()
         {
-            var medicos = iagenda.listarMedicosEspecialidadLocal(1, 1).ToList();
+            var medicos = fabrica.imedicos.listarMedicosEspecialidadLocal(1, 1).ToList();
             medicos.ForEach(m => Console.WriteLine(m.FuncionarioID + m.nombre));
         }
         
         [TestMethod]
         public void obtenerConsulta()
         {
-            var c = iagenda.obtenerConsulta(2);
+            var c = fabrica.iagenda.obtenerConsulta(2);
             Console.WriteLine("Local");
             Console.WriteLine(c.local.LocalID);
             Console.WriteLine("medico");
@@ -430,6 +429,58 @@ namespace SAREM.Testing
             {
                 Console.WriteLine("OK::" + e.Message);
             }
+        }
+
+        [TestMethod]
+        public void TestAgregarPacienteConsulta()
+        {
+            using(var db = SARMContext.getTenant(tenant))
+            {
+                //Creo consulta
+                Consulta c = new Consulta
+                {
+                    EspecialidadID = 1,
+                    fecha_inicio = DateTime.UtcNow,
+                    fecha_fin = DateTime.UtcNow.AddMinutes(30),
+                    FuncionarioID = "17299999",
+                    LocalID = 1
+                };
+                db.consultas.Add(c);
+                db.SaveChanges();
+
+                var pacientes = (from p in db.pacientes
+                                 select p).Take(14).ToList();
+                int i = 0;
+                foreach (var p in pacientes)
+                {
+                    i++;
+                    try
+                    {
+                        DateTime? date = fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, c.ConsultaID);
+                        if (date == null)
+                            Console.WriteLine(i + ")Paciente " + p.PacienteID + " agregado a lista de espera ");
+                        else
+                            Console.WriteLine(i + ")Paciente " + p.PacienteID + " agregado, consulta programada "+ date.ToString());
+
+                    }
+                    catch (ExcepcionMaxPacientesEspera max)
+                    {
+                        Console.WriteLine(i + "El paciente " + p.PacienteID + "no pudo se agregado... Max cola espera");
+                    }
+
+                }
+
+                Console.WriteLine("Segundo TEST:: Cancelar consulta [3] y agregar el [14]");
+                fabrica.iagenda.cancelarConsultaPaciente(pacientes[3].PacienteID, c.ConsultaID);
+                Console.WriteLine("Consulta cancelada...");
+                //veo a cual asigno...
+                var enespera = fabrica.iagenda.obtenerPacientesConsultaEspera(c.ConsultaID);
+                Console.WriteLine("Pacientes en lista de espera");
+                foreach (var p in enespera)
+                    Console.WriteLine(p.PacienteID);
+
+            }
+
         }
 
         [ClassCleanup]
