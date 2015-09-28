@@ -312,13 +312,27 @@ namespace SAREM.DataAccessLayer
                 var p = db.pacientes.Find(PacienteID);
                 if (p == null)
                     throw new Exception("No existe paciente");
-                else
+
+                var q = from c in db.consultas.Include("pacientes.paciente")
+                        .Include("local")
+                        .Include("medico")
+                        .Include("especialidad")
+                        where c.pacientes.Any(x => x.PacienteID == PacienteID)
+                        select c;
+                return q.ToList();
+               /* else
                 {
-                    var q = from c in db.consultasagendadas.Include("consulta")
+                    var q = (from c in db.consultasagendadas
+                             
+                                //.Include("consulta")
+                                //.Include("consulta.especialidad")
+                                //.Include("consulta.local")
+                                .Include("consulta.medico")
                             where c.PacienteID == PacienteID
-                            select c.consulta;
+                            select c.consulta);
                     return q.ToList();
-                }
+
+                }*/
             }
         }
 
@@ -490,7 +504,7 @@ namespace SAREM.DataAccessLayer
             return d;
         }
 
-        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID)
+        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fecha)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
@@ -500,7 +514,13 @@ namespace SAREM.DataAccessLayer
                             && c.FuncionarioID == MedicoID
                             && (c.pacientes.Count < MAX_PACIENTES || c.pacientesespera.Count < MAX_PACIENTES_ESPERA)
                             select c;
-                return query.ToList();
+                List<Consulta> lista = new List<Consulta>();
+                foreach (var c in query.ToList())
+                {
+                    if (c.fecha_inicio.Date == fecha.Date)
+                        lista.Add(c);
+                }
+                return lista;
             }
         }
 
