@@ -84,10 +84,13 @@
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-edit"></i> Consultas <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
                             <li>
-                                <a href="#">Agendar Consultas</a>
+                                <a href='@Url.Action("AgendarConsultaPaciente", "Consulta")'>Agendar Consulta</a>
                             </li>
                             <li>
-                                <a href="#">Cancelar Consultas</a>
+                                <a href='@Url.Action("VerConsultasAgendadasPaciente", "Consulta")'> Ver Consultas y Cancelar Consultas</a>
+                            </li>
+                            <li>
+                                <a href="#">Ver Consultas Canceladas</a>
                             </li>
                         </ul>
                     </li>
