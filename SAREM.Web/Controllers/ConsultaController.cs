@@ -44,6 +44,7 @@ namespace SAREM.Web.Controllers
             public string medico { get; set; }
             public String fechaInicio { get; set; }
             public String fechaFin { get; set; }
+            public string turno { get; set; }
         }
 
         public class LocalJson
@@ -1099,6 +1100,27 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
+                using (var db = SARMContext.getTenant("test"))
+                {
+                    var q = from cs in db.consultasagendadas
+                            where (cs.ConsultaID == c.ConsultaID && cs.PacienteID == "14")
+                            select cs;
+                    
+
+                    if (q != null)
+                    {
+                        var consulta = q.Single();
+                        if (consulta.turno != null) {
+                            DateTime turno = consulta.turno ?? DateTime.UtcNow;
+                            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            turno,
+                            DateTimeKind.Utc);
+                            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                            cjson.turno = localVersionFIni.ToString(format);
+                        }
+                    }
+                }
             
                 lista.Add(cjson);
             }
