@@ -508,6 +508,90 @@
             })
 
         });
+
+        
+    
+
+        function totalTextFormatter(data) {
+            return '<b>Total </b>';
+        }
+
+        function totalNameFormatter(data) {
+            return '<span class="badge">'+data.length+'</span>';
+        }
+    
+
+        //Pasar pacientes lista de espera a consulta
+        var $remove = $('#upgradePac'), selections = [];
+
+        $('#tablaPacientesEspera').on('check.bs.table uncheck.bs.table ' +
+                    'check-all.bs.table uncheck-all.bs.table', function () {
+                        $remove.prop('disabled', ! $('#tablaPacientesEspera').bootstrapTable('getSelections').length);
+
+                        if (!$('#tablaPacientesEspera').bootstrapTable('getSelections').length) {
+
+                            $remove.attr('src','/Content/images/progressionDis.png');
+
+                        } else {
+
+                            $remove.attr('src','/Content/images/progression.png');
+                        }
+                        // save your data, here just save the current page
+                        selections = getIdSelections();
+                        // push or splice the selections if you want to save all data selections
+                    });
+
+        $remove.click(function () {
+
+            var ids = getIdSelections();
+            if ( max_pacientes - $('#tablaPacientes').bootstrapTable('getData').length < $('#tablaPacientesEspera').bootstrapTable('getSelections').length  ) {
+
+                $('#pText').text("Debe seleccionar un número menor de pacientes. Ya que el cupo de la consulta es "+max_pacientes+".")
+
+                $('#modalAlerta').modal('show');
+
+            } else if ($('#tablaPacientesEspera').bootstrapTable('getSelections').length > 0) {
+
+                $.ajax({
+                    url: '@Url.Action("MoverPacientesConsultaLE", "Consulta")',
+                    dataType: "json",
+                    type: "POST",
+                    data: { idC: @Model.consultaID, idsP: ids },
+
+                    cache: false,
+                    success: function (data) {
+
+                        if (data.success) {
+
+                            //$('#tablaPacientesEspera').bootstrapTable('remove', {
+                            //    field: 'PacienteID',
+                            //    values: ids
+                            //});
+                            $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
+
+                            $remove.prop('disabled', true);
+                            $remove.attr('src','/Content/images/progressionDis.png');
+                            $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+
+                        } else {
+
+                            alert("error al mover Pacientes LE a Consulta");
+                        }
+                    },
+                    error: function (xhr) {
+
+                        alert('error mover Pacientes LE Consulta');
+                    }
+                })
+
+            }
+        });
+
+        function getIdSelections() {
+            return $.map( $('#tablaPacientesEspera').bootstrapTable('getSelections'), function (row) {
+                return row.PacienteID
+            });
+        }
     });
 
     function rowStyle(row, index) {
@@ -559,88 +643,6 @@
         }
     };
 
-    
-
-    function totalTextFormatter(data) {
-        return '<b>Total </b>';
-    }
-
-    function totalNameFormatter(data) {
-        return '<span class="badge">'+data.length+'</span>';
-    }
-    
-
-    //Pasar pacientes lista de espera a consulta
-    var $remove = $('#upgradePac'), selections = [];
-
-    $('#tablaPacientesEspera').on('check.bs.table uncheck.bs.table ' +
-                'check-all.bs.table uncheck-all.bs.table', function () {
-                    $remove.prop('disabled', ! $('#tablaPacientesEspera').bootstrapTable('getSelections').length);
-
-                    if (!$('#tablaPacientesEspera').bootstrapTable('getSelections').length) {
-
-                        $remove.attr('src','/Content/images/progressionDis.png');
-
-                    } else {
-
-                        $remove.attr('src','/Content/images/progression.png');
-                    }
-                    // save your data, here just save the current page
-                    selections = getIdSelections();
-                    // push or splice the selections if you want to save all data selections
-                });
-
-    $remove.click(function () {
-
-        var ids = getIdSelections();
-        if ( 10 - $('#tablaPacientes').bootstrapTable('getData').length < $('#tablaPacientesEspera').bootstrapTable('getSelections').length  ) {
-
-            $('#pText').text("Debe seleccionar un número menor de pacientes. Ya que el cupo de la consulta es 10.")
-
-            $('#modalAlerta').modal('show');
-
-        } else if ($('#tablaPacientesEspera').bootstrapTable('getSelections').length > 0) {
-
-         $.ajax({
-            url: '@Url.Action("MoverPacientesConsultaLE", "Consulta")',
-            dataType: "json",
-            type: "POST",
-            data: { idC: @Model.consultaID, idsP: ids },
-
-            cache: false,
-            success: function (data) {
-
-                if (data.success) {
-
-                    //$('#tablaPacientesEspera').bootstrapTable('remove', {
-                    //    field: 'PacienteID',
-                    //    values: ids
-                    //});
-                    $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
-
-                    $remove.prop('disabled', true);
-                    $remove.attr('src','/Content/images/progressionDis.png');
-                    $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
-
-                } else {
-
-                    alert("error al mover Pacientes LE a Consulta");
-                }
-            },
-            error: function (xhr) {
-
-                alert('error mover Pacientes LE Consulta');
-            }
-        })
-
-        }
-    });
-
-    function getIdSelections() {
-        return $.map( $('#tablaPacientesEspera').bootstrapTable('getSelections'), function (row) {
-            return row.PacienteID
-        });
-    }
 
 
 </script>
