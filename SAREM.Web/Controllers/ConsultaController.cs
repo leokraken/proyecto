@@ -926,8 +926,9 @@ namespace SAREM.Web.Controllers
                 }
                 return Json(consjs, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception e)
             {
+                
                 return Json(new { success = false });
             }
            
@@ -1044,6 +1045,76 @@ namespace SAREM.Web.Controllers
 
 
         }
+
+
+        #region Paciente
+            
+        //Agendar Consulta Paciente
+        [HttpGet]
+        public ActionResult AgendarConsultaPaciente()
+        {
+            var model = new SAREM.Web.Models.Consulta
+            {
+                local = fabrica.ilocales.listarLocales(),
+
+            };
+
+
+            return View(model);
+        }
+
+
+        //Ver Consultas agendadas paciente
+        public ActionResult VerConsultasAgendadasPaciente()
+        {
+           return View();
+        }
+
+
+        //Ver Consultas agendadas
+        public JsonResult GetConsultasPaciente() {
+
+            var consultas = fabrica.iagenda.listarConsultasPaciente("14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+           
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+            
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+          
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+       
 
     }
 }
