@@ -6,8 +6,9 @@
 
 <link rel="stylesheet" href="~/Content/boostrap-table/src/bootstrap-table.css">
 
-<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
 @Scripts.Render("~/bundles/jquery")
+<script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
 <script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
 <script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
@@ -15,7 +16,7 @@
 
 <ol class="breadcrumb">
     <li><a href="#">Consultas</a></li>
-    <li class="active">Ver Consultas y Cancelar Consultas</li>
+    <li class="active">Ver Consultas Agendadas y Cancelar Consultas</li>
 </ol>
 
 <div class="paragraphs">
@@ -32,7 +33,7 @@
 <br />
 <div>
     <table data-toggle="table" data-url='@Url.Action("GetConsultasPaciente", "Consulta")' data-pagination="true" data-side-pagination="client"
-           data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tab" data-id-field="idC">
+           data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tablaConsultas" data-id-field="idC">
         <thead>
             <tr>
                 <th data-field="idC" data-visible="false">ID</th>
@@ -56,8 +57,8 @@
 
         $("#remove").click(function () {
 
-            @*$.ajax({
-                url: '@Url.Action("Delete", "Consulta")',
+           $.ajax({
+                url: '@Url.Action("CancelarConsulta", "Consulta")',
                 dataType: "json",
                 type: "POST",
                 data: { idC: $("#idRowDel").val() },
@@ -69,22 +70,20 @@
 
 
                         $('#modalRemove').modal('hide');
-
-                        $('#tab').bootstrapTable('remove', {
-                            field: 'idC',
-                            values: [$("#idRowDel").val()]
-                        });
+                        alert("hola");
+                        $('#tablaConsultas').bootstrapTable("refresh", { silent: true });
+                        alert("chau");
 
                     } else {
 
-                        alert("error delete");
+                        alert("error al cancelar consulta");
                     }
                 },
                 error: function (xhr) {
 
                     alert('error');
                 }
-            })*@
+            })
 
 
 
@@ -105,7 +104,7 @@
 
 
     window.operateEvents = {
-      
+
         'click .remove': function (e, value, row, index) {
 
             $("#idRowDel").val(row.idC);
@@ -119,11 +118,11 @@
 
     function operateFormatter(value, row, index) {
         return [
-         
+
             '<a class="remove" href="javascript:void(0)" title="Cancelar Consulta">',
             '<i class="glyphicon glyphicon-remove"></i>',
             '</a>',
-        
+
 
         ].join('');
     }

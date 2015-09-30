@@ -93,6 +93,8 @@ namespace SAREM.Web.Controllers
             public string fueradeLista { get; set; }
         }
 
+        #region Tecnico
+
         // GET: Consulta
         public ActionResult Index()
         {
@@ -831,7 +833,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                 fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
+                fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
                 return Json(new { success = true });
             }
             catch
@@ -1047,9 +1049,10 @@ namespace SAREM.Web.Controllers
 
         }
 
+        #endregion
 
         #region Paciente
-            
+
         //Agendar Consulta Paciente
         [HttpGet]
         public ActionResult AgendarConsultaPaciente()
@@ -1075,7 +1078,7 @@ namespace SAREM.Web.Controllers
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
 
-            var consultas = fabrica.iagenda.listarConsultasPaciente("14");
+            var consultas = fabrica.iagenda.listarConsultasPaciente("12");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
            
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1100,17 +1103,10 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
-                using (var db = SARMContext.getTenant("test"))
+              
+                var consulta = fabrica.iagenda.obtenerConsulta("12", c.ConsultaID);
+                if (consulta.turno != null)
                 {
-                    var q = from cs in db.consultasagendadas
-                            where (cs.ConsultaID == c.ConsultaID && cs.PacienteID == "14")
-                            select cs;
-                    
-
-                    if (q != null)
-                    {
-                        var consulta = q.Single();
-                        if (consulta.turno != null) {
                             DateTime turno = consulta.turno ?? DateTime.UtcNow;
                             runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
                             turno,
@@ -1118,8 +1114,6 @@ namespace SAREM.Web.Controllers
                             localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                             cjson.turno = localVersionFIni.ToString(format);
-                        }
-                    }
                 }
             
                 lista.Add(cjson);
@@ -1133,6 +1127,34 @@ namespace SAREM.Web.Controllers
           
 
             return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult CancelarConsulta(string idC)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                //Cambiar luego id paciente
+                var pertenece = fabrica.iagenda.perteneceConsulta("12", idCC);
+                if (pertenece) { 
+                    
+                    fabrica.iagenda.cancelarConsultaPaciente("12", idCC);
+                }
+                else
+                {
+                    fabrica.iagenda.eliminarPacienteConsultaLE("12", idCC);
+                }
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
         }
 
         #endregion
