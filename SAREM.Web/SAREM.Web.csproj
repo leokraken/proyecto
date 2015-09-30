@@ -393,6 +393,7 @@
     <Content Include="Content\images\AproveAll2.png" />
     <Content Include="Content\images\aproveNo.png" />
     <Content Include="Content\images\AproveYes.png" />
+    <Content Include="Content\images\cancel38.png" />
     <Content Include="Content\images\clock118.png" />
     <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
@@ -999,6 +1000,7 @@
     <Content Include="Views\Consulta\VerPacientesParteDiario.cshtml" />
     <Content Include="Views\Consulta\AgendarConsultaPaciente.cshtml" />
     <Content Include="Views\Consulta\VerConsultasAgendadasPaciente.cshtml" />
+    <Content Include="Views\Consulta\VerConsultasCanceladasPaciente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

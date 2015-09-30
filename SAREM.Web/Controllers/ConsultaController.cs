@@ -1075,6 +1075,12 @@ namespace SAREM.Web.Controllers
            return View();
         }
 
+        //Ver Consultas canceladas paciente
+        public ActionResult VerConsultasCanceladasPaciente()
+        {
+            return View();
+        }
+
         //Ver Consultas agendadas
         public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
         {
@@ -1170,6 +1176,51 @@ namespace SAREM.Web.Controllers
                 records = lista
             };
           
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        //Ver Consultas Canceladas paciente
+        public JsonResult GetConsultasPacienteCancel()
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasCanceladasPaciente("14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = fabrica.ilocales.obtenerLocal(c.LocalID).nombre;
+                cjson.especialidad = fabrica.iespecialidades.obtenerEspecialidad(c.EspecialidadID).descripcion;
+                cjson.medico = fabrica.imedicos.obtenerMedico(c.FuncionarioID).nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+              
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
 
             return Json(lista, JsonRequestBehavior.AllowGet);
         }
