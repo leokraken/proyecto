@@ -559,6 +559,9 @@ namespace SAREM.DataAccessLayer
             using (var db = SARMContext.getTenant(tenant))
             {
                 var query = from c in db.consultas.Include("pacientes")
+                            .Include("especialidad")
+                            .Include("medico")
+                            .Include("local")
                             where c.LocalID == LocalID 
                             && c.EspecialidadID == EspecialidadID 
                             && c.FuncionarioID == MedicoID

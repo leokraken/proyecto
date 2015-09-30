@@ -33,7 +33,7 @@
 <br />
 <div>
     <div class="panel panel-info">
-        <div class="panel-heading"><button type="button" class="btn btn-info" id="parteDiario">Buscar  &nbsp &nbsp  <i class="fa fa-search"></i></button> </div>
+        <div class="panel-heading"><button type="button" class="btn btn-info" id="buscar">Buscar  &nbsp &nbsp  <i class="fa fa-search"></i></button> </div>
         <div class="panel-body">
                <div class="form-horizontal">
                   
@@ -83,6 +83,13 @@
 
 </div>
 
+<div id="divConsultas" style="display:none;">
+    <div>
+        <table id="tablaConsultas" data-filter-control="true" data-pagination="true" data-side-pagination="client"
+               data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
+    </div>
+</div> 
+
 <script>
     $(document).ready(function () {
 
@@ -94,7 +101,7 @@
                 $("#medicos").css("display", "none");
                 $("#Especial").empty().append('<option value="0">Seleccione una Especialidad</option>');
 
-                   
+
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("GetEspecialidades", "Consulta")',
@@ -106,7 +113,7 @@
                         // states contains the JSON formatted list
                         // of states passed from the controller
 
-                         
+
 
                         $.each(data, function (i, dato) {
                             $("#Especial").append('<option value="' + dato.Value + '">' +
@@ -156,6 +163,61 @@
         });
 
 
+        $("#buscar").click(function () {
+            $("#divConsultas").hide();
+            if ($(".origen_change option:selected").index() != 0 && $("#Especial option:selected").index() != 0 && $("#Medico option:selected").index() != 0 && $("#idFI").val()) {
+
+                $('#tablaConsultas').bootstrapTable('destroy');
+                $('#tablaConsultas').bootstrapTable({
+                    url: '@Url.Action("GetConsultasParaAgenda", "Consulta")' + '?idOrigen=' + $(".origen_change").find('option:selected').val() + "&idEspecialidad=" + $("#Especial").find('option:selected').val()
+                          + "&idMedico=" + $("#Medico").find('option:selected').val() + "&fechaConsulta=" + $("#idFI").val(),
+
+                    columns: [{
+                        field: 'idC',
+                        title: 'Id Consulta',
+                        visible: false
+                    }, {
+                        field: 'origen',
+                        title: 'Orígen',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'especialidad',
+                        title: 'Especialidad',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'medico',
+                        title: 'Médico',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'fechaInicio',
+                        title: 'Fecha Inicio',
+                        filterControl: 'input',
+                        sortable: true
+                    },
+                    {
+                        field: 'fechaFin',
+                        title: 'Fecha Fin',
+                        filterControl: 'input',
+                        sortable: true
+                    }, {
+                        field: 'operate',
+                        title: 'Agendar Consulta',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    },
+
+                    ]
+                });
+
+                $("#divConsultas").show();
+            }
+
+        });
+
 
         $(function () {
             $('.datetimepicker').datetimepicker({
@@ -165,5 +227,88 @@
             });
 
         });
+
+        function operateFormatter(value, row, index) {
+            return [
+
+                '<a class="pacientes" href="javascript:void(0)" title="Click para agendar cita en Consulta">',
+                '<i class="glyphicon glyphicon-ok"></i>',
+                '</a>'
+            ].join('');
+        }
+
+        window.operateEvents = {
+
+            'click .pacientes': function (e, value, row, index) {
+
+
+                $.ajax({
+                    url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
+                    dataType: "json",
+                    type: "POST",
+                    data: { idC: row.idC},
+
+                    cache: false,
+                    success: function (data) {
+
+                        if (data.success && data.turno != "LE") {
+
+                            $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
+                            $('#modalAlerta').modal('show');
+                            
+                           
+                        } else if (data.success && data.turno == "LE") {
+
+                            $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
+                            $('#modalAlerta').modal('show');
+
+                        } else {
+
+                            $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera. Por favor, busque otra consulta.")
+                            $('#modalAlerta').modal('show');
+                        }
+                    },
+                    error: function (xhr) {
+
+                        alert('error agendar consulta tipo 1');
+                    }
+                })
+
+
+
+            }
+        };
     })
+
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+
+        if (index % 2 === 0) {
+            return {
+                classes: classes[2]
+            };
+        }
+        return {};
+    }
+
 </script>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalAlerta">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Alerta</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pText"></p>
+
+            </div>
+            <div class="modal-footer">
+
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

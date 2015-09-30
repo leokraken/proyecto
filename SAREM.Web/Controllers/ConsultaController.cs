@@ -1068,12 +1068,57 @@ namespace SAREM.Web.Controllers
         }
 
 
+
         //Ver Consultas agendadas paciente
         public ActionResult VerConsultasAgendadasPaciente()
         {
            return View();
         }
 
+        //Ver Consultas agendadas
+        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime());
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+               
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
 
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
@@ -1148,6 +1193,41 @@ namespace SAREM.Web.Controllers
                     fabrica.iagenda.eliminarPacienteConsultaLE("12", idCC);
                 }
                 return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult AgregarPacienteConsulta(string idC)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("11", idCC);
+                if (turnoAux != null) {
+                    
+                    DateTime turno = turnoAux ?? DateTime.UtcNow;
+                    String format = "dd/MM/yyyy HH:mm";
+                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            turno,
+                            DateTimeKind.Utc);
+                    DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                    var fecha = localVersionFIni.ToString(format);
+
+                    return Json(new { success = true , turno = fecha});
+                
+                } else {
+
+                    return Json(new { success = true , turno = "LE" });
+                }
+                
             }
             catch
             {
