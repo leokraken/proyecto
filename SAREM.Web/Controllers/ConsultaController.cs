@@ -44,6 +44,7 @@ namespace SAREM.Web.Controllers
             public string medico { get; set; }
             public String fechaInicio { get; set; }
             public String fechaFin { get; set; }
+            public string turno { get; set; }
         }
 
         public class LocalJson
@@ -91,6 +92,8 @@ namespace SAREM.Web.Controllers
             public string numero { get; set; }
             public string fueradeLista { get; set; }
         }
+
+        #region Tecnico
 
         // GET: Consulta
         public ActionResult Index()
@@ -830,7 +833,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                 fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
+                fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
                 return Json(new { success = true });
             }
             catch
@@ -1046,9 +1049,10 @@ namespace SAREM.Web.Controllers
 
         }
 
+        #endregion
 
         #region Paciente
-            
+
         //Agendar Consulta Paciente
         [HttpGet]
         public ActionResult AgendarConsultaPaciente()
@@ -1064,17 +1068,68 @@ namespace SAREM.Web.Controllers
         }
 
 
+
         //Ver Consultas agendadas paciente
         public ActionResult VerConsultasAgendadasPaciente()
         {
            return View();
         }
 
+        //Ver Consultas canceladas paciente
+        public ActionResult VerConsultasCanceladasPaciente()
+        {
+            return View();
+        }
+
+        //Ver Consultas agendadas
+        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime());
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+               
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
 
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
 
-            var consultas = fabrica.iagenda.listarConsultasPaciente("14");
+            var consultas = fabrica.iagenda.listarConsultasPaciente("12");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
            
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1099,6 +1154,18 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
+              
+                var consulta = fabrica.iagenda.obtenerConsulta("12", c.ConsultaID);
+                if (consulta.turno != null)
+                {
+                            DateTime turno = consulta.turno ?? DateTime.UtcNow;
+                            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            turno,
+                            DateTimeKind.Utc);
+                            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                            cjson.turno = localVersionFIni.ToString(format);
+                }
             
                 lista.Add(cjson);
             }
@@ -1111,6 +1178,114 @@ namespace SAREM.Web.Controllers
           
 
             return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        //Ver Consultas Canceladas paciente
+        public JsonResult GetConsultasPacienteCancel()
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasCanceladasPaciente("14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = fabrica.ilocales.obtenerLocal(c.LocalID).nombre;
+                cjson.especialidad = fabrica.iespecialidades.obtenerEspecialidad(c.EspecialidadID).descripcion;
+                cjson.medico = fabrica.imedicos.obtenerMedico(c.FuncionarioID).nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+              
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult CancelarConsulta(string idC)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                //Cambiar luego id paciente
+                var pertenece = fabrica.iagenda.perteneceConsulta("12", idCC);
+                if (pertenece) { 
+                    
+                    fabrica.iagenda.cancelarConsultaPaciente("12", idCC);
+                }
+                else
+                {
+                    fabrica.iagenda.eliminarPacienteConsultaLE("12", idCC);
+                }
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        [HttpPost]
+        public JsonResult AgregarPacienteConsulta(string idC)
+        {
+
+
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("11", idCC);
+                if (turnoAux != null) {
+                    
+                    DateTime turno = turnoAux ?? DateTime.UtcNow;
+                    String format = "dd/MM/yyyy HH:mm";
+                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            turno,
+                            DateTimeKind.Utc);
+                    DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                    var fecha = localVersionFIni.ToString(format);
+
+                    return Json(new { success = true , turno = fecha});
+                
+                } else {
+
+                    return Json(new { success = true , turno = "LE" });
+                }
+                
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
         }
 
         #endregion

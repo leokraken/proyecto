@@ -42,5 +42,9 @@ namespace SAREM.DataAccessLayer
 
         //obtener parametros consulta, max pacientes consulta y max pacientes lista de espera
         DataParametros obtenerParametrosConsulta();
+        //Obtengo consulta para buscar el turno
+        PacienteConsultaAgenda obtenerConsulta(string PacienteID, long ConsultaID);
+        //chequear si paciente pertenece a la consulta o a la lista de espera, true si pertenece a la consulta, false en caso contrario
+        Boolean perteneceConsulta(string PacienteID, long ConsultaID);
     }
 }

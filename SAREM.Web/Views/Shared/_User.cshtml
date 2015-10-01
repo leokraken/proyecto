@@ -9,7 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    <title>@ViewBag.Title - SAREM</title>
     @Styles.Render("~/Content/css")
     @Styles.Render("~/ContentEsp/css")
     @Styles.Render("~/Content/fontawesome")
@@ -87,10 +87,10 @@
                                 <a href='@Url.Action("AgendarConsultaPaciente", "Consulta")'>Agendar Consulta</a>
                             </li>
                             <li>
-                                <a href='@Url.Action("VerConsultasAgendadasPaciente", "Consulta")'> Ver Consultas y Cancelar Consultas</a>
+                                <a href='@Url.Action("VerConsultasAgendadasPaciente", "Consulta")'> Ver Consultas Agendadas y Cancelar Consultas</a>
                             </li>
                             <li>
-                                <a href="#">Ver Consultas Canceladas</a>
+                                <a href='@Url.Action("VerConsultasCanceladasPaciente", "Consulta")'>Ver Consultas Canceladas</a>
                             </li>
                         </ul>
                     </li>
@@ -128,7 +128,7 @@
         </div>
     </div>
             <!-- /#wrapper -->
-            @Scripts.Render("~/bundles/jquery")
+            @*@Scripts.Render("~/bundles/jquery")*@
             @Scripts.Render("~/bundles/bootstrap")
             @RenderSection("scripts", required: false)
 </body>
