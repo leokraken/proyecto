@@ -13,7 +13,8 @@ namespace SAREM.Web.Controllers
         // GET: MedicoRef
 
         private FabricaSAREM fabrica = new FabricaSAREM("test");
-
+        
+        #region DataTypes
         public class PacienteJson
         {
             public string PacienteID { get; set; }
@@ -25,7 +26,32 @@ namespace SAREM.Web.Controllers
             public string fechaAprobacion { get; set; }
         }
 
+        public class MedicoJson
+        {
+            public string MedicoID { get; set; }
+            public string Nombre { get; set; }
 
+        }
+
+        public class LocalJson
+        {
+            public string Nombre { get; set; }
+            public string Direccion { get; set; }
+
+        }
+
+        public class EstadoReferenciasJson
+        {
+            public string MedicoID { get; set; }
+            public string Nombre { get; set; }
+            public string Estado { get; set; }
+            public string fechaSolicitud { get; set; }
+            public string fechaConfirmacion { get; set; }
+            
+        }
+        #endregion
+
+        #region Tecnico
         public ActionResult Index()
         {
             return View();
@@ -210,5 +236,163 @@ namespace SAREM.Web.Controllers
 
 
         }
+
+        #endregion
+
+        #region Paciente
+
+        [HttpGet]
+        public ActionResult SeleccionarMedRef()
+        {
+            var model = new SAREM.Web.Models.MedicoReferencia
+            {
+                especialidad = fabrica.iespecialidades.listarEspecialidades(),
+
+            };
+
+
+            return View(model);
+        }
+
+       
+        [HttpGet]
+        public JsonResult GetMedico(string idM)
+        {
+            try
+            {
+                var medico = fabrica.imedicos.obtenerMedico(idM);
+                MedicoJson m = new MedicoJson();
+                m.MedicoID = medico.FuncionarioID;
+                m.Nombre = medico.nombre;
+                List<MedicoJson> mjs = new List<MedicoJson>();
+                mjs.Add(m);
+                return Json(mjs, JsonRequestBehavior.AllowGet);
+
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+        
+        }
+       
+        [HttpGet]
+        public JsonResult GetMedicoLocales(string idM)
+        {
+            try
+            {
+                var locales = fabrica.ilocales.listarLocalesMedico(idM);
+             
+                List<LocalJson> listjs = new List<LocalJson>();
+
+                foreach (MedicoLocal l in locales)
+                {
+                    LocalJson ljs = new LocalJson();
+                    ljs.Nombre = l.local.nombre;
+                    ljs.Direccion = l.local.calle + " " + l.local.numero;
+
+                    listjs.Add(ljs);
+                }
+
+                return Json(listjs, JsonRequestBehavior.AllowGet);
+
+            }
+            catch(Exception e)
+            {
+                return Json(new { success = false });
+            }
+        
+        }
+
+
+        [HttpPost]
+        public JsonResult SolicitarReferencia(string idM)
+        {
+            try
+            {
+
+                fabrica.ireferencias.agregarReferencia("11", idM);
+
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+       
+
+        [HttpGet]
+        public JsonResult GetEstadoReferencias()
+        {
+            try
+            {
+                var referencia = fabrica.ireferencias.obtenerReferencia("11");
+
+                List<EstadoReferenciasJson> listjs = new List<EstadoReferenciasJson>();
+
+                
+                EstadoReferenciasJson e = new EstadoReferenciasJson();
+
+                e.MedicoID = referencia.FuncionarioID;
+                e.Nombre = referencia.medico.nombre;
+                if (referencia.pendiente)
+                {
+                    e.Estado = "Pendiente";
+                }
+                else
+                {
+                    e.Estado = "Finalizado";
+                }
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        referencia.fecha_solicitud,
+                            DateTimeKind.Utc);
+                DateTime localVersionFSol = runtimeKnowsThisIsUtc.ToLocalTime();
+                e.fechaSolicitud = localVersionFSol.ToString(format);
+
+                if (referencia.fecha_confirmacion != null) { 
+                
+                    DateTime fConf = referencia.fecha_confirmacion ?? DateTime.UtcNow;
+                    runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                            fConf,
+                            DateTimeKind.Utc);
+                    DateTime localVersionFApr = runtimeKnowsThisIsUtc.ToLocalTime();
+                    e.fechaConfirmacion = localVersionFApr.ToString(format);
+
+                }
+                
+                listjs.Add(e);
+                
+
+                return Json(listjs, JsonRequestBehavior.AllowGet);
+
+            }
+            catch(Exception e)
+            {
+                return Json(new { success = false });
+            }
+        
+        }
+
+        [HttpGet]
+        public JsonResult ChequearSolicitud()
+        {
+            try
+            {
+                Boolean existeS = fabrica.ireferencias.chequearExistenciaSolicitud("11");
+                return Json(new { existe = existeS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { success = false });
+            }
+        }
+
+       
+        #endregion
     }
 }

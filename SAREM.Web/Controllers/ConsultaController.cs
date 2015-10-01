@@ -16,8 +16,8 @@ namespace SAREM.Web.Controllers
     public class ConsultaController : Controller
     {
         private FabricaSAREM fabrica = new FabricaSAREM("test");
-       
 
+        #region DataTypes
         private static string[] formats = new string[]
         {
             "dd/MM/yyyy H:mm",
@@ -92,6 +92,8 @@ namespace SAREM.Web.Controllers
             public string numero { get; set; }
             public string fueradeLista { get; set; }
         }
+
+        #endregion
 
         #region Tecnico
 
@@ -418,6 +420,16 @@ namespace SAREM.Web.Controllers
             return Json(new SelectList(medicos, "Value", "Text"));
         }
 
+        public JsonResult GetMedicosEspecialidad(string idEspecialidad)
+        {
+            List<SelectListItem> medicos = new List<SelectListItem>();
+            foreach (Funcionario m in fabrica.imedicos.listarMedicosEspecialidad(Convert.ToInt64(idEspecialidad)))
+            {
+                medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
+            }
+            return Json(new SelectList(medicos, "Value", "Text"));
+
+        }
 
         public ActionResult VerConsultas()
         {

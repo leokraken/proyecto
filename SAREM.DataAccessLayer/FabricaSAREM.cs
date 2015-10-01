@@ -26,7 +26,7 @@ namespace SAREM.DataAccessLayer
             ilocales = new DALLocales(tenant);
             imedicos = new DALMedicos(tenant);
             iespecialidades = new DALEspecialidades(tenant);
-            iopenempi = new DALOpenEMPI();
+            //iopenempi = new DALOpenEMPI();
         }
     }
 }
