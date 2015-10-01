@@ -9,6 +9,9 @@ namespace SAREM.DataAccessLayer
     public interface IDALOpenEMPI
     {
         person obtenerPaciente(string paisID, string pacienteID);
+        person obtenerPacienteParallel(string paisID, string pacienteID);
         List<identifierDomain> obtenerDominios();
+        string getAuth();
+
     }
 }
