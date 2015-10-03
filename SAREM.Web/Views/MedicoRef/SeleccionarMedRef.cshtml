@@ -32,7 +32,7 @@
     </div>
 </div>
 <hr />
-<br />
+
 <div id="solMR" style="display:none">
     <div id="Busqueda">
         <div class="panel panel-info">
@@ -275,6 +275,42 @@
 
             }
         }
+
+        $("#cancel").click(function () {
+
+
+            $.ajax({
+                url: '@Url.Action("CancelarReferencia", "MedicoRef")',
+                dataType: "json",
+                type: "POST",
+                data: { idM: $("#idRowCancel").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $("#solMR").show();
+                        $('#tabEstado').bootstrapTable("refresh", { silent: true });
+                        $("#estadoRef").hide();
+                        $("#medReferencia").hide();
+                        $("#medicos").hide();
+                        $(".especialidad").prop('selectedIndex', 0);
+                        
+                        $("#modalCancelRef").modal('hide');
+
+                    } else {
+
+                        alert('error cancelar referencia tipo 2');
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error cancelar referencia tipo 1');
+                }
+            })
+
+        })
     })
 
     function rowStyle(row, index) {
@@ -301,7 +337,8 @@
 
         'click .eliminar': function (e, value, row, index) {
 
-            $("#idRowCancel").val(row.MedicoID)
+            $("#idRowCancel").val(row.MedicoID);
+            $("#modalCancelRef").modal('show');
         }
     }
 </script>
@@ -336,7 +373,7 @@
                 <h4 class="modal-title">Eliminar Referencia</h4>
             </div>
             <div class="modal-body">
-                <p>Está seguro/a que desea cambiar de Médico Referente ?</p>
+                <p>Está seguro/a que desea eliminar la Referencia ?</p>
                 <input id="idRowCancel" type="hidden" />
             </div>
             <div class="modal-footer">

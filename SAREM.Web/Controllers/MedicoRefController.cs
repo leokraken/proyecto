@@ -392,7 +392,25 @@ namespace SAREM.Web.Controllers
             }
         }
 
-       
+        [HttpPost]
+        public JsonResult CancelarReferencia(string idM)
+        {
+            try
+            {
+
+                fabrica.ireferencias.denegarReferencia("11", idM);
+
+                return Json(new { success = true });
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+
         #endregion
     }
 }
