@@ -80,5 +80,17 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public Boolean checkPaciente(string idPaciente)
+        {
+            if (!db.pacientes.Any(p => p.PacienteID == idPaciente))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }

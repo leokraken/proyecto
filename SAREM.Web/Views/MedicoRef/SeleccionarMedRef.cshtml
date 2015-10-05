@@ -31,8 +31,7 @@
         </div>
     </div>
 </div>
-<hr />
-
+<br />
 <div id="solMR" style="display:none">
     <div id="Busqueda">
         <div class="panel panel-info">
@@ -50,7 +49,7 @@
                             Text = l.descripcion,
                             Value = l.EspecialidadID.ToString()
                         }),
-          "Seleccione una Especilaidad", new { style = "width:280px", @class = "especialidad" })
+          "Seleccione una Especialidad", new { style = "width:280px", @class = "especialidad form-control" })
                             @Html.ValidationMessageFor(model => model.EspecialidadID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -59,7 +58,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-2">Médico:</label>
                             <div class="col-md-10">
-                                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "dropdown1" })
+                                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "form-control" })
                             </div>
                         </div>
                     </div>

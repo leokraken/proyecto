@@ -90,7 +90,7 @@ namespace SAREM.DataAccessLayer
                                     ConsultaID = ConsultaID,
                                     PacienteID = PacienteID,
                                     fecharegistro = DateTime.UtcNow,
-                                    fueralista = false,
+                                    fueralista = true,
                                     turno = null
                                 };
 
