@@ -66,7 +66,7 @@
                 <div class="pull-right" id="divAddFE">
                     <br />
 
-                    <img src="~/Content/images/addPac2.png" id="addPacFL" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente Fuera de Lista">
+                    <img src="~/Content/images/addPac2.png" id="addPacFL" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente Fuera de Lista">
                     <br />
                 </div>
 
@@ -158,7 +158,7 @@
                     } else {
 
                         $('#tablaPacientesFE').bootstrapTable("refresh", { silent: true });
-                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                      
                         $("#addPacFE").modal('hide');
                       
                     }
@@ -198,8 +198,8 @@
                 title: 'Celular',
                 filterControl:'input'
             },{
-                field: 'fueradeLista',
-                title: 'Fuera de Lista',
+                field: 'ausencia',
+                title: 'Ausencia',
                 filterControl:'input'
             },{
                 field: 'operate',
@@ -261,7 +261,9 @@
                        
                         alert('error actualizar parte diario tipo 2');
                       
-                    } 
+                    } else {
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                    }
 
                     $("#addDiagnostico").modal('hide');
                 },

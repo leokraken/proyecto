@@ -91,6 +91,7 @@ namespace SAREM.Web.Controllers
             public string fechaRegistro { get; set; }
             public string numero { get; set; }
             public string fueradeLista { get; set; }
+            public string ausencia { get; set; }
         }
 
         #endregion
@@ -666,13 +667,13 @@ namespace SAREM.Web.Controllers
                 pj.nombre = pente.nombre;
                 pj.celular = pente.celular;
                 pj.telefono = pente.telefono;
-                if (pC.fueralista)
+                if (pC.ausencia)
                 {
-                    pj.fueradeLista = "Si";
+                    pj.ausencia = "Si";
                 }
                 else
                 {
-                    pj.fueradeLista = "No";
+                    pj.ausencia = "No";
                 }
                 //Cambiar por valores reales luego
                 //pj.celular = "098258908";
