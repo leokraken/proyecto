@@ -77,6 +77,25 @@ namespace SAREM.DataAccessLayer
             return eventos;
         }
 
+        public ICollection<EventoOpcional> listarEventosOpcionales()
+        {
+            var eventosop = db.eventos.OfType<EventoOpcional>().ToList();
+            return eventosop;
+        }
+
+        public ICollection<EventoObligatorio> listarEventosObligatorios()
+        {
+            var eventosob = db.eventos.OfType<EventoObligatorio>().ToList();
+            return eventosob;
+        }
+
+        public ICollection<EventoPacienteComunicacion> listarEventosPaciente(long EventoID)
+        {
+            var pacientes = db.eventopacientecomunicacion.Include("pacientes").Include("comunicaciones")
+                                         .Where(e => e.EventoID == EventoID).ToList();
+
+            return pacientes;
+        }
         public ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID)
         {
             var query = from p in db.eventopacientecomunicacion.Include("evento")
@@ -88,6 +107,28 @@ namespace SAREM.DataAccessLayer
         public ICollection<Comunicacion> listarComunicaciones()
         {
             return db.comunicaciones.ToList();
+        }
+
+        public List<DataEdad> getEdadesEvento(long EventoID)
+        {
+            List<DataEdad> edad = new List<DataEdad>();
+            var eop = db.eventos.OfType<EventoOpcional>().FirstOrDefault(x => x.EventoID == EventoID);
+            if (eop != null)
+            {
+                
+                foreach (var e in eop.edades)
+                {
+                   DataEdad d = new DataEdad();
+                   d.edad = e.ToString();
+                   edad.Add(d);
+                }
+            }
+            else
+            {
+                throw new Exception("Evento no existe");
+            }
+
+            return edad;
         }
 
         public void agregarNotificacionConsulta(DataNotificacionConsulta dnc)
@@ -111,6 +152,7 @@ namespace SAREM.DataAccessLayer
                         select e;
             return query.ToList();
         }
+
 
         #region CRUD Eventos
         //crud eventos

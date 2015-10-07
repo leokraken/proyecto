@@ -15,8 +15,12 @@ namespace SAREM.DataAccessLayer
         ICollection<Evento> listarEventosOpcionales(string PacienteID);
         ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID);
         ICollection<Comunicacion> listarComunicaciones();
+        ICollection<EventoObligatorio> listarEventosObligatorios();
+        ICollection<EventoOpcional> listarEventosOpcionales();
         void agregarNotificacionConsulta(DataNotificacionConsulta dnc);
         ICollection<Evento> listarEventos();
+        List<DataEdad> getEdadesEvento(long EventoID);
+        ICollection<EventoPacienteComunicacion> listarEventosPaciente(long EventoID);
 
         //crud eventos
         Evento obtenerEvento(long EventoID);

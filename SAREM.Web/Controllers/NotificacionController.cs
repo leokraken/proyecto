@@ -1,5 +1,6 @@
 ﻿using SAREM.DataAccessLayer;
 using SAREM.Shared.Entities;
+using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace SAREM.Web.Controllers
 {
     public class NotificacionController : Controller
     {
-        IDALNotificaciones notis = new DALNotificaciones("test");
+        private FabricaSAREM fabrica = new FabricaSAREM("test");
 
+        #region DataTypes
         public class EventoJSON
         {
             public string EventoID { get; set; }
@@ -24,8 +26,16 @@ namespace SAREM.Web.Controllers
             public List<string> edades { get; set; }
         }
         
+        public class PacienteJSON
+        {
+            public string PacienteID { get; set; }
+            public string nombre { get; set; }
+            public string medio { get; set; }
+           
+        }
 
-        // GET: Notificacion
+        #endregion
+
         public ActionResult Index()
         {
             return View("VerNotificaciones");
@@ -50,10 +60,10 @@ namespace SAREM.Web.Controllers
         //}
 
 
-        // GET: Notificacion/Details/5
-        public ActionResult Details(int id)
+        
+        public ActionResult VerEventos()
         {
-            return View();
+            return View("VerNotificaciones");
         }
 
         // GET: Notificacion/Create
@@ -92,7 +102,7 @@ namespace SAREM.Web.Controllers
                     eOb.mensaje = e.mensaje;
                     eOb.fechanotificacion = ConsultaController.ParseDate(e.fechaNot).ToUniversalTime();
 
-                    notis.crearEvento(eOb);
+                    fabrica.inotificaciones.crearEvento(eOb);
                 }
                 else if (e.tipo.Equals("Op"))
                 {
@@ -114,7 +124,7 @@ namespace SAREM.Web.Controllers
 
                     eOp.mensaje = e.mensaje;
                     eOp.edadesarray = string.Join(",", e.edades.ToArray()); ;
-                    notis.crearEvento(eOp);
+                    fabrica.inotificaciones.crearEvento(eOp);
                 }
 
               
@@ -129,48 +139,113 @@ namespace SAREM.Web.Controllers
 
         }
 
-        // GET: Notificacion/Edit/5
-        public ActionResult Edit(int id)
+        public JsonResult GetEventosObligatorios()
         {
-            return View();
+            var eventosOb = fabrica.inotificaciones.listarEventosObligatorios();
+            List<EventoJSON> lista = new List<EventoJSON>();
+            foreach (EventoObligatorio e in eventosOb)
+            {
+                EventoJSON ejs = new EventoJSON();
+                ejs.nombre = e.nombre;
+                ejs.sexo = e.sexo.ToString();
+                ejs.mensaje = e.mensaje;
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        e.fechanotificacion,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                ejs.fechaNot = localVersionFIni.ToString(format);
+                ejs.EventoID = e.EventoID.ToString();
+                lista.Add(ejs);
+
+            }
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
         }
 
-        // POST: Notificacion/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public JsonResult GetEventosOpcionales()
+        {
+            var eventosOp = fabrica.inotificaciones.listarEventosOpcionales();
+            List<EventoJSON> lista = new List<EventoJSON>();
+            foreach (EventoOpcional e in eventosOp)
+            {
+                EventoJSON ejs = new EventoJSON();
+                ejs.nombre = e.nombre;
+                ejs.sexo = e.sexo.ToString();
+                ejs.mensaje = e.mensaje;
+             
+               
+                ejs.EventoID = e.EventoID.ToString();
+                lista.Add(ejs);
+
+            }
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetEdades(string idE)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                var lista = fabrica.inotificaciones.getEdadesEvento(Convert.ToInt64(idE));
+                return Json(lista, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return View();
+                return Json(new { success = false });
             }
+           
         }
 
-        // GET: Notificacion/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Notificacion/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public JsonResult GetPacientesEvento(string idE)
         {
             try
             {
-                // TODO: Add delete logic here
+                var listaPacientes = fabrica.inotificaciones.listarEventosPaciente(Convert.ToInt64(idE));
+                List<PacienteJSON> lista = new List<PacienteJSON>();
+                foreach (EventoPacienteComunicacion e in listaPacientes)
+                {
+                    PacienteJSON pj = new PacienteJSON();
+                    pj.PacienteID = e.paciente.PacienteID;
+                    pj.nombre = e.paciente.nombre;
+                    pj.medio = e.comunicacion.nombre;
 
-                return RedirectToAction("Index");
+                    lista.Add(pj);
+                }
+                return Json(lista, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return Json(new { success = false });
             }
+
         }
+
+        [HttpGet]
+        public ActionResult VerPacientesEvento(string idE)
+        {
+           
+            var e = fabrica.inotificaciones.obtenerEvento(Convert.ToInt64(idE));
+
+            EventoWeb ew = new EventoWeb();
+            ew.nombre = e.nombre;
+            ew.sexo = e.sexo.ToString();
+            ew.msj = e.mensaje;
+            ew.EventoID = e.EventoID.ToString();
+
+            if (e is EventoObligatorio)
+            {
+                ew.tipo = "OBLIGATORIO";
+            }
+            else
+            {
+                ew.tipo = "OPCIONAL";
+            }
+
+
+            return View("VerEventosPaciente", ew);
+        }
+
+
     }
 }

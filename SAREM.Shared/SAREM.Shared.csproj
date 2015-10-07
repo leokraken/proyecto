@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datatypes\DataEdad.cs" />
     <Compile Include="Datatypes\DataNotificacionConsulta.cs" />
     <Compile Include="Datatypes\DataParametros.cs" />
     <Compile Include="Entities\AgendaEvento.cs" />

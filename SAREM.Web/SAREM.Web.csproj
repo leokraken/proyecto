@@ -184,6 +184,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Consulta.cs" />
     <Compile Include="Models\ConsultaMasiva.cs" />
+    <Compile Include="Models\EventoWeb.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MedicoReferencia.cs" />
@@ -400,6 +401,7 @@
     <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
     <Content Include="Content\images\list-1.png" />
+    <Content Include="Content\images\mailing2.png" />
     <Content Include="Content\images\md.png" />
     <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
@@ -409,6 +411,8 @@
     <Content Include="Content\images\progressionDis.png" />
     <Content Include="Content\images\solicitudes.png" />
     <Content Include="Content\images\text format3.png" />
+    <Content Include="Content\images\time18.png" />
+    <Content Include="Content\images\time36.png" />
     <Content Include="Content\images\verified9.png" />
     <Content Include="Content\images\writing11.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
@@ -1005,6 +1009,7 @@
     <Content Include="Views\Consulta\VerConsultasAgendadasPaciente.cshtml" />
     <Content Include="Views\Consulta\VerConsultasCanceladasPaciente.cshtml" />
     <Content Include="Views\MedicoRef\SeleccionarMedRef.cshtml" />
+    <Content Include="Views\Notificacion\VerEventosPaciente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
