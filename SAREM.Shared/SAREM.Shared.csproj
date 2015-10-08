@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Datatypes\DataNotificacionConsulta.cs" />
     <Compile Include="Datatypes\DataParametros.cs" />
+    <Compile Include="Datatypes\DataPerson.cs" />
     <Compile Include="Entities\AgendaEvento.cs" />
     <Compile Include="Entities\Comunicacion.cs" />
     <Compile Include="Entities\Consulta.cs" />

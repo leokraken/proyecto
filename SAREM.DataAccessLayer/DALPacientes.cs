@@ -20,9 +20,9 @@ namespace SAREM.DataAccessLayer
 
         public void altaPaciente(Paciente paciente)
         {
-            if (!db.pacientes.Any(o => o.PacienteID==paciente.PacienteID))
+            if (db.pacientes.Any(o => o.PacienteID==paciente.PacienteID))
             {
-                throw new Exception("Paciente no existe");
+                throw new Exception("Paciente existe");
             }
             else
             {
@@ -45,7 +45,7 @@ namespace SAREM.DataAccessLayer
                 p.direccion = paciente.direccion;
                 p.FN = paciente.FN;
                 p.nombre = paciente.nombre;
-                p.sansion = paciente.sansion;
+                p.sancion = paciente.sancion;
                 p.sexo = paciente.sexo;
                 p.telefono = paciente.telefono;
                 db.SaveChanges();
@@ -63,11 +63,11 @@ namespace SAREM.DataAccessLayer
             else
             {
                 var p = db.pacientes.Find(CI);
-                p.sansion = true;
+                p.sancion = true;
                 db.SaveChanges();
             }
-
         }
+
         public void eliminarPaciente(string CI)
         {
             if (!db.pacientes.Any(p => p.PacienteID == CI))

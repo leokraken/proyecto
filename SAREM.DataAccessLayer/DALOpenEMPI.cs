@@ -1,17 +1,24 @@
-﻿using System;
+﻿using SAREM.Shared.Datatypes;
+using SAREM.Shared.enums;
+using SAREM.Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
+
 
 namespace SAREM.DataAccessLayer
 {
-    public class DALOpenEMPI : IDALOpenEMPI
+    public sealed class DALOpenEMPI : IDALOpenEMPI
     {
         private static string OPENEMPI_URL = ConfigurationManager.AppSettings["OPENEMPI_URL"].ToString();
         private static string OPENEMPI_ADMIN = ConfigurationManager.AppSettings["OPENEMPI_ADMIN"].ToString();
@@ -19,10 +26,87 @@ namespace SAREM.DataAccessLayer
 
         private static string OPENEMPI_SESSION_KEY = null;
 
-        public DALOpenEMPI()
+        private static readonly DALOpenEMPI instance = new DALOpenEMPI();
+   
+
+        public static DALOpenEMPI Instance
         {
-            OPENEMPI_SESSION_KEY = getAuth();
+            get 
+            {
+                return instance; 
+            }
         }
+
+        private DALOpenEMPI()
+        {
+           //getAuth();
+        }
+
+        /*PARSING*/
+        public static void Parse(dynamic parent, XElement node)
+        {
+            if (node.HasElements)
+            {
+                if (node.Elements(node.Elements().First().Name.LocalName).Count() > 1)
+                {
+                    //list
+                    var item = new ExpandoObject();
+                    var list = new List<dynamic>();
+                    foreach (var element in node.Elements())
+                    {
+                        Parse(list, element);
+                    }
+
+                    AddProperty(item, node.Elements().First().Name.LocalName, list);
+                    AddProperty(parent, node.Name.ToString(), item);
+                }
+
+                else
+                {
+
+                    var item = new ExpandoObject();
+
+                    foreach (var attribute in node.Attributes())
+                    {
+                        AddProperty(item, attribute.Name.ToString(), attribute.Value.Trim());
+                    }
+
+                    //element
+                    foreach (var element in node.Elements())
+                    {
+                        Parse(item, element);
+                    }
+                    AddProperty(parent, node.Name.ToString(), item);
+                }
+            }
+            else
+            {
+                AddProperty(parent, node.Name.ToString(), node.Value.Trim());
+            }
+        }
+
+
+        private static void AddProperty(dynamic parent, string name, object value)
+        {
+            if (parent is List<dynamic>)
+            {
+                (parent as List<dynamic>).Add(value);
+            }
+            else
+            {
+                (parent as IDictionary<String, object>)[name] = value;
+            }
+        }
+
+        private dynamic getDynamicXML(TextReader content)
+        {
+            var xDoc = XDocument.Load(content);
+            dynamic root = new ExpandoObject();
+            Parse(root, xDoc.Elements().First());
+            return root;
+        }
+
+
 
         private string getAuthXML(string user, string password)
         {
@@ -42,21 +126,25 @@ namespace SAREM.DataAccessLayer
 
         async Task<List<identifierDomain>> httpDominios()
         {
+            if (OPENEMPI_SESSION_KEY == null)
+                getAuth();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(OPENEMPI_URL);
                 client.DefaultRequestHeaders.TryAddWithoutValidation("OPENEMPI_SESSION_KEY", OPENEMPI_SESSION_KEY);
 
-                var response = await client.GetAsync("openempi-ws-rest/person-query-resource/getIdentifierDomains");
+                var response = client.GetAsync("openempi-ws-rest/person-query-resource/getIdentifierDomains");
 
-                TextReader reader = new StringReader(response.Content.ReadAsStringAsync().Result);
+                TextReader reader = new StringReader(response.Result.Content.ReadAsStringAsync().Result);
                 XmlSerializer personserializer = new XmlSerializer(typeof(identifierDomain[]), new XmlRootAttribute("identifierDomains"));
                 return ((identifierDomain[])personserializer.Deserialize(reader)).ToList();
             }
         }
 
-        async Task<person> parallelRequestPaciente(string pacienteID, List<identifierDomain> dominios)
+        async Task<DataPaciente> parallelRequestPaciente(string pacienteID, List<identifierDomain> dominios)
         {
+            if (OPENEMPI_SESSION_KEY == null)
+                getAuth();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(OPENEMPI_URL);
@@ -66,6 +154,7 @@ namespace SAREM.DataAccessLayer
                 //serialize request
                 foreach (var dominio in dominios)
                 {
+                    Debug.WriteLine(dominio);
                     personIdentifier person = new personIdentifier
                     {
                         identifier = pacienteID,
@@ -95,39 +184,79 @@ namespace SAREM.DataAccessLayer
                 }
 
                 //parallel!
-                var count = content.Count;
+                Debug.WriteLine("parallel!!!");
+                //var count = content.Count;
                 List<Task<HttpResponseMessage>> tasklist = new List<Task<HttpResponseMessage>>();
                 foreach (var c in content)
                 {
                     tasklist.Add(client.PostAsync("openempi-ws-rest/person-query-resource/findPersonById", c));
                 }
-
+              
                 //finish all
-                await Task.WhenAll(tasklist.ToArray());
-                foreach (var res in tasklist)
+                Debug.WriteLine("await2?");
+                Task.WhenAll(tasklist.ToArray());
+
+                int count = tasklist.Count;
+                for (int i=0;i<count; i++)
                 {
-                    TextReader reader = new StringReader(res.Result.Content.ReadAsStringAsync().Result);
+                    Debug
+                        .WriteLine(tasklist[i].Result.Content.ReadAsStringAsync().Result);
+                    TextReader reader = new StringReader(tasklist[i].Result.Content.ReadAsStringAsync().Result);
                     try
                     {
+                        Debug.WriteLine(tasklist[i].Result.Content.ReadAsStringAsync().Result);
                         XmlSerializer personserializer = new XmlSerializer(typeof(person));
-                        return (person)personserializer.Deserialize(reader);
+                        person p = (person)personserializer.Deserialize(reader);
+
+                        Sexo s = Sexo.UNKNOWN;
+                        if (p.gender != null)
+                        {
+                            switch (p.gender.genderCode)
+                            {
+                                case "M":
+                                    s = Sexo.MASCULINO;
+                                    break;
+                                case "F":
+                                    s = Sexo.FEMENINO;
+                                    break;
+                                default:
+                                    s = Sexo.UNKNOWN;
+                                    break;
+                            }
+                        }
+
+                        Paciente paciente = new Paciente {
+                            PacienteID= pacienteID,
+                            celular = p.cell,
+                            direccion = p.address1,
+                            FN = p.dateOfBirth,
+                            PaisID = p.countryCode,
+                            nombre = p.middleName,
+                            mail = p.email,
+                            apellido = p.motherName,                    
+                            sexo = s,
+                            telefono = p.phoneNumber                        
+                        };
+                        DataPaciente dp = new DataPaciente { paciente = paciente, mutualista = dominios[i].identifierDomainName };
+
+                        return dp;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Person not found at domain ");//+ dominio.identifierDomainId);
+                        Console.WriteLine("Person not found at domain "+ e.Message);//+ dominio.identifierDomainId);
                     }
                 }
                 
-                //var response = await client.PostAsync("openempi-ws-rest/person-query-resource/findPersonById", httpContent);
                 return null;
-                
             }
-
         }
 
 
         async Task<person> httpPaciente(string pacienteID, List<identifierDomain> dominios)
         {
+            if (OPENEMPI_SESSION_KEY == null)
+                getAuth();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(OPENEMPI_URL);
@@ -188,10 +317,11 @@ namespace SAREM.DataAccessLayer
             {
                 client.BaseAddress = new Uri(OPENEMPI_URL);
                 var body = new StringContent(getAuthXML(OPENEMPI_ADMIN, OPENEMPI_PASS), Encoding.UTF8, "application/xml");
-                var response = await client.PutAsync(OPENEMPI_URL + "openempi-ws-rest/security-resource/authenticate", body);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                var response = client.PutAsync(OPENEMPI_URL + "openempi-ws-rest/security-resource/authenticate", body);
+                //response.W
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    string resultado = response.Content.ReadAsStringAsync().Result;
+                    string resultado = response.Result.Content.ReadAsStringAsync().Result;
                     return resultado;
                 }
                 else
@@ -204,17 +334,18 @@ namespace SAREM.DataAccessLayer
 
         }
 
-        public person obtenerPaciente(string paisID, string pacienteID)
+        public DataPaciente obtenerPaciente(string paisID, string pacienteID)
         {
+            Debug.WriteLine("en obtener pacientes" + paisID + pacienteID);
             string search = paisID + "-" + pacienteID;
-            Task<person> person = httpPaciente(search, httpDominios().Result);
+            Task<DataPaciente> person = parallelRequestPaciente(search, httpDominios().Result);
             return person.Result;
         }
 
-        public person obtenerPacienteParallel(string paisID, string pacienteID)
+        public DataPaciente obtenerPacienteParallel(string paisID, string pacienteID)
         {
             string search = paisID + "-" + pacienteID;
-            Task<person> person = parallelRequestPaciente(search, httpDominios().Result);
+            Task<DataPaciente> person = parallelRequestPaciente(search, httpDominios().Result);
             return person.Result;
         }
 
@@ -224,10 +355,10 @@ namespace SAREM.DataAccessLayer
             return httpDominios().Result;
         }
 
-        public string getAuth()
+        public void getAuth()
         {
             Task<string> t = getAuthentication();
-            return t.Result;
+            OPENEMPI_SESSION_KEY = t.Result;
         }
     }
 }

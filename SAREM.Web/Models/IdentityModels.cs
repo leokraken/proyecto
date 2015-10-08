@@ -21,7 +21,7 @@ namespace SAREM.Web.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("sarem", throwIfV1Schema: false)
+            : base("saremident", throwIfV1Schema: false)
         {
         }
 
@@ -30,6 +30,6 @@ namespace SAREM.Web.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<SAREM.Web.Models.Consulta> Consultas { get; set; }
+        //public System.Data.Entity.DbSet<SAREM.Web.Models.Consulta> Consultas { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAREM.Shared.Datatypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,9 @@ namespace SAREM.DataAccessLayer
 {
     public interface IDALOpenEMPI
     {
-        person obtenerPaciente(string paisID, string pacienteID);
-        person obtenerPacienteParallel(string paisID, string pacienteID);
+        DataPaciente obtenerPaciente(string paisID, string pacienteID);
+        DataPaciente obtenerPacienteParallel(string paisID, string pacienteID);
         List<identifierDomain> obtenerDominios();
-        string getAuth();
-
+        void getAuth();
     }
 }

@@ -47,17 +47,18 @@ namespace SAREM.Web
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                //RequireUniqueEmail = true
             };
 
             // Configure la lógica de validación de contraseñas
             manager.PasswordValidator = new PasswordValidator
             {
+                /*
                 RequiredLength = 6,
                 RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireUppercase = true,*/
             };
 
             // Configurar valores predeterminados para bloqueo de usuario

@@ -9,6 +9,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SAREM.Web.Models;
+using SAREM.DataAccessLayer;
+using SAREM.Shared.Entities;
+using System.Diagnostics;
+using SAREM.Shared.Datatypes;
 
 namespace SAREM.Web.Controllers
 {
@@ -140,6 +144,8 @@ namespace SAREM.Web.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            FabricaSAREM factory = new FabricaSAREM("");
+            ViewBag.PaisID = new SelectList(factory.ipaises.obtenerPaises(), "PaisID", "nombre", "UY");
             return View();
         }
 
@@ -150,26 +156,59 @@ namespace SAREM.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            FabricaSAREM fadmin = new FabricaSAREM();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                DataPaciente p = fadmin.iopenempi.obtenerPaciente(model.PaisID, model.CI);
+                                
+                if (p != null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Enviar correo electrónico con este vínculo
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                    Debug.WriteLine(p.mutualista);
+                    Session["tenant"] = p.mutualista;
+                    if (!fadmin.adminController.getSchemas().Contains(p.mutualista))
+                    {
+                        //throw new Exception("Lo sentimos... Su prestador de salud no se encuentra registrado en el sistema.");
+                        IdentityResult ir = new IdentityResult("Lo sentimos... Su prestador de salud no se encuentra registrado en el sistema.");
+                        AddErrors(ir);
+                        ViewBag.PaisID = new SelectList(fadmin.ipaises.obtenerPaises(), "PaisID", "nombre", "UY");
+                        return View(model);
+                    }
 
-                    return RedirectToAction("Index", "Home");
+                    //TODO: generar password
+                    //TODO: enviar mail con password
+                    //alta paciente
+                    FabricaSAREM factory = new FabricaSAREM(p.mutualista);
+                    factory.ipacientes.altaPaciente(p.paciente);
+                    var user = new ApplicationUser { UserName = p.paciente.nombre + " " + p.paciente.apellido, Email = model.PaisID + "-" + model.CI };
+                    var result = await UserManager.CreateAsync(user, "password");
+                    if (result.Succeeded)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                        // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
+                        // Enviar correo electrónico con este vínculo
+                        // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                        
+                        return RedirectToAction("Index", "Home");
+                    }
+                    AddErrors(result);
+
                 }
-                AddErrors(result);
+                else
+                {
+                    //mensaje de falla
+                    //consultar con su proveedor de salud para agregar el mail
+                    IdentityResult ir = new IdentityResult("Paciente no existe comunicarse con proveedora de salud.");
+                    AddErrors(ir);
+                    //throw new Exception("Paciente no existe comunicarse con proveedora de salud.");
+                }
+                
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            ViewBag.PaisID = new SelectList(fadmin.ipaises.obtenerPaises(), "PaisID", "nombre", "UY");
             return View(model);
         }
 

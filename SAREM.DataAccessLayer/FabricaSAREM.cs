@@ -16,6 +16,15 @@ namespace SAREM.DataAccessLayer
         public IDALMedicos imedicos { get; set; }
         public IDALEspecialidades iespecialidades { get; set; }
         public IDALOpenEMPI iopenempi { get; set; }
+        public IDALPaises ipaises { get; set; }
+        public IAdministradorController adminController { get; set; }
+
+        public FabricaSAREM()
+        {
+            adminController = new AdministradorController();
+            iopenempi = DALOpenEMPI.Instance;
+            ipaises = new DALPaises();
+        }
 
         public FabricaSAREM(string tenant)
         {
@@ -26,7 +35,8 @@ namespace SAREM.DataAccessLayer
             ilocales = new DALLocales(tenant);
             imedicos = new DALMedicos(tenant);
             iespecialidades = new DALEspecialidades(tenant);
-            iopenempi = new DALOpenEMPI();
+            iopenempi = DALOpenEMPI.Instance;
+            ipaises = new DALPaises();
         }
     }
 }

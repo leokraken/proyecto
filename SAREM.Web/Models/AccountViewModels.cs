@@ -65,10 +65,13 @@ namespace SAREM.Web.Models
     public class RegisterViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Correo electrónico")]
-        public string Email { get; set; }
+        //[EmailAddress]
+        [Display(Name = "Cédula Identidad")]
+        public string CI { get; set; }
 
+        [Display(Name = "Pais")]
+        public string PaisID { get; set; }
+        /*
         [Required]
         [StringLength(100, ErrorMessage = "El número de caracteres de {0} debe ser al menos {2}.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -78,7 +81,7 @@ namespace SAREM.Web.Models
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar contraseña")]
         [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; }*/
     }
 
     public class ResetPasswordViewModel

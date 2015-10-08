@@ -1,6 +1,7 @@
 ﻿using SAREM.Shared.Entities;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity;
@@ -175,6 +176,14 @@ namespace SAREM.DataAccessLayer
         {
             Database.SetInitializer<SAREMAdminContext>(null);
         }
+
+        public ICollection<string> getSchemas()
+        {
+            string query = @"select name from sys.schemas where principal_id=1 and schema_id>1";
+            var schemaslist = this.Database.SqlQuery<string>(query).ToListAsync();
+            return schemaslist.Result;
+        }
+
         public void dropSchema(string schema)
         {
             string drop = "drop table [{0}].[{1}]";

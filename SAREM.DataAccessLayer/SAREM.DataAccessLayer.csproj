@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdministradorController.cs" />
     <Compile Include="DALAgenda.cs" />
     <Compile Include="DALEspecialidades.cs" />
     <Compile Include="DALLocales.cs" />
@@ -68,8 +69,10 @@
     <Compile Include="DALNotificaciones.cs" />
     <Compile Include="DALOpenEMPI.cs" />
     <Compile Include="DALPacientes.cs" />
+    <Compile Include="DALPaises.cs" />
     <Compile Include="DALReferencias.cs" />
     <Compile Include="FabricaSAREM.cs" />
+    <Compile Include="IAdministradorController.cs" />
     <Compile Include="IDALAgenda.cs" />
     <Compile Include="IDALEspecialidades.cs" />
     <Compile Include="IDALLocales.cs" />
@@ -77,6 +80,7 @@
     <Compile Include="IDALNotificaciones.cs" />
     <Compile Include="IDALOpenEMPI.cs" />
     <Compile Include="IDALPacientes.cs" />
+    <Compile Include="IDALPaises.cs" />
     <Compile Include="IDALReferencias.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
