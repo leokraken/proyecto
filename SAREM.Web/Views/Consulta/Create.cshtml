@@ -26,8 +26,11 @@
     </div>
 </div>
               
-   <hr />
- 
+ <hr />
+ <div class="alert alert-danger alert-dismissible" role="alert" style="display:none;" id="msjError">
+    
+    <strong>Advertencia:</strong> &nbsp Existen campos obligatorios que no se han ingresado correctamente. Por favor, corríjalos.
+</div>
 
     @using (Html.BeginForm())
     {
@@ -39,7 +42,7 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
            
 
-            <div class="form-group">
+            <div class="form-group" id="divOrigen">
                 <label class="control-label col-md-2">Orígen:</label>
                 <div class="col-md-10">
                     @Html.DropDownListFor(
@@ -49,40 +52,47 @@
                             Text = l.nombre,
                             Value = l.LocalID.ToString()
                         }),
-          "Seleccione un Orígen", new {style = "width:280px", @class = "origen_change" })
+          "Seleccione un Orígen", new {style = "width:280px", @class = "form-control origen_change" })
                     @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+                    <span id="helpOrigen" class="help-block" style="display:none">Debe seleccionar un Orígen.</span>
                 </div>
             </div>
             <div id="especialidades" style="display:none">
-                <div class="form-group">
+                <div class="form-group" id="divEspecial">
                     <label class="control-label col-md-2">Especialidad:</label>
                     <div class="col-md-10">
 
-                        @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { style = "width:280px", @class = "dropdown1" })
+                        @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { style = "width:280px", @class = "form-control" })
+                        <span id="helpEspecial" class="help-block" style="display:none">Debe seleccionar una Especialidad.</span>
                     </div>
+                  
                 </div>
             </div>
             <div id="medicos" style="display:none">
-                <div class="form-group">
+                <div class="form-group" id="divMedico">
                     <label class="control-label col-md-2">Médico:</label>
                     <div class="col-md-10">
-                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "dropdown1" })
+                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "form-control" })
+                        <span id="helpMedico" class="help-block" style="display:none">Debe seleccionar un Médico.</span>
                     </div>
+                    
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="divFI">
                 <label class="control-label col-md-2">Fecha Inicio:</label>
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
                     @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                    <span id="helpFI" class="help-block" style="display:none"></span>
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="divFF">
                 <label class="control-label col-md-2">Fecha Fin:</label>
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
                     @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
+                    <span id="helpFF" class="help-block" style="display:none"></span>
                 </div>
             </div>
 
@@ -189,6 +199,7 @@
 
             $("#Crear").click(function () {
 
+                if (validar()){
                
                 $.ajax({
                     url: '@Url.Action("Create", "Consulta")',
@@ -227,7 +238,7 @@
                     }
                 })
 
-
+                }
             });
 
         });
@@ -245,6 +256,90 @@
         });
 
        
+    </script>
+    <script>
+        function validar() {
+            
+            var ok = true;
+
+            $("#msjError").hide();
+
+            $("#divOrigen").removeClass("has-error");
+            $("#helpOrigen").hide();
+            $("#divEspecial").removeClass("has-error");
+            $("#helpEspecial").hide();
+            $("#divMedico").removeClass("has-error");
+            $("#helpMedico").hide();
+
+            $("#divFI").removeClass("has-error");
+            $("#helpFI").hide();
+
+            $("#divFF").removeClass("has-error");
+            $("#helpFF").hide();
+           
+            if ($(".origen_change option:selected").index() == 0) {
+
+                $("#divOrigen").addClass("has-error");
+                $("#helpOrigen").show();
+                ok = false;
+
+            } else {
+
+                if ($("#Especial option:selected").index() == 0) {
+
+                    $("#divEspecial").addClass("has-error");
+                    $("#helpEspecial").show();
+                    ok = false;
+
+                } else {
+
+                    if ($("#Medico option:selected").index() == 0) {
+
+                        $("#divMedico").addClass("has-error");
+                        $("#helpMedico").show();
+                        ok = false;
+                    }
+                }
+            }
+
+            //Valido fechas
+            if (!$("#idFI").val()) {
+
+                $("#divFI").addClass("has-error");
+                $("#helpFI").text("Debe ingresar una Fecha de Inicio.");
+                $("#helpFI").show();
+                ok = false;
+
+            } else if (!$("#idFI").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
+
+                $("#divFI").addClass("has-error");
+                $("#helpFI").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
+                $("#helpFI").show();
+                ok = false;
+            }
+
+            if (!$("#idFF").val()) {
+
+                $("#divFF").addClass("has-error");
+                $("#helpFF").text("Debe ingresar una Fecha de Finalización.");
+                $("#helpFF").show();
+                ok = false;
+
+            } else if (!$("#idFF").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
+
+                $("#divFF").addClass("has-error");
+                $("#helpFF").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
+                $("#helpFF").show();
+                ok = false;
+            }
+
+            if (!ok) {
+
+                $("#msjError").show();
+            }
+
+            return ok;
+        }
     </script>
 
 

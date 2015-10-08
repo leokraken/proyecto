@@ -39,5 +39,20 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public ICollection<Medico> listarMedicosEspecialidad(long EspecialidadID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var medicos = db.funcionarios
+                .OfType<Medico>()
+                .Where(m => m.especialidades.Any(e => e.EspecialidadID == EspecialidadID))
+                .ToList();
+                return medicos;
+            }
+        }
+
+
+
+
     }
 }

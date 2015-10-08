@@ -16,5 +16,7 @@ namespace SAREM.DataAccessLayer
         void agregarReferencia(string PacienteID, string MedicoID);
         void finalizarReferencia(string PacienteID, string MedicoID);
         void denegarReferencia(string PacienteID, string MedicoID);
+        Referencia obtenerReferencia(string PacienteID);
+        Boolean chequearExistenciaSolicitud(string PacienteID);
     }
 }

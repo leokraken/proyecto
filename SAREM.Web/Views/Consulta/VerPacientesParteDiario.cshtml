@@ -66,7 +66,7 @@
                 <div class="pull-right" id="divAddFE">
                     <br />
 
-                    <img src="~/Content/images/addPac2.png" id="addPacFL" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente Fuera de Lista">
+                    <img src="~/Content/images/addPac2.png" id="addPacFL" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente Fuera de Lista">
                     <br />
                 </div>
 
@@ -138,6 +138,7 @@
         //Guardar paciente agregado fuera de lista
         $("#agregarFL").click(function () {
      
+          
             $.ajax({
                 url: '@Url.Action("AgregarPacienteFE", "Consulta")',
                 dataType: "json",
@@ -150,19 +151,25 @@
                    
                     if (!data.success) {
                        
-                        alert('error agregar paciente fuera de lista tipo 2');
+                        $("#divPE").removeClass("has-error").addClass("has-error");
+                        $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                        $("#helpPE").show();
                       
                     } else {
 
                         $('#tablaPacientesFE').bootstrapTable("refresh", { silent: true });
-                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                      
+                        $("#addPacFE").modal('hide');
+                      
                     }
 
-                    $("#addPacFE").modal('hide');
+                  
                 },
                 error: function (xhr) {
 
-                    alert('error agregar paciente fuera de lista tipo 1');
+                    $("#divPE").removeClass("has-error").addClass("has-error");
+                    $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                    $("#helpPE").show();
                 }
             })
         
@@ -191,8 +198,8 @@
                 title: 'Celular',
                 filterControl:'input'
             },{
-                field: 'fueradeLista',
-                title: 'Fuera de Lista',
+                field: 'ausencia',
+                title: 'Ausencia',
                 filterControl:'input'
             },{
                 field: 'operate',
@@ -254,7 +261,9 @@
                        
                         alert('error actualizar parte diario tipo 2');
                       
-                    } 
+                    } else {
+                        $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                    }
 
                     $("#addDiagnostico").modal('hide');
                 },
@@ -270,6 +279,10 @@
         //Agregar paciente a fuera de lista
         
         $("#addPacFL").click(function () {
+
+            $("#divPE").removeClass("has-error");
+          
+            $("#helpPE").hide();
 
             $.ajax({
                 url: '@Url.Action("GetPacientesNotInConsulta", "Consulta")',
@@ -464,10 +477,11 @@
                 <form class="form-horizontal" id="step2">
 
 
-                    <div class="form-group">
+                    <div class="form-group" id="divPE">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
                         <div class="col-sm-8">
                             <input id="idPacienteFE" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                            <span id="helpPE" class="help-block" style="display:none"></span>
                         </div>
                     </div>
 

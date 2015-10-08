@@ -101,6 +101,34 @@ namespace SAREM.DataAccessLayer
 
         }
 
+        public Referencia obtenerReferencia(string PacienteID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = (from r in db.referencias.Include("medico")
+                             where r.PacienteID == PacienteID
+                             select r).Single(); 
+                return query;
+              
+            }
+
+        }
+
+        public Boolean chequearExistenciaSolicitud(string PacienteID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                if (db.referencias.Any(c => c.PacienteID == PacienteID ))
+                {
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
 
     }
 }

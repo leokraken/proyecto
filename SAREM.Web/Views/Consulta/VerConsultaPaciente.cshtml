@@ -70,7 +70,7 @@
                 <div class="pull-right">
                     <br />
 
-                    <img src="~/Content/images/addPac2.png" id="addPac" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente a la Consulta">
+                    <img src="~/Content/images/addPac2.png" id="addPac" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente a la Consulta">
                     <br/>
                 </div>
                 <table id="tablaPacientes" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
@@ -95,7 +95,7 @@
                 <div class="pull-right" id="divAddPE">
                     <br />
 
-                    <img src="~/Content/images/addPac2.png" id="addPacEspera" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agrear un nuevo Paciente a la Lista de Espera">
+                    <img src="~/Content/images/addPac2.png" id="addPacEspera" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente a la Lista de Espera">
                     <br />
                 </div>
               
@@ -151,7 +151,7 @@
         //        $('#divUpPE').hide();
         //        $('#divAddPE').hide();
         //        $('#tablaPacientesEspera').bootstrapTable('hideColumn', 'state');
-               
+
         //    } else {
 
         //        $('#divUpPE').show();
@@ -159,7 +159,7 @@
         //        $('#tablaPacientesEspera').bootstrapTable('showColumn', 'state');
         //    }
         //})
-        
+
 
         $("#addPac").popover({ trigger: "hover" });
         $("#addPacEspera").popover({ trigger: "hover" });
@@ -186,12 +186,18 @@
             if ( $('#tablaPacientes').bootstrapTable('getData').length >= max_pacientes) {
 
                 $('#pText').text("Ya existen al menos " + max_pacientes + " pacientes en Consulta. No se pueden ingresar más.")
-
+              
                 $('#modalAlerta').modal('show');
 
 
             } else {
-
+                
+                if ($("#divP").hasClass("has-error")){
+                   
+                    $("#divP").removeClass("has-error");
+                    $("#helpP").hide();
+               
+                }
 
                 $.ajax({
                     url: '@Url.Action("GetPacientesNotInConsulta", "Consulta")',
@@ -202,7 +208,7 @@
                     cache: false,
                     success: function (data) {
 
-                       
+
                         $('#idPaciente').val("");
 
                         var list = [];
@@ -210,9 +216,9 @@
                             list.push(value.PacienteID);
                         });
 
-                 
 
-                   
+
+
                         awesompleteP.list = list;
 
                         $('#addPacCons').modal('show');
@@ -233,13 +239,20 @@
             if ( $('#tablaPacientesEspera').bootstrapTable('getData').length >= max_pac_esp) {
 
                 $('#pText').text("Ya existen "+ max_pac_esp +" pacientes en Lista de Espera. No se pueden ingresar más.")
-
+              
                 $('#modalAlerta').modal('show');
 
 
             } else {
 
-
+                if ($("#divPE").hasClass("has-error")){
+                  
+                  
+                    $("#divPE").removeClass("has-error");
+                    $("#helpPE").hide();
+                  
+                 
+                }
 
                 $.ajax({
                     url: '@Url.Action("GetPacientesNotInConsulta", "Consulta")',
@@ -250,7 +263,7 @@
                     cache: false,
                     success: function (data) {
 
-                   
+
                         $('#idPacienteEspera').val("");
 
                         var list = [];
@@ -258,8 +271,8 @@
                             list.push(value.PacienteID);
                         });
 
-                  
-                   
+
+
                         awesompletePE.list = list;
 
                         $('#addPacConsEspera').modal('show');
@@ -306,12 +319,6 @@
                 filterControl:'input'
             },
             {
-                  field: 'fueradeLista',
-                  title: 'Fuera de Lista',
-                  width: 30,
-                  filterControl:'input'
-            },
-            {
                 field: 'operate',
                 title: 'Cancelar',
                 align: 'center',
@@ -321,7 +328,7 @@
             ]
         });
 
-        
+
         //Cargo tabla de pacientes en espera
 
         $('#tablaPacientesEspera').bootstrapTable({
@@ -331,7 +338,7 @@
                 field: 'numero',
                 title: 'Número',
                 filterControl:'input'
-              
+
             },{
                 field: 'PacienteID',
                 title: 'Id Paciente',
@@ -378,8 +385,12 @@
         //Guardar Paciente en Consulta
         $("#agregar").click(function () {
 
+            var existe = false;
+            $("#divP").removeClass("has-error");
+            $("#helpP").hide();
+        
 
-
+          
             $.ajax({
                 url: '@Url.Action("AddPacienteConsulta", "Consulta")',
                 dataType: "json",
@@ -393,23 +404,31 @@
 
                         $('#addPacCons').modal('hide');
                         $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                        $("#divP").removeClass("has-error");
+                        $("#helpP").hide();
 
                     } else {
-
-                        alert("error agregar Paciente Consulta");
+                        
+                        $("#divP").addClass("has-error");
+                        $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                        $("#helpP").show();
+                       
                     }
                 },
                 error: function (xhr) {
 
-                    alert('error agregar');
+                    $("#divP").addClass("has-error");
+                    $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                    $("#helpP").show();
                 }
             })
+          
         });
 
         //Guardar paciente en lista de espera
         $("#agregarEspera").click(function () {
 
-
+          
 
             $.ajax({
                 url: '@Url.Action("AddPacienteConsultaEspera", "Consulta")',
@@ -424,19 +443,26 @@
 
                         $('#addPacConsEspera').modal('hide');
                         $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
+                        
 
                     } else {
 
-                        alert("error agregar Paciente Consulta Lista de Espera");
+                        $("#divPE").removeClass("has-error").addClass("has-error");
+                        $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                        $("#helpPE").show();
                     }
                 },
                 error: function (xhr) {
 
-                    alert('error agregar lista de espera');
+                    $("#divPE").removeClass("has-error").addClass("has-error");
+                    $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurase de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                    $("#helpPE").show();
                 }
-            })
-        });
+          
 
+           
+            });
+        })
 
         //Cancelar consulta paciente
         $("#cancel").click(function () {
@@ -509,8 +535,8 @@
 
         });
 
-        
-    
+
+
 
         function totalTextFormatter(data) {
             return '<b>Total </b>';
@@ -519,7 +545,7 @@
         function totalNameFormatter(data) {
             return '<span class="badge">'+data.length+'</span>';
         }
-    
+
 
         //Pasar pacientes lista de espera a consulta
         var $remove = $('#upgradePac'), selections = [];
@@ -658,10 +684,11 @@
                 <form class="form-horizontal" id="step2">
                   
                   
-                    <div class="form-group">
+                    <div class="form-group" id="divP">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
                         <div class="col-sm-8">
                             <input id="idPaciente" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                            <span id="helpP" class="help-block" style="display:none"></span>
                         </div>
                     </div>
                  
@@ -688,10 +715,11 @@
                 <form class="form-horizontal" id="step2">
 
 
-                    <div class="form-group">
+                    <div class="form-group" id="divPE">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
                         <div class="col-sm-8">
                             <input id="idPacienteEspera" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                            <span id="helpPE" class="help-block" style="display:none"></span>
                         </div>
                     </div>
 

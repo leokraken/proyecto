@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Ver Notificaciones";
+    ViewBag.Title = "Ver Eventos";
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
@@ -18,7 +18,7 @@
 <script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 
 <ol class="breadcrumb">
-    <li><a href="#">Notificaciones</a></li>
+    <li><a href="#">Eventos</a></li>
     <li class="active">Ver Eventos</li>
 </ol>
 
@@ -27,8 +27,8 @@
         <div class="span4">
             <div class="content-heading" style="margin-left:17px !important;">
 
-                <h3 class="pull-left">Eventos &nbsp &nbsp </h3>
-                
+                <h3 class="pull-left">Ver Eventos &nbsp &nbsp </h3>
+                <img src="~/Content/images/mailing2.png" />
             </div>
 
         </div>
@@ -48,10 +48,21 @@
         <div role="tabpanel" class="tab-pane active" id="eOb">
 
             <div class="container">
-                sdasd1
-                <table id="tablaEvOb" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-show-footer="true"></table>
-            </div>
+                <table data-toggle="table" data-url='@Url.Action("GetEventosObligatorios", "Notificacion")' data-pagination="true" data-side-pagination="client"
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tabOb" >
+                    <thead>
+                        <tr>
+                            <th data-field="EventoID" data-visible="false">ID</th>
+                            <th data-field="nombre" data-sortable="true" data-filter-control="input">Nombre</th>
+                            <th data-field="sexo" data-sortable="true" data-filter-control="input">Sexo</th>
+                            <th data-field="mensaje" data-sortable="true" data-filter-control="input">Mensaje</th>
+                            <th data-field="fechaNot" data-sortable="true" data-filter-control="input">Fecha Notificación</th>
+                            <th data-field="operacion" data-events="operateEvents" data-formatter="operateFormatter" data-align="center"></th>
+                        </tr>
+                    </thead>
+                </table>
+
+        </div>
 
 
 
@@ -59,10 +70,19 @@
         <div role="tabpanel" class="tab-pane" id="eOp">
             <div class="container">
 
-          
-                sadasd
-                <table id="tablaEvOp" data-filter-control="true" data-id-field="id" data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
+                <table data-toggle="table" data-url='@Url.Action("GetEventosOpcionales", "Notificacion")' data-pagination="true" data-side-pagination="client"
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tabOp">
+                    <thead>
+                        <tr>
+                            <th data-field="EventoID" data-visible="false">ID</th>
+                            <th data-field="nombre" data-sortable="true" data-filter-control="input">Nombre</th>
+                            <th data-field="sexo" data-sortable="true" data-filter-control="input">Sexo</th>
+                            <th data-field="mensaje" data-sortable="true" data-filter-control="input">Mensaje</th>
+                            <th data-field="operacionEdad" data-events="operateEventsAge" data-formatter="operateFormatterAge" data-align="center">Ver Edades</th>
+                            <th data-field="operacion2" data-events="operateEvents2" data-formatter="operateFormatter2" data-align="center"></th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
 
         </div>
@@ -83,19 +103,120 @@
             return {};
         }
 
-        function operateFormatter(value, row, index) {
+        function operateFormatter2(value, row, index) {
             return [
-                '<a class="like" href="javascript:void(0)" title="Editar">',
-                '<i class="glyphicon glyphicon-pencil"></i>',
-                '</a>  ',
-                '<a class="remove" href="javascript:void(0)" title="Eliminar">',
+                '<a class="remove" href="javascript:void(0)" title="Eliminar evento">',
                 '<i class="glyphicon glyphicon-remove"></i>',
                 '</a>',
                 ' ',
-                '<a class="pacientes" href="javascript:void(0)" title="Pacientes">',
+                '<a class="pacientes" href="javascript:void(0)" title="Ver pacientes suscritos al evento">',
                 '<i class="fa fa-users"></i>',
                 '</a>'
 
             ].join('');
         }
+
+        function operateFormatterAge(value, row, index) {
+            return [
+                '<a class="edad" href="javascript:void(0)" title="Ver Edades">',
+                '<i class="glyphicon glyphicon-search"></i>',
+                '</a>',
+              
+
+            ].join('');
+        }
+
+
+        function operateFormatter(value, row, index) {
+            return [
+                '<a class="remove" href="javascript:void(0)" title="Eliminar evento">',
+                '<i class="glyphicon glyphicon-remove"></i>',
+                '</a>',
+                ' ',
+                '<a class="pacientes" href="javascript:void(0)" title="Ver pacientes suscritos al evento">',
+                '<i class="fa fa-users"></i>',
+                '</a>'
+
+            ].join('');
+        }
+
+
+        window.operateEvents = {
+
+            'click .remove': function (e, value, row, index) {
+
+                $("#idRowDel").val(row.idC);
+                $('#modalRemove').modal('show');
+                // $table.bootstrapTable('remove', {
+                //     field: 'idC',
+                //     values: [row.idC]
+                // });
+            },
+            'click .pacientes': function (e, value, row, index) {
+
+                var url = '/Notificacion/VerPacientesEvento' + '?idE=' + row.EventoID;
+                location.href = url;
+            }
+        }
+
+        window.operateEvents2 = {
+
+            'click .remove': function (e, value, row, index) {
+
+                $("#idRowDel").val(row.idC);
+                $('#modalRemove').modal('show');
+                // $table.bootstrapTable('remove', {
+                //     field: 'idC',
+                //     values: [row.idC]
+                // });
+            },
+            'click .pacientes': function (e, value, row, index) {
+
+
+                var url = '/Notificacion/VerPacientesEvento' + '?idE=' + row.EventoID;
+                location.href = url;
+            }
+        }
+
+        window.operateEventsAge = {
+
+            'click .edad': function (e, value, row, index) {
+              
+                $('#tableLocales').bootstrapTable('destroy');
+                $('#tableLocales').bootstrapTable({
+                    url: '@Url.Action("GetEdades", "Notificacion")' + '?idE=' + row.EventoID,
+
+                    columns: [{
+                        field: 'edad',
+                        title: 'Edad',
+                        filterControl: 'input'
+                    }
+
+                    ]
+                });
+                $('#tableLocales').bootstrapTable('resetView');
+                $('#modalTable').modal('show');
+            }
+        }
     </script>
+
+<div class="modal fade" id="modalTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><i class="glyphicon glyphicon-bell"></i>&nbsp Edades Evento</h4>
+            </div>
+            <div class="modal-body">
+                <table id="tableLocales"
+                       data-toggle="table"
+                       data-height="299" data-row-style="rowStyle" data-filter-control="true"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

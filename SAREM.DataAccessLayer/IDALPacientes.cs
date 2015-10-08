@@ -1,4 +1,5 @@
 ﻿using SAREM.Shared.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace SAREM.DataAccessLayer
@@ -11,5 +12,6 @@ namespace SAREM.DataAccessLayer
         void sancionarPaciente(string CI);
         void eliminarPaciente(string CI);
         ICollection<Paciente> listarPacientes();
+        Boolean checkPaciente(string idPaciente);
     }
 }
