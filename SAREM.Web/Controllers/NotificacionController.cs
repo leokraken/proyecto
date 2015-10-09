@@ -246,6 +246,23 @@ namespace SAREM.Web.Controllers
             return View("VerEventosPaciente", ew);
         }
 
+        [HttpPost]
+        public JsonResult Delete(string idE)
+        {
+            try
+            {
+                fabrica.inotificaciones.eliminarEvento(Convert.ToInt64(idE));
+                return Json(new { success = true });
+
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
 
     }
 }

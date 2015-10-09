@@ -71,7 +71,7 @@
             <div class="container">
 
                 <table data-toggle="table" data-url='@Url.Action("GetEventosOpcionales", "Notificacion")' data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tabOp">
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tablaOpcional">
                     <thead>
                         <tr>
                             <th data-field="EventoID" data-visible="false">ID</th>
@@ -145,7 +145,8 @@
 
             'click .remove': function (e, value, row, index) {
 
-                $("#idRowDel").val(row.idC);
+                $("#idRowDel").val(row.EventoID);
+                $("#idTipo").val("1");
                 $('#modalRemove').modal('show');
                 // $table.bootstrapTable('remove', {
                 //     field: 'idC',
@@ -163,7 +164,8 @@
 
             'click .remove': function (e, value, row, index) {
 
-                $("#idRowDel").val(row.idC);
+                $("#idRowDel").val(row.EventoID);
+                $("#idTipo").val("2");
                 $('#modalRemove').modal('show');
                 // $table.bootstrapTable('remove', {
                 //     field: 'idC',
@@ -198,7 +200,57 @@
                 $('#modalTable').modal('show');
             }
         }
+
+
     </script>
+<script>
+    $(document).ready(function () {
+
+
+        $("#remove").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("Delete", "Notificacion")',
+                dataType: "json",
+                type: "POST",
+                data: { idE: $("#idRowDel").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+
+                        $('#modalRemove').modal('hide');
+                        if ($("#idTipo").val() == "1") {
+
+                            $('#tabOb').bootstrapTable("refresh", { silent: true });
+
+                        } else {
+                          
+                            $('#tablaOpcional').bootstrapTable("refresh", { silent: true });
+                        }
+                       
+                      
+                       
+
+                    } else {
+
+                        alert("error delete 1");
+                    }
+                },
+                error: function (xhr) {
+
+                    alert('error delete 2');
+                }
+            })
+
+
+
+        });
+
+    })
+</script>
 
 <div class="modal fade" id="modalTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -220,3 +272,24 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalRemove">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Eliminar Evento</h4>
+            </div>
+            <div class="modal-body">
+                <p>Está seguro/a que desea eliminar el Evento ?</p>
+                <input id="idRowDel" type="hidden" />
+                <input id="idTipo" type="hidden" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="remove">Si</button>
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
