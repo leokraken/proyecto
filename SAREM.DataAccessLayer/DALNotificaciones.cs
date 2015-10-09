@@ -153,6 +153,24 @@ namespace SAREM.DataAccessLayer
             return query.ToList();
         }
 
+        public ICollection<Paciente> listarPacientesNotInEvento(long EventoID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                if (!db.eventos.Any(e => e.EventoID == EventoID))
+                    throw new Exception("No existe Evento");
+                else
+                {
+                    //Obtengo la cantidad de tipos de comunicacion posibles
+                    int numCom = db.comunicaciones.ToList().Count;
+                    var result = db.pacientes.ToList();
+                   
+                    return result;
+                }
+            }
+        }
+
+
 
         #region CRUD Eventos
         //crud eventos

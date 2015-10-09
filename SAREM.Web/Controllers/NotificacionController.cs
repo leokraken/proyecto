@@ -263,6 +263,34 @@ namespace SAREM.Web.Controllers
 
         }
 
+        [HttpGet]
+        public JsonResult GetPacientesEventoNew(string idE)
+        {
+            long idL = Convert.ToInt64(idE);
+            var pacientesNotInConsulta = fabrica.inotificaciones.listarPacientesNotInEvento(idL);
+            var pacientes =
+                    from p in pacientesNotInConsulta
+                    select new { PacienteID = p.PacienteID };
 
+            return Json(pacientes, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AddPacienteEvento(string idE, string idP)
+        {
+            try
+            {
+                fabrica.inotificaciones.suscribirPacienteEvento(Convert.ToInt64(idE), idP, 3);
+               
+                return Json(new { success = true });
+
+            }
+            catch
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
     }
 }

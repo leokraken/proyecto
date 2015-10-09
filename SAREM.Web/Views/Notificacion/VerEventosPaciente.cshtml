@@ -6,12 +6,14 @@
 }
 
 <link rel="stylesheet" href="~/Content/boostrap-table/src/bootstrap-table.css">
+<link rel="stylesheet" href="~/Content/awesomplete.css">
 
 @Scripts.Render("~/bundles/jquery")
 <script src="~/Scripts/jquery-1.10.2.min.js" type="text/javascript"></script>
 <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
 <script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
+<script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
 
 <ol class="breadcrumb">
@@ -37,7 +39,7 @@
     <div class="pull-right" id="divAddPE">
       
 
-        <img src="~/Content/images/addPac2.png" id="addPacEvento" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente al Evento">
+        <img src="~/Content/images/addPac2.png" id="addPac" style="cursor: pointer;" class="img-responsive" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Click para agregar un nuevo Paciente al Evento">
         <br />
     </div>
     <table id="tablaPeEv" data-filter-control="true" data-pagination="true" data-side-pagination="client"
@@ -45,12 +47,24 @@
 </div>
 
 <script>
-    
+
     $(document).ready(function () {
 
         $("#dataEvento").popover({ trigger: "hover" });
-        $("#addPacEvento").popover({ trigger: "hover" });
-        
+        $("#addPac").popover({ trigger: "hover" });
+
+        $("#dataEvento").click(function () {
+
+            $('#modalDataCons').modal('show');
+        });
+
+        var input2 = document.getElementById("idPaciente");
+        var awesompleteP = new Awesomplete(input2, {
+            minChars: 1,
+            maxItems: 15,
+        });
+
+
 
         $('#tablaPeEv').bootstrapTable({
             url: '@Url.Action("GetPacientesEvento", "Notificacion")' + '?idE=' + @Model.EventoID,
@@ -77,6 +91,82 @@
             }
             ]
         });
+
+        $("#addPac").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("GetPacientesEventoNew", "Notificacion")',
+                dataType: "json",
+                type: "GET",
+
+                data: { idE: @Model.EventoID},
+                cache: false,
+                success: function (data) {
+
+
+                    $('#idPaciente').val("");
+
+                    var list = [];
+                    $.each(data, function(key, value) {
+                        list.push(value.PacienteID);
+                    });
+
+
+
+
+                    awesompleteP.list = list;
+
+                    $('#addPacCons').modal('show');
+                },
+                error: function (xhr) {
+
+                    alert('error');
+                }
+            })
+        });
+
+        $("#agregar").click(function () {
+
+            var existe = false;
+            $("#divP").removeClass("has-error");
+            $("#helpP").hide();
+
+
+
+            $.ajax({
+                url: '@Url.Action("AddPacienteEvento", "Notificacion")',
+                dataType: "json",
+                type: "POST",
+                data: { idE: @Model.EventoID, idP: $("#idPaciente").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $('#addPacCons').modal('hide');
+                        $('#tablaPeEv').bootstrapTable("refresh", { silent: true });
+                        $("#divP").removeClass("has-error");
+                        $("#helpP").hide();
+
+                    } else {
+
+                        $("#divP").addClass("has-error");
+                        $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y que el Paciente no este suscripto ya al Evento con el mismo medio de Comunicación.");
+                        $("#helpP").show();
+
+                    }
+                },
+                error: function (xhr) {
+
+                    $("#divP").addClass("has-error");
+                    $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y que el Paciente no este suscripto ya al Evento con el mismo medio de Comunicación.");
+                    $("#helpP").show();
+                }
+            })
+
+        });
+
     })
 
     function rowStyle(row, index) {
@@ -109,3 +199,75 @@
     };
 
 </script>
+
+<div class="modal fade" id="addPacCons">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Suscribir Paciente Evento</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+
+
+                    <div class="form-group" id="divP">
+                        <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
+                        <div class="col-sm-8">
+                            <input id="idPaciente" class="form-control" placeholder="Ingrese Id Paciente..." style="width:280px" />
+                            <span id="helpP" class="help-block" style="display:none"></span>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                <button type="button" class="btn btn-primary" id="agregar">Agregar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="modalDataCons">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Datos Evento</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+
+
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Nombre:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.nombre" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Sexo:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.sexo" style="width:280px" disabled />
+                        </div>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Tipo:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.tipo" style="width:280px" disabled />
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

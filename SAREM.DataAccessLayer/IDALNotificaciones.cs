@@ -21,6 +21,7 @@ namespace SAREM.DataAccessLayer
         ICollection<Evento> listarEventos();
         List<DataEdad> getEdadesEvento(long EventoID);
         ICollection<EventoPacienteComunicacion> listarEventosPaciente(long EventoID);
+        ICollection<Paciente> listarPacientesNotInEvento(long EventoID);
 
         //crud eventos
         Evento obtenerEvento(long EventoID);
