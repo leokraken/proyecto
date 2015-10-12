@@ -18,24 +18,38 @@
 
 
 
-<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+@*<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>*@
+<script src="~/Content/boostrap-table/src/extensions/mobile/bootstrap-table-mobile.js"></script>
 
     <ol class="breadcrumb">
         <li><a href="#">Consultas</a></li>
         <li class="active">Ver Consultas</li>
     </ol>
 
-    <h3>Consultas</h3>
+   <div class="paragraphs">
+    <div class="row">
+        <div class="span4">
+            <div class="content-heading" style="margin-left:17px !important;">
+
+                <h3 class="pull-left">Consultas  &nbsp &nbsp </h3>
+                <img src="~/Content/images/wall clock.png" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
     <table data-toggle="table" data-url='@Url.Action("GetConsultas", "Consulta")' data-pagination="true" data-side-pagination="client"
-       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tab" data-id-field ="idC">
+       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-search="true" data-mobile-responsive="true" data-check-on-init="true" id="tab" data-id-field="idC">
     <thead>
         <tr>
             <th data-field="idC" data-visible="false">ID</th>
-            <th data-field="origen" data-sortable="true" data-filter-control="input">Orígen</th>
-            <th data-field="especialidad" data-sortable="true" data-filter-control="input">Especialidad</th>
-            <th data-field="medico" data-sortable="true" data-filter-control="input">Médico</th>
-            <th data-field="fechaInicio" data-sortable="true" data-filter-control="input">Fecha Inicio</th>
-            <th data-field="fechaFin" data-sortable="true" data-filter-control="input">Fecha Fin</th>
+            <th data-field="origen" data-sortable="true" >Orígen</th>
+            <th data-field="especialidad" data-sortable="true" >Especialidad</th>
+            <th data-field="medico" data-sortable="true" >Médico</th>
+            <th data-field="fechaInicio" data-sortable="true" >Fecha Inicio</th>
+            <th data-field="fechaFin" data-sortable="true" >Fecha Fin</th>
             <th data-field="operacion" data-events="operateEvents" data-formatter="operateFormatter" data-align="center"></th>
         </tr>
     </thead>

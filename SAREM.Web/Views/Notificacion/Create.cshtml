@@ -139,17 +139,19 @@
                     <div id="divOpM" style="display:none">
                         @*<p>First name: <input data-bind="value: firstName" /></p>
                         <p>Last name: <input data-bind="value: lastName" /></p>*@
-
+                        <form class="form-inline">
                         <div class="form-group">
                             <label class="control-label col-md-2">Edad a agregar:</label>
                             <div class="col-md-10">
-                               
+                                
                                     <input type="text" class="form-control" data-bind='value:itemToAdd, valueUpdate: "afterkeydown"' />
-                                 
+                                    
                                     <img src="~/Content/images/add182.png" data-bind="click: addItem, enable: itemToAdd().length > 0" style="cursor: pointer;" class="img-responsive" />
-                               
+                                   
                             </div>
+                           
                         </div>
+                        </form>
                         <div class="form-group">
                             <label class="control-label col-md-2">Edades ingresadas:</label>
                             <div class="col-md-10">
@@ -191,7 +193,9 @@
  
     $(document).ready(function () {
 
-       
+        $('#save').hover(function () {
+            $(this).css('cursor', 'pointer');
+        });
 
         //Oculto todos los li
         $('#errores > li').hide();

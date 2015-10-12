@@ -16,6 +16,7 @@
 <script src="~/Scripts/mustache.js" type="text/javascript"></script>
 <script src="~/Scripts/awesomplete.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+<script src="~/Content/boostrap-table/src/extensions/mobile/bootstrap-table-mobile.js"></script>
 
 <ol class="breadcrumb">
     <li><a href="#">Eventos</a></li>
@@ -49,14 +50,14 @@
 
             <div class="container">
                 <table data-toggle="table" data-url='@Url.Action("GetEventosObligatorios", "Notificacion")' data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tabOb" >
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-search="true" data-mobile-responsive="true" data-check-on-init="true" id="tabOb">
                     <thead>
                         <tr>
                             <th data-field="EventoID" data-visible="false">ID</th>
-                            <th data-field="nombre" data-sortable="true" data-filter-control="input">Nombre</th>
-                            <th data-field="sexo" data-sortable="true" data-filter-control="input">Sexo</th>
-                            <th data-field="mensaje" data-sortable="true" data-filter-control="input">Mensaje</th>
-                            <th data-field="fechaNot" data-sortable="true" data-filter-control="input">Fecha Notificación</th>
+                            <th data-field="nombre" data-sortable="true" >Nombre</th>
+                            <th data-field="sexo" data-sortable="true">Sexo</th>
+                            <th data-field="mensaje" data-sortable="true">Mensaje</th>
+                            <th data-field="fechaNot" data-sortable="true">Notificación</th>
                             <th data-field="operacion" data-events="operateEvents" data-formatter="operateFormatter" data-align="center"></th>
                         </tr>
                     </thead>
@@ -71,13 +72,13 @@
             <div class="container">
 
                 <table data-toggle="table" data-url='@Url.Action("GetEventosOpcionales", "Notificacion")' data-pagination="true" data-side-pagination="client"
-                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-filter-control="true" id="tablaOpcional">
+                       data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle" data-sort-order="desc" data-search="true" data-mobile-responsive="true" data-check-on-init="true" id="tablaOpcional">
                     <thead>
                         <tr>
                             <th data-field="EventoID" data-visible="false">ID</th>
-                            <th data-field="nombre" data-sortable="true" data-filter-control="input">Nombre</th>
-                            <th data-field="sexo" data-sortable="true" data-filter-control="input">Sexo</th>
-                            <th data-field="mensaje" data-sortable="true" data-filter-control="input">Mensaje</th>
+                            <th data-field="nombre" data-sortable="true" >Nombre</th>
+                            <th data-field="sexo" data-sortable="true" >Sexo</th>
+                            <th data-field="mensaje" data-sortable="true" >Mensaje</th>
                             <th data-field="operacionEdad" data-events="operateEventsAge" data-formatter="operateFormatterAge" data-align="center">Ver Edades</th>
                             <th data-field="operacion2" data-events="operateEvents2" data-formatter="operateFormatter2" data-align="center"></th>
                         </tr>

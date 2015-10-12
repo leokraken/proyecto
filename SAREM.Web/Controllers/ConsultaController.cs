@@ -1098,7 +1098,7 @@ namespace SAREM.Web.Controllers
         public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
         {
 
-            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime());
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime(), "14");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
 
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1142,7 +1142,7 @@ namespace SAREM.Web.Controllers
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
 
-            var consultas = fabrica.iagenda.listarConsultasPaciente("12");
+            var consultas = fabrica.iagenda.listarConsultasPaciente("14");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
            
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1168,7 +1168,7 @@ namespace SAREM.Web.Controllers
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
               
-                var consulta = fabrica.iagenda.obtenerConsulta("12", c.ConsultaID);
+                var consulta = fabrica.iagenda.obtenerConsulta("14", c.ConsultaID);
                 if (consulta.turno != null)
                 {
                             DateTime turno = consulta.turno ?? DateTime.UtcNow;
@@ -1247,14 +1247,14 @@ namespace SAREM.Web.Controllers
             {
                 long idCC = Convert.ToInt64(idC);
                 //Cambiar luego id paciente
-                var pertenece = fabrica.iagenda.perteneceConsulta("12", idCC);
+                var pertenece = fabrica.iagenda.perteneceConsulta("14", idCC);
                 if (pertenece) { 
                     
-                    fabrica.iagenda.cancelarConsultaPaciente("12", idCC);
+                    fabrica.iagenda.cancelarConsultaPaciente("14", idCC);
                 }
                 else
                 {
-                    fabrica.iagenda.eliminarPacienteConsultaLE("12", idCC);
+                    fabrica.iagenda.eliminarPacienteConsultaLE("14", idCC);
                 }
                 return Json(new { success = true });
             }
@@ -1274,7 +1274,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("11", idCC);
+                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("14", idCC);
                 if (turnoAux != null) {
                     
                     DateTime turno = turnoAux ?? DateTime.UtcNow;

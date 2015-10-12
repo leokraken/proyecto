@@ -400,6 +400,7 @@
     <Content Include="Content\images\clock118.png" />
     <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
+    <Content Include="Content\images\eventoPac1.png" />
     <Content Include="Content\images\list-1.png" />
     <Content Include="Content\images\mailing2.png" />
     <Content Include="Content\images\md.png" />
@@ -414,6 +415,7 @@
     <Content Include="Content\images\time18.png" />
     <Content Include="Content\images\time36.png" />
     <Content Include="Content\images\verified9.png" />
+    <Content Include="Content\images\wall clock.png" />
     <Content Include="Content\images\writing11.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />

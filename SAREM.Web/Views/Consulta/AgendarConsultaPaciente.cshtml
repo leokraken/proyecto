@@ -12,7 +12,8 @@
 <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
 <script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
-<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+@*<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>*@
+<script src="~/Content/boostrap-table/src/extensions/mobile/bootstrap-table-mobile.js"></script>
 
 <ol class="breadcrumb">
     <li><a href="#">Consultas</a></li>
@@ -85,7 +86,7 @@
 
 <div id="divConsultas" style="display:none;">
     <div>
-        <table id="tablaConsultas" data-filter-control="true" data-pagination="true" data-side-pagination="client"
+        <table id="tablaConsultas" data-search="true" data-mobile-responsive="true" data-check-on-init="true" data-pagination="true" data-side-pagination="client"
                data-page-list="[10, 25, 50, 100, ALL]" data-row-style="rowStyle"></table>
     </div>
 </div> 
@@ -179,32 +180,32 @@
                     }, {
                         field: 'origen',
                         title: 'Orígen',
-                        filterControl: 'input',
+                     
                         sortable: true
                     }, {
                         field: 'especialidad',
                         title: 'Especialidad',
-                        filterControl: 'input',
+                       
                         sortable: true
                     }, {
                         field: 'medico',
                         title: 'Médico',
-                        filterControl: 'input',
+                       
                         sortable: true
                     }, {
                         field: 'fechaInicio',
                         title: 'Fecha Inicio',
-                        filterControl: 'input',
+                     
                         sortable: true
                     },
                     {
                         field: 'fechaFin',
                         title: 'Fecha Fin',
-                        filterControl: 'input',
+                      
                         sortable: true
                     }, {
                         field: 'operate',
-                        title: 'Agendar Consulta',
+                        title: 'Agendar',
                         align: 'center',
                         events: operateEvents,
                         formatter: operateFormatter
@@ -255,6 +256,7 @@
 
                             $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
                             $('#modalAlerta').modal('show');
+                           
                             
                            
                         } else if (data.success && data.turno == "LE") {
@@ -264,9 +266,14 @@
 
                         } else {
 
-                            $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera. Por favor, busque otra consulta.")
+                            $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
                             $('#modalAlerta').modal('show');
                         }
+
+                        $('#tablaConsultas').bootstrapTable('remove', {
+                            field: 'idC',
+                            values: row.idC
+                        });
                     },
                     error: function (xhr) {
 

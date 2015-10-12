@@ -554,7 +554,7 @@ namespace SAREM.DataAccessLayer
             return d;
         }
 
-        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fecha)
+        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fecha, string idP)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
@@ -565,6 +565,8 @@ namespace SAREM.DataAccessLayer
                             where c.LocalID == LocalID 
                             && c.EspecialidadID == EspecialidadID 
                             && c.FuncionarioID == MedicoID
+                            && !c.pacientes.Any(p => p.PacienteID == idP )
+                            && !c.pacientesespera.Any(p => p.PacienteID == idP)
                             && (c.pacientes.Count < MAX_PACIENTES || c.pacientesespera.Count < MAX_PACIENTES_ESPERA)
                             select c;
                 List<Consulta> lista = new List<Consulta>();
