@@ -401,7 +401,13 @@
     <Content Include="Content\images\clock258.png" />
     <Content Include="Content\images\dataConsulta.png" />
     <Content Include="Content\images\eventoPac1.png" />
+    <Content Include="Content\images\icono4.png" />
+    <Content Include="Content\images\icono5.png" />
+    <Content Include="Content\images\icono6.png" />
+    <Content Include="Content\images\icono7.png" />
+    <Content Include="Content\images\icono8.png" />
     <Content Include="Content\images\list-1.png" />
+    <Content Include="Content\images\logo9.png" />
     <Content Include="Content\images\mailing2.png" />
     <Content Include="Content\images\md.png" />
     <Content Include="Content\images\Noaprove.png" />
