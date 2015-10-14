@@ -75,14 +75,14 @@
                     <div class="form-group" id="divNombre">
                         <label class="control-label col-md-2">Nombre:</label>
                         <div class="col-md-10">
-                            <input id="nombre" class="form-control" placeholder="Ingrese un Nombre" />
+                            <input id="nombre" class="form-control" placeholder="Ingrese un Nombre" style="width:227px" />
                             <span id="helpNombre" class="help-block" style="display:none">Debe ingresar un Nombre.</span>
                         </div>
                     </div>
                     <div class="form-group" id="divSexo">
                         <label class="control-label col-md-2">Sexo:</label>
                         <div class="col-md-10">
-                            <select id="sexo" class="selectpicker" title="Seleccione..." data-width="280px">
+                            <select id="sexo" class="selectpicker" title="Seleccione..." >
 
                                 <option value="F">Femenino</option>
                                 <option value="M">Masculino</option>
@@ -94,7 +94,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-2">Mensaje:</label>
                         <div class="col-md-10">
-                            <textarea rows="4" cols="50" id="msj"></textarea>
+                            <textarea rows="4" cols="30" id="msj"></textarea>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-2">Fecha Notificación:</label>
                         <div class="col-md-10">
-                            <input id="fN" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
+                            <input id="fN" class="form-control datetimepicker" placeholder="Seleccione una fecha..." style="width:227px" />
                            
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-2">Edades:</label>
                         <div class="col-md-10">
-                            <select id="edad" class="selectpicker" title="Seleccione..." data-width="280px">
+                            <select id="edad" class="selectpicker" title="Seleccione..." dat>
 
                                 <option value="R">Rango</option>
                                 <option value="M">Manual</option>
@@ -144,7 +144,7 @@
                             <label class="control-label col-md-2">Edad a agregar:</label>
                             <div class="col-md-10">
                                 
-                                    <input type="text" class="form-control" data-bind='value:itemToAdd, valueUpdate: "afterkeydown"' />
+                                <input type="text" class="form-control" data-bind='value:itemToAdd, valueUpdate: "afterkeydown"' style="width:227px" />
                                     
                                     <img src="~/Content/images/add182.png" data-bind="click: addItem, enable: itemToAdd().length > 0" style="cursor: pointer;" class="img-responsive" />
                                    

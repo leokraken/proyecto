@@ -52,7 +52,7 @@
                             Text = l.nombre,
                             Value = l.LocalID.ToString()
                         }),
-          "Seleccione un Orígen", new {style = "width:280px", @class = "form-control origen_change" })
+                    "Seleccione un Orígen", new { @class = "form-control origen_change" })
                     @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
                     <span id="helpOrigen" class="help-block" style="display:none">Debe seleccionar un Orígen.</span>
                 </div>
@@ -62,7 +62,7 @@
                     <label class="control-label col-md-2">Especialidad:</label>
                     <div class="col-md-10">
 
-                        @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { style = "width:280px", @class = "form-control" })
+                        @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { @class = "form-control" })
                         <span id="helpEspecial" class="help-block" style="display:none">Debe seleccionar una Especialidad.</span>
                     </div>
                   
@@ -72,7 +72,7 @@
                 <div class="form-group" id="divMedico">
                     <label class="control-label col-md-2">Médico:</label>
                     <div class="col-md-10">
-                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "form-control" })
+                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new {  @class = "form-control" })
                         <span id="helpMedico" class="help-block" style="display:none">Debe seleccionar un Médico.</span>
                     </div>
                     

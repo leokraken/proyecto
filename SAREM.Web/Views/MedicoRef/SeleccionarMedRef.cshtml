@@ -50,7 +50,7 @@
                             Text = l.descripcion,
                             Value = l.EspecialidadID.ToString()
                         }),
-          "Seleccione una Especialidad", new { style = "width:280px", @class = "especialidad form-control" })
+          "Seleccione una Especialidad", new {  @class = "especialidad form-control" })
                             @Html.ValidationMessageFor(model => model.EspecialidadID, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-2">Médico:</label>
                             <div class="col-md-10">
-                                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { style = "width:280px", @class = "form-control" })
+                                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new {  @class = "form-control" })
                             </div>
                         </div>
                     </div>

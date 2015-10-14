@@ -809,7 +809,7 @@ namespace SAREM.Web.Controllers
                  fabrica.iagenda.agregarConsultaPaciente(idP, idCC, false);
                 return Json(new { success = true });
             }
-            catch
+            catch(Exception e)
             {
                 return Json(new { success = false });
             }
@@ -849,7 +849,7 @@ namespace SAREM.Web.Controllers
                 fabrica.iagenda.cancelarConsultaPaciente(idP, idCC);
                 return Json(new { success = true });
             }
-            catch
+            catch(Exception e)
             {
                 return Json(new { success = false });
             }

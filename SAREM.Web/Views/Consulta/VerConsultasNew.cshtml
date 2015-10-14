@@ -220,7 +220,7 @@
             success: function (data) {
 
 
-                var templateEsp = '<select style="width:280px" id = "esp" class="form-control" >{{ #. }}' +
+                var templateEsp = '<select  id = "esp" class="form-control" >{{ #. }}' +
                                   '<option value="{{Value}}">' +
                                    '{{Text}}' +
                                    '</option>' +
@@ -254,7 +254,7 @@
             success: function (data) {
 
 
-                var templateMed = '<select style="width:280px" id = "med" class="form-control" >{{ #. }}' +
+                var templateMed = '<select  id = "med" class="form-control" >{{ #. }}' +
                                   '<option value="{{Value}}">' +
                                    '{{Text}}' +
                                    '</option>' +
@@ -300,7 +300,7 @@
                 success: function (data) {
 
                     $("#idRow").val(row.idC);
-                    var template = '<select style="width:280px" id = "origen" class="form-control">{{#locales}}' +
+                    var template = '<select  id = "origen" class="form-control">{{#locales}}' +
                                    '<option value="{{LocalID}}" {{#sel}}selected{{/sel}}>' +
                                     '{{nombre}}' +
                                     '</option>' +
@@ -313,7 +313,7 @@
 
                     $("#origenDiv").html(html);
 
-                    templateEsp = '<select style="width:280px" id = "esp" class="form-control">{{#especialidades}}' +
+                    templateEsp = '<select  id = "esp" class="form-control">{{#especialidades}}' +
                                    '<option value="{{EspecialidadID}}" {{#sel}}selected{{/sel}}>' +
                                     '{{descripcion}}' +
                                     '</option>' +
@@ -325,7 +325,7 @@
 
                     $("#especialidadDiv").html(html);
 
-                    templateMed = '<select style="width:280px" id = "med" class="form-control">{{#medicos}}' +
+                    templateMed = '<select  id = "med" class="form-control">{{#medicos}}' +
                                   '<option value="{{FuncionarioID}}" {{#sel}}selected{{/sel}}>' +
                                    '{{nombre}}' +
                                    '</option>' +
