@@ -7,9 +7,9 @@ namespace SAREM.DataAccessLayer
 {
     public interface IDALAgenda
     {
-        void agregarConsultaPaciente(string PacienteID, long ConsultaID, Boolean fueraLista);
+        void agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno, Boolean fueraLista);
         //TODO test
-        DateTime ? agregarConsultaPaciente(string PacienteID, long ConsultaID);
+        DateTime? agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno);
 
         void cancelarConsultaPaciente(string PacienteID, long ConsultaID);
         void ausenciaConsultaPaciente(string PacienteID, long ConsultaID);
@@ -41,10 +41,15 @@ namespace SAREM.DataAccessLayer
         PacienteConsultaAgenda obtenerPacienteConsulta(long ConsultaID, string PacienteID);
 
         //obtener parametros consulta, max pacientes consulta y max pacientes lista de espera
-        DataParametros obtenerParametrosConsulta();
+        //DataParametros obtenerParametrosConsulta();
+
         //Obtengo consulta para buscar el turno
         PacienteConsultaAgenda obtenerConsulta(string PacienteID, long ConsultaID);
         //chequear si paciente pertenece a la consulta o a la lista de espera, true si pertenece a la consulta, false en caso contrario
         Boolean perteneceConsulta(string PacienteID, long ConsultaID);
+
+        //listar turnos libres
+        ICollection<PacienteConsultaAgenda> obtenerTurnosLibres(long consultaID);
+
     }
 }
