@@ -681,7 +681,7 @@ namespace SAREM.Web.Controllers
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                        pC.fecharegistro,
+                        (DateTime)pC.fecharegistro,
                             DateTimeKind.Utc);
                 DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
                 pj.fechaRegistro = localVersionFIni.ToString(format);
@@ -731,7 +731,7 @@ namespace SAREM.Web.Controllers
                 pj.sexo = pente.sexo.ToString();
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                        pC.fecharegistro,
+                        (DateTime)pC.fecharegistro,
                             DateTimeKind.Utc);
                 DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
                 pj.fechaRegistro = localVersionFIni.ToString(format);
@@ -799,14 +799,16 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddPacienteConsulta(string idC, string idP)
+        public JsonResult AddPacienteConsulta(string idC, string idP, string idCT)
         {
 
          
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                 fabrica.iagenda.agregarConsultaPaciente(idP, idCC, false);
+                short idCCT = Convert.ToInt16(idCT);
+
+                fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, false);
                 return Json(new { success = true });
             }
             catch(Exception e)
@@ -1027,14 +1029,16 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult AgregarPacienteFE(string idC, string idP)
+        public JsonResult AgregarPacienteFE(string idC, string idP, string idCT)
         {
 
 
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                fabrica.iagenda.agregarConsultaPaciente(idP,idCC,true);
+                short idCCT = Convert.ToInt16(idCT);
+
+                fabrica.iagenda.agregarConsultaPaciente(idP,idCC,idCCT,true);
 
                 return Json(new { success = true });
             }
@@ -1046,13 +1050,16 @@ namespace SAREM.Web.Controllers
 
         }
 
+        //REVISAR.
         [HttpGet]
         public JsonResult GetParametrosConsulta()
         {
             try
             {
-                var dtp = fabrica.iagenda.obtenerParametrosConsulta();
-                return Json(new { max_pacientes = dtp.maxPacientesConsulta, max_pacientes_esp = dtp.maxPacientesListaEspera }, JsonRequestBehavior.AllowGet);
+                //var dtp = fabrica.iagenda.obtenerParametrosConsulta();
+                //return Json(new { max_pacientes = dtp.maxPacientesConsulta, max_pacientes_esp = dtp.maxPacientesListaEspera }, JsonRequestBehavior.AllowGet);
+                return Json(new { max_pacientes = 10, max_pacientes_esp = 10 }, JsonRequestBehavior.AllowGet);
+
             }
             catch
             {
@@ -1267,14 +1274,15 @@ namespace SAREM.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult AgregarPacienteConsulta(string idC)
+        public JsonResult AgregarPacienteConsulta(string idC, string idCT)
         {
 
 
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("14", idCC);
+                short idCCT = Convert.ToInt16(idCT);
+                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("14", idCC, idCCT);
                 if (turnoAux != null) {
                     
                     DateTime turno = turnoAux ?? DateTime.UtcNow;
