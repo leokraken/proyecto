@@ -38,13 +38,27 @@ namespace SARM.DataAccessLayer
         static void Main(string[] args)
         {
             FabricaSAREM f = new FabricaSAREM();
-            f.adminController.dropSchema("NIST2010");
-            f.adminController.createSchema("NIST2010");
+
+            //f.adminController.dropSchema("test");
+            
+            //f.adminController.createSchema("test");
+            FabricaSAREM fab = new FabricaSAREM("test");
+
+            double minutos = (DateTime.UtcNow - DateTime.UtcNow.AddMinutes(300)).TotalMinutes;
+            //fab.iagenda.agregarConsultaPaciente("1",1,0,false);
+            /*
             var list = f.adminController.getSchemas();
+            using (var db = SARMContext.getTenant("test"))
+            {
+                PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID=4, fueralista=false, fecharegistro=DateTime.Now, turno=DateTime.Now };
+                db.consultasagendadas.Add(pca);
+                db.SaveChanges();
+            }
             foreach (var s in list)
             {
                 Console.WriteLine(s);
             }
+             * */
             Console.Read();
             //testOpenempi();
         }

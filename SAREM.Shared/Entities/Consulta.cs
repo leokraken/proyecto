@@ -10,24 +10,22 @@ namespace SAREM.Shared.Entities
     public class Consulta
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [DHXJson(Alias = "id")]
         public long ConsultaID { get; set; }
 
-        [DHXJson(Ignore = true)]
         public long EspecialidadID { get; set; }
-        [DHXJson(Ignore = true)]
         public string FuncionarioID { get; set; }
         public long LocalID { get; set; }
 
         [Required]
-        [DHXJson(Alias = "start_date")]
         public DateTime fecha_inicio { get; set; }
         [Required]
-        [DHXJson(Alias = "end_date")]
         public DateTime fecha_fin { get; set; }
 
-        [DHXJson(Alias = "text")]
         public string Description { get; set; }
+        [Required]
+        public short numpacientes { get; set; }
+        [Required]
+        public short maxpacientesespera { get; set; }
 
         public virtual Especialidad especialidad { get; set; }
         public virtual Medico medico { get; set; }

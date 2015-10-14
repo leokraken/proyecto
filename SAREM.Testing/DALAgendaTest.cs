@@ -158,28 +158,34 @@ namespace SAREM.Testing
             {
                 new Consulta {
                     EspecialidadID = especialidades[0].EspecialidadID,
-                    fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
+                    fecha_inicio=DateTime.UtcNow,                  
+                    fecha_fin= DateTime.UtcNow.AddMinutes(20),
                     FuncionarioID=funcionarios[0].FuncionarioID,
-                    LocalID=1
+                    LocalID=1,
+                    numpacientes=10,
+                    maxpacientesespera=10
                 },
                 new Consulta {
                     EspecialidadID = especialidades[1].EspecialidadID,
-                    fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
+                    fecha_inicio=DateTime.UtcNow,                  
+                    fecha_fin= DateTime.UtcNow.AddMinutes(300),
                     FuncionarioID=funcionarios[0].FuncionarioID,
-                    LocalID=2
+                    LocalID=2,
+                    numpacientes=10,
+                    maxpacientesespera=10
                 },
                 new Consulta {
                     EspecialidadID = especialidades[2].EspecialidadID,
-                    fecha_fin=DateTime.UtcNow,                  
-                    fecha_inicio= DateTime.UtcNow.AddMinutes(300),
+                    fecha_inicio=DateTime.UtcNow,                  
+                    fecha_fin= DateTime.UtcNow.AddMinutes(300),
                     FuncionarioID=funcionarios[0].FuncionarioID,
-                    LocalID=1
+                    LocalID=1,                 
+                    numpacientes=10,
+                    maxpacientesespera=10
                 }
             };
-
-            consultas.ForEach(c => db.consultas.Add(c));
+            FabricaSAREM fab = new FabricaSAREM(tenant);
+            consultas.ForEach(c => fab.iagenda.agregarConsulta(c));
             db.SaveChanges();
             Debug.WriteLine("Consultas agregados...");
 
@@ -233,17 +239,19 @@ namespace SAREM.Testing
             foreach (var c in consultas)
             {
                 if(c.ConsultaID!=2)
-                    fabrica.iagenda.agregarConsultaPaciente(CI, c.ConsultaID,false);
+                    fabrica.iagenda.agregarConsultaPaciente(CI, c.ConsultaID, 1,false);
             }
 
-         
+            Debug.WriteLine("TEST1 FINALIZADO...");
+ 
             //agrego a la consulta 2 todos los pacientes
-
+            short i = 0;
             foreach (var p in db.pacientes)
             {
                 try
                 {
-                    fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, 2,false);
+                    fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, 2,i,false);
+                    i++;
                 }
                 catch (Exception e)
                 {
@@ -268,6 +276,7 @@ namespace SAREM.Testing
             Debug.WriteLine("TEST::Cancelar Consulta");
             var consulta = db.consultas.First();
             Debug.WriteLine(consulta.ConsultaID);
+            Debug.WriteLine("Cancelar consulta "+consulta.ConsultaID+" ");
             fabrica.iagenda.cancelarConsultaPaciente(ci, consulta.ConsultaID);
 
             Debug.WriteLine("Consultas canceladas paciente "+ ci);
@@ -411,11 +420,13 @@ namespace SAREM.Testing
             {
                 foreach (var c in parte.pacientes)
                 {
-                    factory.iagenda.actualizarParteDiario(c.ConsultaID, c.PacienteID, "Se le complica ...", true);
-
-                    Console.WriteLine(c.paciente.PacienteID + c.paciente.nombre);
-                    Console.WriteLine("Ausencia::" + c.ausencia.ToString());
-                    Console.WriteLine("Diagnostico::" + c.diagnostico);
+                    if (c.PacienteID != null)
+                    {
+                        factory.iagenda.actualizarParteDiario(c.ConsultaID, c.PacienteID, "Se le complica ...", true);
+                        Console.WriteLine(c.paciente.PacienteID + c.paciente.nombre);
+                        Console.WriteLine("Ausencia::" + c.ausencia.ToString());
+                        Console.WriteLine("Diagnostico::" + c.diagnostico);
+                    }
                 }
             }
             
@@ -434,6 +445,7 @@ namespace SAREM.Testing
         [TestMethod]
         public void TestAgregarPacienteConsulta()
         {
+            FabricaSAREM f = new FabricaSAREM(tenant);
             using(var db = SARMContext.getTenant(tenant))
             {
                 //Creo consulta
@@ -443,27 +455,33 @@ namespace SAREM.Testing
                     fecha_inicio = DateTime.UtcNow,
                     fecha_fin = DateTime.UtcNow.AddMinutes(30),
                     FuncionarioID = "17299999",
-                    LocalID = 1
+                    LocalID = 1,
+                    numpacientes =10,
+                    maxpacientesespera =3
+
                 };
-                db.consultas.Add(c);
-                db.SaveChanges();
+                f.iagenda.agregarConsulta(c);
+                //db.consultas.Add(c);
+                //db.SaveChanges();
 
                 var pacientes = (from p in db.pacientes
                                  select p).Take(14).ToList();
                 int i = 0;
                 foreach (var p in pacientes)
                 {
-                    i++;
+                    
                     try
                     {
-                        DateTime? date = fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, c.ConsultaID);
+                        fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, c.ConsultaID, (short)i);
+                        i++;
+                        /*    
                         if (date == null)
                             Console.WriteLine(i + ")Paciente " + p.PacienteID + " agregado a lista de espera ");
                         else
                             Console.WriteLine(i + ")Paciente " + p.PacienteID + " agregado, consulta programada "+ date.ToString());
-
+                        */
                     }
-                    catch (ExcepcionMaxPacientesEspera max)
+                    catch (Exception max)
                     {
                         Console.WriteLine(i + "El paciente " + p.PacienteID + "no pudo se agregado... Max cola espera");
                     }
