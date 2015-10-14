@@ -95,7 +95,20 @@
                     <span id="helpFF" class="help-block" style="display:none"></span>
                 </div>
             </div>
-
+            <div class="form-group" id="divCantPac">
+                <label class="control-label col-md-2">Cantidad de Pacientes en Consulta:</label>
+                <div class="col-md-10">
+                    <input id="cantPac" class="form-control" placeholder="Ingrese la Cantidad de Pacientes..."  />
+                    <span id="helpCantPac" class="help-block" style="display:none"></span>
+                </div>
+            </div>
+            <div class="form-group" id="divCantPacE">
+                <label class="control-label col-md-2">Cantidad de Pacientes en Lista de Espera:</label>
+                <div class="col-md-10">
+                    <input id="cantPacE" class="form-control" placeholder="Ingrese la Cantidad de Pacientes..." />
+                    <span id="helpCantPacE" class="help-block" style="display:none"></span>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
@@ -225,6 +238,8 @@
                             $("#medicos").css("display", "none");
                             $("#especialidades").css("display", "none");
                             $(".origen_change").prop('selectedIndex', 0);
+                            $("#cantPac").val("");
+                            $("#cantPacE").val("");
                             $('#exito').modal('show');
 
                         } else {
@@ -277,6 +292,13 @@
             $("#divFF").removeClass("has-error");
             $("#helpFF").hide();
            
+            $("#divCantPac").removeClass("has-error");
+            $("#helpCantPac").hide();
+           
+            $("#divCantPacE").removeClass("has-error");
+            $("#helpCantPacE").hide();
+          
+
             if ($(".origen_change option:selected").index() == 0) {
 
                 $("#divOrigen").addClass("has-error");
@@ -332,6 +354,41 @@
                 $("#helpFF").show();
                 ok = false;
             }
+
+            //Valido Cant Pacientes Consulta y Cant Pacientes Espera
+            if (!$("#cantPac").val()) {
+
+                $("#divCantPac").addClass("has-error");
+                $("#helpCantPac").text("Debe ingresar la cantidad de pacientes en Consulta.");
+                $("#helpCantPac").show();
+                ok = false;
+
+            } else if (!($("#cantPac").val().match(/^\d+$/) && parseInt($("#cantPac").val()))) {
+               
+                $("#divCantPac").addClass("has-error");
+                $("#helpCantPac").text("El valor ingresado no es numérico.");
+                $("#helpCantPac").show();
+                ok = false;
+
+            }
+
+            if (!$("#cantPacE").val()) {
+
+                $("#divCantPacE").addClass("has-error");
+                $("#helpCantPacE").text("Debe ingresar la cantidad de pacientes en Lista de Espera.");
+                $("#helpCantPacE").show();
+                ok = false;
+
+            } else if (!($("#cantPacE").val().match(/^\d+$/) && parseInt($("#cantPacE").val()))) {
+
+                $("#divCantPacE").addClass("has-error");
+                $("#helpCantPacE").text("El valor ingresado no es numérico.");
+                $("#helpCantPacE").show();
+                ok = false;
+
+            }
+
+
 
             if (!ok) {
 

@@ -35,10 +35,10 @@ namespace SAREM.Web.Models
         public String medID { get; set; }
         public String medDesc { get; set; }
 
-        [Required(ErrorMessage = "Debe ingresar la Fecha de Inicio")]
+        //[Required(ErrorMessage = "Debe ingresar la Fecha de Inicio")]
         public String fecha_inicio { get; set; }
         
-        [Required(ErrorMessage = "Debe ingresar la Fecha de Fin")]
+        //[Required(ErrorMessage = "Debe ingresar la Fecha de Fin")]
         public String fecha_fin { get; set; }
     }
 }

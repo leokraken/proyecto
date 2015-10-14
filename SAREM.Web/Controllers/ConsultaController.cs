@@ -572,8 +572,8 @@ namespace SAREM.Web.Controllers
                     //c.medico =  fabrica.iagenda.obtenerMedico(c.FuncionarioID);
 
 
-                    c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
-                    c.fecha_inicio = ParseDate(consulta.fecha_inicio).ToUniversalTime();
+                    //c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
+                    //c.fecha_inicio = ParseDate(consulta.fecha_inicio).ToUniversalTime();
 
 
 

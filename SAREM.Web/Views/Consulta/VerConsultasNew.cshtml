@@ -65,44 +65,44 @@
 
          
 
-            $("#divFI").removeClass("has-error");
-            $("#helpFI").hide();
+            //$("#divFI").removeClass("has-error");
+            //$("#helpFI").hide();
 
-            $("#divFF").removeClass("has-error");
-            $("#helpFF").hide();
+            //$("#divFF").removeClass("has-error");
+            //$("#helpFF").hide();
 
    
 
-            //Valido fechas
-            if (!$("#fechaInicioM").val()) {
+            ////Valido fechas
+            //if (!$("#fechaInicioM").val()) {
 
-                $("#divFI").addClass("has-error");
-                $("#helpFI").text("Debe ingresar una Fecha de Inicio.");
-                $("#helpFI").show();
-                ok = false;
+            //    $("#divFI").addClass("has-error");
+            //    $("#helpFI").text("Debe ingresar una Fecha de Inicio.");
+            //    $("#helpFI").show();
+            //    ok = false;
 
-            } else if (!$("#fechaInicioM").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
+            //} else if (!$("#fechaInicioM").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
 
-                $("#divFI").addClass("has-error");
-                $("#helpFI").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
-                $("#helpFI").show();
-                ok = false;
-            }
+            //    $("#divFI").addClass("has-error");
+            //    $("#helpFI").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
+            //    $("#helpFI").show();
+            //    ok = false;
+            //}
 
-            if (!$("#fechaFinM").val()) {
+            //if (!$("#fechaFinM").val()) {
 
-                $("#divFF").addClass("has-error");
-                $("#helpFF").text("Debe ingresar una Fecha de Finalización.");
-                $("#helpFF").show();
-                ok = false;
+            //    $("#divFF").addClass("has-error");
+            //    $("#helpFF").text("Debe ingresar una Fecha de Finalización.");
+            //    $("#helpFF").show();
+            //    ok = false;
 
-            } else if (!$("#fechaFinM").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
+            //} else if (!$("#fechaFinM").val().match(/\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}/)) {
 
-                $("#divFF").addClass("has-error");
-                $("#helpFF").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
-                $("#helpFF").show();
-                ok = false;
-            }
+            //    $("#divFF").addClass("has-error");
+            //    $("#helpFF").text("El formato de fecha ingresado debe ser dd/MM/yyyy HH:mm.");
+            //    $("#helpFF").show();
+            //    ok = false;
+            //}
 
            
 
@@ -169,8 +169,7 @@
                         consultaID: $("#idRow").val(),
                         localID: $("#origen").find('option:selected').val(),
                         especialidadID: $("#esp").find('option:selected').val(),
-                        medID: $("#med").find('option:selected').val(),
-                        fecha_inicio: $("#fechaInicioM").val(), fecha_fin: $("#fechaFinM").val()
+                        medID: $("#med").find('option:selected').val()
                     }
                 }),
 
@@ -336,8 +335,6 @@
                     html = Mustache.to_html(templateMed, data);
                     $("#medicoDiv").html(html);
 
-                    $("#fechaInicioM").val(row.fechaInicio);
-                    $("#fechaFinM").val(row.fechaFin);
 
                     $('#editarCons').modal('show');
                 },
@@ -429,20 +426,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" id="divFI">
-                        <label for="email" class="col-sm-4 control-label">Fecha Inicio :</label>
-                        <div class="col-sm-8">
-                            <input id="fechaInicioM" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
-                            <span id="helpFI" class="help-block" style="display:none"></span>
-                        </div>
-                    </div>
-                    <div class="form-group" id="divFF">
-                        <label for="email" class="col-sm-4 control-label">Fecha Fin :</label>
-                        <div class="col-sm-8">
-                            <input id="fechaFinM" class="form-control datetimepicker" placeholder="Seleccione una fecha..." />
-                            <span id="helpFF" class="help-block" style="display:none"></span>
-                        </div>
-                    </div>
+                    
                     <input id="idRow" type="hidden"/>
                </form>
             </div>
