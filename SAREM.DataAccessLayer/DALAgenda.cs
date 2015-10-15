@@ -492,7 +492,7 @@ namespace SAREM.DataAccessLayer
         {
             using (var db = SARMContext.getTenant(tenant))
             {
-                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta").Where(x => (x.ConsultaID == ConsultaID && x.fueralista == false))
+                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta").Where(x => (x.ConsultaID == ConsultaID && x.PacienteID!=null && x.fueralista == false))
                     .OrderBy(x=>x.turno).Select(p=>p.paciente).ToList();
                 return pacientesOrdered;
             }          
@@ -514,7 +514,7 @@ namespace SAREM.DataAccessLayer
             using (var db = SARMContext.getTenant(tenant))
             {
                 //no es necesario ordenar este caso.
-                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta").Where(x => (x.ConsultaID == ConsultaID && x.fueralista == true))
+                var pacientesOrdered = db.consultasagendadas.Include("paciente").Include("consulta").Where(x => (x.PacienteID!=null && x.ConsultaID == ConsultaID && x.fueralista == true))
                     .Select(p => p.paciente).ToList();
                     //.OrderByDescending(x => (x.paciente.FuncionarioID != null && x.paciente.FuncionarioID == x.consulta.FuncionarioID))
                     //.ThenBy(x => x.fecharegistro).Select(p => p.paciente).ToList();
