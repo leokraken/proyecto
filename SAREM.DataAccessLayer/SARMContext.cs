@@ -171,6 +171,8 @@ namespace SAREM.DataAccessLayer
     public class SAREMAdminContext : DbContext
     {
         static string con = ConfigurationManager.ConnectionStrings["sarem"].ConnectionString;
+        DbSet<identifierDomain> dominios { get; set; }
+
 
         public SAREMAdminContext():base(con)
         {
@@ -204,6 +206,8 @@ namespace SAREM.DataAccessLayer
                 Console.WriteLine(String.Format(drop, schema, t));
                 Database.ExecuteSqlCommand(String.Format(drop, schema, t));
             }
+            Database.ExecuteSqlCommand("drop schema "+schema);
+
         }
     }
 

@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 
 // 
@@ -1011,6 +1012,7 @@ public partial class identifierDomain {
     
     private string identifierDomainDescriptionField;
     
+    [Key]
     private int identifierDomainIdField;
     
     private bool identifierDomainIdFieldSpecified;

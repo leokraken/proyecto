@@ -43,6 +43,11 @@ namespace SARM.DataAccessLayer
             
             //f.adminController.createSchema("test");
             FabricaSAREM fab = new FabricaSAREM("test");
+            foreach (var a in fab.iagenda.obtenerTurnosLibres(4))
+            {
+                Console.WriteLine(a.turno);
+            }
+
 
             double minutos = (DateTime.UtcNow - DateTime.UtcNow.AddMinutes(300)).TotalMinutes;
             //fab.iagenda.agregarConsultaPaciente("1",1,0,false);

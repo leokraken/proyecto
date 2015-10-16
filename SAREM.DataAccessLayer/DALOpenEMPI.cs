@@ -138,6 +138,7 @@ namespace SAREM.DataAccessLayer
                 TextReader reader = new StringReader(response.Result.Content.ReadAsStringAsync().Result);
                 XmlSerializer personserializer = new XmlSerializer(typeof(identifierDomain[]), new XmlRootAttribute("identifierDomains"));
                 return ((identifierDomain[])personserializer.Deserialize(reader)).ToList();
+           
             }
         }
 
@@ -360,5 +361,30 @@ namespace SAREM.DataAccessLayer
             Task<string> t = getAuthentication();
             OPENEMPI_SESSION_KEY = t.Result;
         }
+
+
+        #region admin
+        public void agregarDominio(identifierDomain dominio)
+        {
+            if (OPENEMPI_SESSION_KEY == null)
+                getAuth();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(OPENEMPI_URL);
+                client.DefaultRequestHeaders.TryAddWithoutValidation("OPENEMPI_SESSION_KEY", OPENEMPI_SESSION_KEY);
+
+                //var response = client.PutAsync("openempi-ws-rest/person-manager-resource/addIdentifierDomain",);
+
+                //TextReader reader = new StringReader(response.Result.Content.ReadAsStringAsync().Result);
+                //XmlSerializer personserializer = new XmlSerializer(typeof(identifierDomain[]), new XmlRootAttribute("identifierDomains"));
+                //return ((identifierDomain[])personserializer.Deserialize(reader)).ToList();
+
+            }
+        }
+
+
+
+        #endregion
+
     }
 }

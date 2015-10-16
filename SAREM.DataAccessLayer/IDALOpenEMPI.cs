@@ -11,7 +11,11 @@ namespace SAREM.DataAccessLayer
     {
         DataPaciente obtenerPaciente(string paisID, string pacienteID);
         DataPaciente obtenerPacienteParallel(string paisID, string pacienteID);
-        List<identifierDomain> obtenerDominios();
         void getAuth();
+
+        //admin
+        List<identifierDomain> obtenerDominios();
+        void agregarDominio(identifierDomain dominio);
+
     }
 }

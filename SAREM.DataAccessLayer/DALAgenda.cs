@@ -767,7 +767,7 @@ namespace SAREM.DataAccessLayer
             {
                 //si es necesario realizar los include pertinentes
                 var query = from t in db.consultasagendadas
-                            where t.ConsultaID == ConsultaID && t.ConsultaIDTurno == null
+                            where t.ConsultaID == ConsultaID && t.PacienteID == null
                             select t;
                 return query.ToList();
             }
