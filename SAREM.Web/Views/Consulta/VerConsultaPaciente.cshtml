@@ -127,23 +127,9 @@
         });
 
         //Inicializo parametros de consulta
-        var max_pacientes;
-        var max_pac_esp;
-        $.ajax({
-            url: '@Url.Action("GetParametrosConsulta", "Consulta")',
-            dataType: "json",
-            type: "GET",
-            cache: false,
-            success: function (data) {
+        var max_pacientes = parseInt(@Model.cantPacientes);
+        var max_pac_esp = parseInt(@Model.cantPacientesEspera);
 
-                max_pacientes = data.max_pacientes;
-                max_pac_esp = data.max_pacientes_esp;
-            },
-            error: function (xhr) {
-
-                //alert('error');
-            }
-        })
 
 
         //$('#tabPE').click(function (e) {
@@ -187,17 +173,17 @@
             if ( $('#tablaPacientes').bootstrapTable('getData').length >= max_pacientes) {
 
                 $('#pText').text("Ya existen al menos " + max_pacientes + " pacientes en Consulta. No se pueden ingresar más.")
-              
+
                 $('#modalAlerta').modal('show');
 
 
             } else {
-                
+
                 if ($("#divP").hasClass("has-error")){
-                   
+
                     $("#divP").removeClass("has-error");
                     $("#helpP").hide();
-               
+
                 }
 
                 $.ajax({
@@ -222,11 +208,37 @@
 
                         awesompleteP.list = list;
 
+                        //$('#addPacCons').modal('show');
+                    },
+                    error: function (xhr) {
+
+                        alert('error obtener pacientes not in consulta');
+                    }
+                })
+
+
+                $.ajax({
+                    url: '@Url.Action("GetTurnosConsulta", "Consulta")',
+                    dataType: "json",
+                    type: "GET",
+
+                    data: { idC: @Model.consultaID},
+                    cache: false,
+                    success: function (data) {
+                        
+                        $("#Turno").empty().append('<option value="0">Seleccione...</option>');
+                        $.each(data, function (i, dato) {
+                            $("#Turno").append('<option value="' + dato.Value + '">' +
+                                 dato.Text + '</option>');
+                            // here we are adding option for States
+
+                        });
+
                         $('#addPacCons').modal('show');
                     },
                     error: function (xhr) {
 
-                        alert('error');
+                        alert('error obtener turnos consulta');
                     }
                 })
 
@@ -240,19 +252,19 @@
             if ( $('#tablaPacientesEspera').bootstrapTable('getData').length >= max_pac_esp) {
 
                 $('#pText').text("Ya existen "+ max_pac_esp +" pacientes en Lista de Espera. No se pueden ingresar más.")
-              
+
                 $('#modalAlerta').modal('show');
 
 
             } else {
 
                 if ($("#divPE").hasClass("has-error")){
-                  
-                  
+
+
                     $("#divPE").removeClass("has-error");
                     $("#helpPE").hide();
-                  
-                 
+
+
                 }
 
                 $.ajax({
@@ -300,7 +312,7 @@
             },{
                 field: 'fechaRegistro',
                 title: 'Fecha Registro'
-              
+
             },{
                 field: 'nombre',
                 title: 'Nombre'
@@ -311,6 +323,9 @@
             {
                 field: 'sexo',
                 title: 'Sexo'
+            },{
+                field: 'turno',
+                title: 'Turno'
             },
             {
                 field: 'operate',
@@ -376,31 +391,31 @@
             var existe = false;
             $("#divP").removeClass("has-error");
             $("#helpP").hide();
-        
 
-          
+
+
             $.ajax({
                 url: '@Url.Action("AddPacienteConsulta", "Consulta")',
                 dataType: "json",
                 type: "POST",
-                data: { idC: @Model.consultaID, idP: $("#idPaciente").val() },
+                data: { idC: @Model.consultaID, idP: $("#idPaciente").val(), idCT: $("#Turno").find('option:selected').val() },
 
                 cache: false,
                 success: function (data) {
 
                     if (data.success) {
-
+                        $("#Turno").prop('selectedIndex', 0);
                         $('#addPacCons').modal('hide');
                         $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
                         $("#divP").removeClass("has-error");
                         $("#helpP").hide();
 
                     } else {
-                        
+
                         $("#divP").addClass("has-error");
                         $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
                         $("#helpP").show();
-                       
+
                     }
                 },
                 error: function (xhr) {
@@ -410,13 +425,13 @@
                     $("#helpP").show();
                 }
             })
-          
+
         });
 
         //Guardar paciente en lista de espera
         $("#agregarEspera").click(function () {
 
-          
+
 
             $.ajax({
                 url: '@Url.Action("AddPacienteConsultaEspera", "Consulta")',
@@ -431,7 +446,7 @@
 
                         $('#addPacConsEspera').modal('hide');
                         $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
-                        
+
 
                     } else {
 
@@ -446,9 +461,9 @@
                     $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
                     $("#helpPE").show();
                 }
-          
 
-           
+
+
             });
         })
 
@@ -679,6 +694,13 @@
                             <span id="helpP" class="help-block" style="display:none"></span>
                         </div>
                     </div>
+                    <div class="form-group" id="divTurno">
+                        <label for="email" class="col-sm-4 control-label">Turno :</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("Turno", new SelectList(string.Empty, "Value", "Text"), "Seleccione...", new {@style= "width:170px;", @class = "form-control" })
+                            <span id="helpTurno" class="help-block" style="display:none"></span>
+                        </div>
+                    </div>
                  
                 </form>
             </div>
@@ -710,6 +732,8 @@
                             <span id="helpPE" class="help-block" style="display:none"></span>
                         </div>
                     </div>
+
+                  
 
                 </form>
             </div>
@@ -821,6 +845,18 @@
                         <label for="email" class="col-sm-4 control-label">Fecha Fin:</label>
                         <div class="col-sm-8">
                             <input class="form-control" value="@Model.fecha_fin"  disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Cantidad de Pacientes en Consulta:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.cantPacientes" disabled />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Cantidad de Pacientes en Lista de Espera:</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" value="@Model.cantPacientesEspera" disabled />
                         </div>
                     </div>
                 </form>

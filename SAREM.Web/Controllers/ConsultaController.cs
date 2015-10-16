@@ -45,6 +45,8 @@ namespace SAREM.Web.Controllers
             public String fechaInicio { get; set; }
             public String fechaFin { get; set; }
             public string turno { get; set; }
+            public string cantP { get; set; }
+            public string cantPE { get; set; }
         }
 
         public class LocalJson
@@ -92,6 +94,7 @@ namespace SAREM.Web.Controllers
             public string numero { get; set; }
             public string fueradeLista { get; set; }
             public string ausencia { get; set; }
+            public string turno { get; set; }
         }
 
         #endregion
@@ -146,8 +149,22 @@ namespace SAREM.Web.Controllers
                
                 c.fecha_fin = ParseDate(consulta.fecha_fin).ToUniversalTime();
                 c.fecha_inicio = ParseDate(consulta.fecha_inicio).ToUniversalTime();
-                
 
+                short cP;
+                if (!short.TryParse(consulta.cantPacientes, out cP))
+                {
+                    cP = 0;
+                }
+
+                c.numpacientes = cP;
+
+                short cPE;
+                if (!short.TryParse(consulta.cantPacientesEspera, out cPE))
+                {
+                    cPE = 0;
+                }
+
+                c.maxpacientesespera = cPE;
                
                 fabrica.iagenda.agregarConsulta(c);
               
@@ -221,9 +238,9 @@ namespace SAREM.Web.Controllers
                                     workSheet.Cells[rowIterator, 2].Value == null &&
                                     workSheet.Cells[rowIterator, 3].Value == null &&
                                     workSheet.Cells[rowIterator, 4].Value == null &&
-                                    workSheet.Cells[rowIterator, 5].Value == null ))
+                                    workSheet.Cells[rowIterator, 5].Value == null && workSheet.Cells[rowIterator, 6].Value == null && workSheet.Cells[rowIterator, 7].Value == null))
                                 {
-                                 for (int columnIterator = 1; (columnIterator <= 5 && ok); columnIterator++)
+                                 for (int columnIterator = 1; (columnIterator <= 7 && ok); columnIterator++)
                                   {
 
 
@@ -343,6 +360,44 @@ namespace SAREM.Web.Controllers
 
                                             break;
 
+                                        case 6:
+                                            //Cantidad de pacientes en consulta
+                                            try
+                                            {
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString()))
+                                                {
+                                                    c.numpacientes = Convert.ToInt16(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                ok = false;
+                                            }
+
+                                            break;
+                                        case 7:
+                                            //Cantidad de pacientes en lista de espera
+                                            try
+                                            {
+                                                if (!String.IsNullOrEmpty(workSheet.Cells[rowIterator, columnIterator].Value.ToString()))
+                                                {
+                                                    c.maxpacientesespera = Convert.ToInt16(workSheet.Cells[rowIterator, columnIterator].Value.ToString());
+                                                }
+                                                else
+                                                {
+                                                    ok = false;
+                                                }
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                ok = false;
+                                            }
+
+                                            break;
                                     }
 
                                 }
@@ -395,7 +450,40 @@ namespace SAREM.Web.Controllers
             }
 
             return View("CreateMasivo", cM);
-        } 
+        }
+
+
+        public JsonResult GetTurnosConsulta(string idC)
+        {
+            List<SelectListItem> turnos = new List<SelectListItem>();
+            var ts = fabrica.iagenda.obtenerTurnosLibres(Convert.ToInt64(idC));
+              
+            foreach (PacienteConsultaAgenda c in ts)
+            {
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        (DateTime)c.turno,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                turnos.Add(new SelectListItem { Text = localVersionFIni.ToString(format), Value = c.ConsultaIDTurno.ToString() });
+            }
+
+            if (ts.Count == 0)
+            {
+                return Json(new { turnoVacio = true }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new SelectList(turnos, "Value", "Text"), JsonRequestBehavior.AllowGet);
+
+            }
+          
+
+        }
+
+
 
         public JsonResult GetEspecialidades(string idLocalidad)
         {
@@ -467,6 +555,9 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
+
+                cjson.cantP = c.numpacientes.ToString();
+                cjson.cantPE = c.maxpacientesespera.ToString();
             
                 lista.Add(cjson);
             }
@@ -639,7 +730,9 @@ namespace SAREM.Web.Controllers
                 fecha_fin = fFin,
                 descEspecialidad = c.especialidad.descripcion,
                 localDesc = c.local.nombre,
-                medDesc = c.medico.nombre
+                medDesc = c.medico.nombre,
+                cantPacientes = c.numpacientes.ToString(),
+                cantPacientesEspera = c.maxpacientesespera.ToString()
             };
 
 
@@ -685,6 +778,12 @@ namespace SAREM.Web.Controllers
                             DateTimeKind.Utc);
                 DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
                 pj.fechaRegistro = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                     (DateTime)pC.turno,
+                         DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                pj.turno = localVersionFIni.ToString(format);
                 pj.numero = nro.ToString();
                 nro++;
                 pacientes.Add(pj);
