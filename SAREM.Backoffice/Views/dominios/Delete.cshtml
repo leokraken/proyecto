@@ -1,0 +1,88 @@
+﻿@model identifierDomain
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>identifierDomain</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.dateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dateCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dateCreatedSpecified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dateCreatedSpecified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainIdSpecified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainIdSpecified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.namespaceIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.namespaceIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.universalIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.universalIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.universalIdentifierTypeCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.universalIdentifierTypeCode)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

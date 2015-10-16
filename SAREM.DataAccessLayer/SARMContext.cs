@@ -206,7 +206,7 @@ namespace SAREM.DataAccessLayer
                 Console.WriteLine(String.Format(drop, schema, t));
                 Database.ExecuteSqlCommand(String.Format(drop, schema, t));
             }
-            Database.ExecuteSqlCommand("drop schema "+schema);
+            Database.ExecuteSqlCommand("drop schema ["+schema+"]");
 
         }
     }

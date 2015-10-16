@@ -38,18 +38,17 @@ namespace SARM.DataAccessLayer
         static void Main(string[] args)
         {
             FabricaSAREM f = new FabricaSAREM();
-
+            foreach (var s in f.adminController.getSchemas())
+            {
+                f.adminController.dropSchema(s);
+            }
             //f.adminController.dropSchema("test");
             
             //f.adminController.createSchema("test");
             FabricaSAREM fab = new FabricaSAREM("test");
-            foreach (var a in fab.iagenda.obtenerTurnosLibres(4))
-            {
-                Console.WriteLine(a.turno);
-            }
+ 
 
 
-            double minutos = (DateTime.UtcNow - DateTime.UtcNow.AddMinutes(300)).TotalMinutes;
             //fab.iagenda.agregarConsultaPaciente("1",1,0,false);
             /*
             var list = f.adminController.getSchemas();

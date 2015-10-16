@@ -1,0 +1,82 @@
+﻿@model identifierDomain
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>identifierDomain</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.dateCreated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dateCreated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.dateCreatedSpecified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.dateCreatedSpecified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainIdSpecified)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainIdSpecified)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.identifierDomainName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.identifierDomainName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.namespaceIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.namespaceIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.universalIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.universalIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.universalIdentifierTypeCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.universalIdentifierTypeCode)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.identifierDomainId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

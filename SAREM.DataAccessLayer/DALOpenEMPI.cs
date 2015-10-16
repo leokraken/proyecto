@@ -232,6 +232,7 @@ namespace SAREM.DataAccessLayer
                             direccion = p.address1,
                             FN = p.dateOfBirth,
                             PaisID = p.countryCode,
+                            nacion= new Pais{PaisID=p.countryCode, nombre= p.country},
                             nombre = p.middleName,
                             mail = p.email,
                             apellido = p.motherName,                    

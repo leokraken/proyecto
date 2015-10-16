@@ -1,0 +1,123 @@
+﻿@model IEnumerable<identifierDomain>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        @*<th>
+            @Html.DisplayNameFor(model => model.dateCreated)
+        </th>*@
+        @*<th>
+            @Html.DisplayNameFor(model => model.dateCreatedSpecified)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.identifierDomainDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.identifierDomainIdSpecified)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.identifierDomainName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.namespaceIdentifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.universalIdentifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.universalIdentifierTypeCode)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+@*
+    <td>
+        @Html.DisplayFor(modelItem => item.dateCreated)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.dateCreatedSpecified)
+    </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.identifierDomainDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.identifierDomainIdSpecified)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.identifierDomainName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.namespaceIdentifier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.universalIdentifier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.universalIdentifierTypeCode)
+        </td>
+        <td>
+            @if (!ViewBag.dominios.Contains(item.namespaceIdentifier))
+            {
+                <button class="btn btn-success" onclick="addDomain('@item.namespaceIdentifier')">Agregar</button>
+            }
+            else
+            {
+                <button class="btn btn-danger" onclick="deleteDomain('@item.namespaceIdentifier')">Eliminar</button>
+            }
+
+        </td>
+    </tr>
+}
+
+</table>
+
+<script>
+    function addDomain(dominio) {
+        var url = '@Url.Action("Agregar","dominios")' + '?dominio=' + dominio;
+        alert(url);
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                alert('Dominio agregado');
+            },
+            error: function () {
+                alert('Error agregar dominio');
+            }
+        });
+    }
+    
+    function deleteDomain(dominio) {
+        var url = '@Url.Action("Delete","dominios")' + '?dominio=' + dominio;
+        alert(url);
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                alert('Dominio eliminado!');
+            },
+            error: function () {
+                alert('Error eliminar dominio');
+            }
+        });
+    }
+
+
+
+
+</script>
+

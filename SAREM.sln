@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAREM.Testing", "SAREM.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAREM.Web", "SAREM.Web\SAREM.Web.csproj", "{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAREM.Backoffice", "SAREM.Backoffice\SAREM.Backoffice.csproj", "{36B2EE99-2D79-43FB-9120-BFF06C35FCC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE684DEC-7CCF-4835-A76E-22D3A424ACCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B2EE99-2D79-43FB-9120-BFF06C35FCC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B2EE99-2D79-43FB-9120-BFF06C35FCC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B2EE99-2D79-43FB-9120-BFF06C35FCC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B2EE99-2D79-43FB-9120-BFF06C35FCC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
