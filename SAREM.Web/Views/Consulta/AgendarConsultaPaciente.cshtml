@@ -219,6 +219,47 @@
 
         });
 
+        $("#agendar").click(function () {
+            $('#addPacCons').modal('hide');
+            $.ajax({
+                url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
+                dataType: "json",
+                type: "POST",
+                data: { idC: $("#idRowAdd").val() },
+
+                cache: false,
+                success: function (data) {
+
+                    if (data.success && data.turno != "LE") {
+
+                        $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
+                        $('#modalAlerta').modal('show');
+
+
+
+                    } else if (data.success && data.turno == "LE") {
+
+                        $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
+                        $('#modalAlerta').modal('show');
+
+                    } else {
+
+                        $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
+                        $('#modalAlerta').modal('show');
+                    }
+
+                    $('#tablaConsultas').bootstrapTable('remove', {
+                        field: 'idC',
+                        values: $("#idRowAdd").val()
+                    });
+                },
+                error: function (xhr) {
+
+                    alert('error agendar consulta tipo 1');
+                }
+            })
+
+        });
 
         $(function () {
             $('.datetimepicker').datetimepicker({
@@ -241,43 +282,79 @@
         window.operateEvents = {
 
             'click .pacientes': function (e, value, row, index) {
-
-
+           
+                $("#idRowAdd").val(row.idC);
+               
                 $.ajax({
-                    url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
+                    url: '@Url.Action("GetTurnosConsulta", "Consulta")',
                     dataType: "json",
-                    type: "POST",
-                    data: { idC: row.idC},
+                    type: "GET",
 
+                    data: { idC: row.idC },
                     cache: false,
                     success: function (data) {
 
-                        if (data.success && data.turno != "LE") {
+                       
 
-                            $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
-                            $('#modalAlerta').modal('show');
+                        if (data.hasOwnProperty('turnoVacio')) {
+
+                            $.ajax({
+                                url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
+                                dataType: "json",
+                                type: "POST",
+                                data: { idC: row.idC },
+
+                                cache: false,
+                                success: function (data) {
+
+                                    if (data.success && data.turno != "LE") {
+
+                                        $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
+                                        $('#modalAlerta').modal('show');
+
+
+
+                                    } else if (data.success && data.turno == "LE") {
+
+                                        $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
+                                        $('#modalAlerta').modal('show');
+
+                                    } else {
+
+                                        $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
+                                        $('#modalAlerta').modal('show');
+                                    }
+
+                                    $('#tablaConsultas').bootstrapTable('remove', {
+                                        field: 'idC',
+                                        values: row.idC
+                                    });
+                                },
+                                error: function (xhr) {
+
+                                    alert('error agendar consulta tipo 1');
+                                }
+                            })
                            
-                            
-                           
-                        } else if (data.success && data.turno == "LE") {
-
-                            $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
-                            $('#modalAlerta').modal('show');
-
                         } else {
 
-                            $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
-                            $('#modalAlerta').modal('show');
+                            $("#Turno").empty().append('<option value="0">Seleccione...</option>');
+                            $.each(data, function (i, dato) {
+                                $("#Turno").append('<option value="' + dato.Value + '">' +
+                                     dato.Text + '</option>');
+                                // here we are adding option for States
+
+                            });
+
+                            $('#addPacCons').modal('show');
+
                         }
 
-                        $('#tablaConsultas').bootstrapTable('remove', {
-                            field: 'idC',
-                            values: row.idC
-                        });
+                       
                     },
                     error: function (xhr) {
 
-                        alert('error agendar consulta tipo 1');
+                        alert('error obtener turnos consulta');
                     }
                 })
 
@@ -319,3 +396,33 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="addPacCons">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Agregar Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="step2">
+
+                    <div class="form-group" id="divTurno">
+                        <label for="email" class="col-sm-4 control-label">Turno :</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("Turno", new SelectList(string.Empty, "Value", "Text"), "Seleccione...", new { @style = "width:170px;", @class = "form-control" })
+                            <span id="helpTurno" class="help-block" style="display:none"></span>
+                        </div>
+                    </div>
+                    <input id="idRowAdd" type="hidden" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                <button type="button" class="btn btn-primary" id="agendar">Agendar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

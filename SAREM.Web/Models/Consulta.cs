@@ -40,5 +40,8 @@ namespace SAREM.Web.Models
         
         //[Required(ErrorMessage = "Debe ingresar la Fecha de Fin")]
         public String fecha_fin { get; set; }
+
+        public String cantPacientes { get; set; }
+        public String cantPacientesEspera { get; set; }
     }
 }
