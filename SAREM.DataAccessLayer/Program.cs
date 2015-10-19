@@ -34,35 +34,26 @@ namespace SARM.DataAccessLayer
             Console.WriteLine("Proceso finalizado...");
             Console.Read();
         }
-        
+
+        static void amq()
+        {
+            DALAMQP amq = new DALAMQP();
+            var m = new DataMensaje
+            {
+                medio = "mail",
+                destinatario = "tremendomail@mail.com",
+                asunto = "test",
+                mensaje = "hello world!",
+                fecha_envio = DateTime.Now.AddDays(2)
+            };
+
+        }
+
         static void Main(string[] args)
         {
-            FabricaSAREM f = new FabricaSAREM();
-            foreach (var s in f.adminController.getSchemas())
-            {
-                f.adminController.dropSchema(s);
-            }
-            //f.adminController.dropSchema("test");
-            
-            //f.adminController.createSchema("test");
-            FabricaSAREM fab = new FabricaSAREM("test");
- 
+            FabricaSAREM f = new FabricaSAREM("test");
+            f.iagenda.cancelarConsultaPaciente("1", 2);
 
-
-            //fab.iagenda.agregarConsultaPaciente("1",1,0,false);
-            /*
-            var list = f.adminController.getSchemas();
-            using (var db = SARMContext.getTenant("test"))
-            {
-                PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID=4, fueralista=false, fecharegistro=DateTime.Now, turno=DateTime.Now };
-                db.consultasagendadas.Add(pca);
-                db.SaveChanges();
-            }
-            foreach (var s in list)
-            {
-                Console.WriteLine(s);
-            }
-             * */
             Console.Read();
             //testOpenempi();
         }

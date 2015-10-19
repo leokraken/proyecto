@@ -19,108 +19,58 @@ namespace SAREM.DataAccessLayer
         }
 
         //MQ
+
+        /*
+         * Este metodo ha cambiado, antes se asignaba dinamicamente, metodo single, es decir lo agregaba
+         * a la lista si existe lugar, caso contrario a lista de espera.
+         * En esta ocasion no se puede asignar a lista de espera, ya que solicita un turno especifico, pueden existir otros libres
+         * lo cual no tendria sentido agregarlo aqui.
+         * En la presentacion si no existen turnos libres para una consulta se deberia agregar un boton o algo parecido
+         * que diga agregar a lista de espera.
+         */
+
         public void agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno, Boolean fueraLista)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
-                Paciente paciente = db.pacientes.Find(PacienteID);
-                if (paciente != null)
+                //Si es fuera de lista debo crear PacienteConsultaAgenda
+                if (fueraLista)
                 {
-                    /*
-                    Consulta consulta = db.consultas
-                       .Include("pacientes")
-                       .Include("pacientesespera")
-                       .Where(x => x.ConsultaID == ConsultaID)
-                       .Single();
-
-                    int numpacientes = db.consultas.Include("pacientes")
-                                         .Where(c => c.ConsultaID == ConsultaID)
-                                         .Single().pacientes.Where(p => p.PacienteID!=null).Count();
-                    */
-                    PacienteConsultaAgenda consultaturno = (from ct in db.consultasagendadas
-                                         where ct.PacienteID == null && ct.ConsultaID == ConsultaID && ct.ConsultaIDTurno == ConsultaIDTurno
-                                         select ct).Single();
-
-                    if (consultaturno != null)
-                    {
-                        consultaturno.PacienteID = PacienteID;
-                        consultaturno.fueralista = false;
-                        consultaturno.fecharegistro = DateTime.UtcNow;
-                        db.SaveChanges();
-
-
-                        //int time = ((DateTime)consulta.fecha_inicio - DateTime.UtcNow).Hours;
-                        /*
-                        if ((numpacientes < MAX_PACIENTES) || fueraLista)
-                        {
-
-                            var conscans = db.consultascanceladas.SingleOrDefault(x => (x.ConsultaID == ConsultaID) && (x.PacienteID == PacienteID));
-                            if (conscans != null)
-                            {
-                                db.consultascanceladas.Remove(conscans);
-                                db.SaveChanges();
-                            }
-
-                            DateTime turno = consulta.fecha_inicio;
-                            int intervalo = ((consulta.fecha_fin - consulta.fecha_inicio).Minutes) / MAX_PACIENTES;
-                            //turno = turno.AddMinutes(minutos * numpacientes);
-
-                            //ordeno lista
-                            List<DateTime?> ordered = consulta.pacientes.OrderBy(x => x.turno).Select(x => x.turno).ToList();
-                            int orderedc = ordered.Count;
-
-                            //busco primer turno libre
-                            for (int i = 0; i < MAX_PACIENTES; i++)
-                            {
-                                if (i < orderedc && ordered[i] == turno)
-                                    turno = turno.AddMinutes(intervalo);
-                                else
-                                    break;
-                            }
-
-
-                            if (!fueraLista)
-                            {
-                                PacienteConsultaAgenda pca = new PacienteConsultaAgenda
-                                {
-                                    ConsultaID = ConsultaID,
-                                    PacienteID = PacienteID,
-                                    fecharegistro = DateTime.UtcNow,
-                                    fueralista = false,
-                                    turno = turno
-                                };
-
-                                db.consultasagendadas.Add(pca);
-
-                            }
-                            else {
-
-                                PacienteConsultaAgenda pca = new PacienteConsultaAgenda
-                                {
-                                    ConsultaID = ConsultaID,
-                                    PacienteID = PacienteID,
-                                    fecharegistro = DateTime.UtcNow,
-                                    fueralista = true,
-                                    turno = null
-                                };
-
-                                db.consultasagendadas.Add(pca);
-                            }
-                            db.SaveChanges();
-
-                          
-                        }
-                        else
-                        {
-                            throw new Exception("Ya existen 10 Pacientes en Consulta::" + numpacientes);
-                        }*/
-                    }
-                    else
-                        throw new Exception("No existe turno o la consulta ha sido tomada...");
+                    PacienteConsultaAgenda pca = new PacienteConsultaAgenda { 
+                        ConsultaID=ConsultaID, 
+                        ausencia=false, 
+                        //ConsultaIDTurno=null,
+                        fecharegistro= DateTime.UtcNow,
+                        fueralista=fueraLista,
+                        PacienteID = PacienteID,
+                        turno=null
+                    };
+                    db.consultasagendadas.Add(pca);
+                    db.SaveChanges();
                 }
                 else
                 {
-                    throw new Exception("No existe paciente");
+                    Paciente paciente = db.pacientes.Find(PacienteID);
+                    if (paciente != null)
+                    {
+                        PacienteConsultaAgenda consultaturno = (from ct in db.consultasagendadas
+                                                                where ct.PacienteID == null && ct.ConsultaID == ConsultaID && ct.ConsultaIDTurno == ConsultaIDTurno
+                                                                select ct).Single();
+
+                        if (consultaturno != null)
+                        {
+                            consultaturno.PacienteID = PacienteID;
+                            consultaturno.fueralista = false;
+                            consultaturno.fecharegistro = DateTime.UtcNow;
+                            db.SaveChanges();
+                        }
+                        else
+                            throw new Exception("No existe turno o la consulta ha sido tomada...");
+                    }
+                    else
+                    {
+                        throw new Exception("No existe paciente");
+                    }
                 }
             }
         }
@@ -153,17 +103,17 @@ namespace SAREM.DataAccessLayer
                         }
                         else
                         {
-                            throw new ExcepcionMaxPacientesEspera();//Exception("Ya existen " + MAX_PACIENTES_ESPERA + " Pacientes en lista de espera");
+                            throw new ExcepcionMaxPacientesEspera();
                         }
                     }
                     else
                     {
-                        throw new ExcepcionNoExisteConsulta();//Exception("No existe consulta");
+                        throw new ExcepcionNoExisteConsulta();
                     }
                 }
                 else
                 {
-                    throw new ExcepcionNoExistePaciente();//Exception("No existe paciente");
+                    throw new ExcepcionNoExistePaciente();
                 }
 
             }
@@ -264,10 +214,11 @@ namespace SAREM.DataAccessLayer
                     PacienteConsultaAgenda pca = db.consultasagendadas
                         .Where(c => c.ConsultaID == ConsultaID && c.PacienteID == PacienteID)
                         .Single();
-                    //db.consultasagendadas.Remove(pca);
                     //seteo paciente en null
                     pca.PacienteID = null;
-                    
+                    pca.fecharegistro = null;
+                    pca.diagnostico = "";
+                    pca.fueralista = false;
 
                     //busco el primero de la lista de espera y lo agrego al turno de la consulta cancelada.
                     if (consulta.pacientesespera.Count > 0)
@@ -278,22 +229,10 @@ namespace SAREM.DataAccessLayer
 
                         pca.PacienteID = pce.PacienteID;
                         pca.fecharegistro = DateTime.UtcNow;
-
-                        //Paciente first = pce.paciente;
-                        /*
-                        //Creo consulta y la agrego
-                        PacienteConsultaAgenda pcaadd = new PacienteConsultaAgenda {
-                            ConsultaID = consulta.ConsultaID,
-                            PacienteID = first.PacienteID,
-                            turno = pca.turno,
-                            fueralista=false,
-                            fecharegistro= DateTime.UtcNow,
-                            ausencia= false                           
-                        };
-                        db.consultasagendadas.Add(pcaadd);
-                         * */
                         //remuevo de lista de espera
                         db.pacienteespera.Remove(pce);
+                        //guardo cambios
+                        db.SaveChanges();
                     }
                     //TODO Notificar Paciente
                     db.SaveChanges();

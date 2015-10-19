@@ -46,6 +46,10 @@
     <Reference Include="Microsoft.WindowsAzure.Configuration">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -64,6 +68,7 @@
     <Compile Include="AdministradorController.cs" />
     <Compile Include="DALAgenda.cs" />
     <Compile Include="DALEspecialidades.cs" />
+    <Compile Include="DALAMQP.cs" />
     <Compile Include="DALLocales.cs" />
     <Compile Include="DALMedicos.cs" />
     <Compile Include="DALNotificaciones.cs" />
@@ -75,6 +80,7 @@
     <Compile Include="IAdministradorController.cs" />
     <Compile Include="IDALAgenda.cs" />
     <Compile Include="IDALEspecialidades.cs" />
+    <Compile Include="IDALAMQP.cs" />
     <Compile Include="IDALLocales.cs" />
     <Compile Include="IDALMedicos.cs" />
     <Compile Include="IDALNotificaciones.cs" />
