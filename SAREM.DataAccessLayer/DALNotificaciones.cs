@@ -213,5 +213,45 @@ namespace SAREM.DataAccessLayer
         #endregion 
 
 
+
+        public void enviarMensajeAlertaConsulta(string pacienteID, long eventoID, DateTime fecha)
+        {
+            Console.WriteLine("enviarMensajeAlertaConsulta...");
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var epc = (from c in db.eventopacientecomunicacion.Include("paciente")
+                           where c.EventoID==eventoID && c.PacienteID==pacienteID
+                           select c
+                    );
+
+                IDALAMQP iamqp = new DALAMQP(tenant);
+                foreach (var e in epc)
+                {
+                    Console.WriteLine("recorriendo medios...");
+                    switch (e.ComunicacionID)
+                    {
+                        case 1: //mail
+                            var dm = new DataMensaje
+                            {
+                                medio = e.ComunicacionID,
+                                destinatario = e.paciente.mail,
+                                asunto = "Consulta agendada",
+                                mensaje = "Tiene una consulta agendada para el dia " + fecha.ToString(),
+                                fecha_envio = fecha,
+                                inmediato = false
+                            };
+                            iamqp.sendToQueue(dm);
+                            break;
+
+                        default:
+                            Console.WriteLine("No se envia mensaje");
+                            break;
+                    }
+
+                }
+            }
+
+        }
+
     }
 }

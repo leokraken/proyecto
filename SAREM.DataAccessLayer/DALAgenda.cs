@@ -10,9 +10,7 @@ namespace SAREM.DataAccessLayer
     public class DALAgenda: IDALAgenda
     {
         private string tenant;
-        private static int MAX_PACIENTES = 10;
-        private static int MAX_PACIENTES_ESPERA = 3;
-        
+       
         public DALAgenda(string tenant)
         {
             this.tenant = tenant;
@@ -63,6 +61,10 @@ namespace SAREM.DataAccessLayer
                             consultaturno.fueralista = false;
                             consultaturno.fecharegistro = DateTime.UtcNow;
                             db.SaveChanges();
+
+                            //send MQ
+                            IDALNotificaciones inot = new DALNotificaciones(tenant);
+                            inot.enviarMensajeAlertaConsulta(PacienteID, 1, (DateTime)consultaturno.turno);
                         }
                         else
                             throw new Exception("No existe turno o la consulta ha sido tomada...");
@@ -170,7 +172,7 @@ namespace SAREM.DataAccessLayer
                                          .Where(c => c.ConsultaID == ConsultaID)
                                          .Single().pacientes.Count;
 
-                    if (numpacientes < MAX_PACIENTES)
+                    if (numpacientes < consulta.numpacientes)
                     {
                         PacienteConsultaAgenda pca = new PacienteConsultaAgenda { ConsultaID = ConsultaID, PacienteID = pEspera.PacienteID, fecharegistro = DateTime.UtcNow };
                         db.consultasagendadas.Add(pca);
@@ -539,7 +541,7 @@ namespace SAREM.DataAccessLayer
                             && c.FuncionarioID == MedicoID
                             && !c.pacientes.Any(p => p.PacienteID == idP )
                             && !c.pacientesespera.Any(p => p.PacienteID == idP)
-                            && (c.pacientes.Count < MAX_PACIENTES || c.pacientesespera.Count < MAX_PACIENTES_ESPERA)
+                            && (c.pacientes.Count < c.numpacientes || c.pacientesespera.Count < c.maxpacientesespera)
                             select c;
                 List<Consulta> lista = new List<Consulta>();
                 foreach (var c in query.ToList())
@@ -563,17 +565,7 @@ namespace SAREM.DataAccessLayer
                 Paciente paciente = db.pacientes.Find(PacienteID);
                 if (paciente != null)
                 {
-                    //Consulta consulta =
-                        //db.consultas
-                        //.Include("pacientes")
-                        //.Include("pacientesespera")
-                        //.Where(x=> x.ConsultaID==ConsultaID)
-                        //.Single();
-                    //int numpacientes = db.consultas.Include("pacientes").Include("pacientesespera")
-                    //                     .Where(c => c.ConsultaID == ConsultaID)
-                    //                     .Single().pacientes.Count;
-                    //int numpacientes = consulta.pacientes.Count;
-
+                   
                     //controlo que paciente no tenga un turno en la consulta
                     var pcaexiste = from p in db.consultasagendadas
                                                   where p.ConsultaID == ConsultaID && p.PacienteID == PacienteID
@@ -597,65 +589,11 @@ namespace SAREM.DataAccessLayer
                     else
                     {
                         throw new Exception("Consulta no existe o turno tomado...");
-                    }
-
-                    /*
-                    if (consultaturno != null)
-                    {
-
-                        
-                        if ((numpacientes < consulta.numpacientes))
-                        {
-                            var conscans = db.consultascanceladas
-                                .SingleOrDefault(x => (x.ConsultaID == ConsultaID)
-                                && (x.PacienteID == PacienteID));
-                            if (conscans != null)
-                            {
-                                db.consultascanceladas.Remove(conscans);
-                                db.SaveChanges();
-                            }
-                            DateTime turno = consulta.fecha_inicio;
-                            int intervalo = ((consulta.fecha_fin - consulta.fecha_inicio).Minutes) / MAX_PACIENTES;
-                            //turno = turno.AddMinutes(minutos * numpacientes);
-                           
-                            //ordeno lista
-                            List<DateTime ?> ordered = consulta.pacientes.OrderBy(x => x.turno).Select(x=> x.turno).ToList();
-                            int orderedc = ordered.Count;
-
-                            //busco primer turno libre
-                            for (int i = 0; i < MAX_PACIENTES; i++)
-                            {
-                                if (i < orderedc && ordered[i] == turno)
-                                    turno = turno.AddMinutes(intervalo);
-                                else
-                                    break;                                                        
-                            }
-                            
-                            PacienteConsultaAgenda pca = new PacienteConsultaAgenda 
-                            {   
-                                ConsultaID = ConsultaID,
-                                PacienteID = PacienteID, 
-                                fecharegistro = DateTime.UtcNow, 
-                                fueralista = false,
-                                turno = turno
-                            };
-                            db.consultasagendadas.Add(pca);
-                            db.SaveChanges();
-                            return turno;
-                        }
-                        else
-                        {
-                            agregarConsultaPacienteEspera(PacienteID, ConsultaID);
-                            return null;
-                        }
-                    }
-                    else
-                        throw new ExcepcionNoExisteConsulta();//Exception("No existe consulta");
-                     * */
+                    }                  
                 }
                 else
                 {
-                    throw new ExcepcionNoExistePaciente();//Exception("No existe paciente");
+                    throw new ExcepcionNoExistePaciente();
                 }
             }
 

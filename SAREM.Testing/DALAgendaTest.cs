@@ -19,19 +19,23 @@ namespace SAREM.Testing
 
         //datos
         private static List<Comunicacion> comunicaciones = new List<Comunicacion> { 
-                new Comunicacion{ ID=1, nombre="Whatsapp", metadata="Mensaje"},
-                new Comunicacion{ ID=2, nombre="Email", metadata="Email Mensaje"},
-                new Comunicacion{ ID=1, nombre="SMS", metadata="Mensaje SMS"}
+                //new Comunicacion{ ID=1, nombre="Whatsapp", metadata="Mensaje"},
+                new Comunicacion{ ID=1, nombre="Email", metadata="Email Mensaje"},
+                new Comunicacion{ ID=2, nombre="Twitter", metadata="Mensaje privado Twitter"}
             };
 
         private static List<EventoObligatorio> eventos = new List<EventoObligatorio> { 
-                new EventoObligatorio{EventoID=1, nombre="Evento1", mensaje="Tal vez muera manana", fechanotificacion=DateTime.Now },
-                new EventoObligatorio{EventoID=2, nombre="Evento2", mensaje="Debe visitar su medico referencia", fechanotificacion= DateTime.Now }
+                new EventoObligatorio{
+                    EventoID=1, 
+                    nombre="Consultas Notificaciones Agregar,cancelar, modificar", 
+                    mensaje="Usted ha agendado una consulta", 
+                    fechanotificacion=DateTime.Now 
+                }                
             };
 
         private static List<EventoOpcional> eventosop = new List<EventoOpcional> { 
-                new EventoOpcional{EventoID=3, nombre="EventoOpcional1", edades= new List<int>{19, 20, 21,23,24,25,26} },
-                new EventoOpcional{EventoID=4, nombre="EventoOpcional2", edades= new List<int>{30, 40, 50} }
+                new EventoOpcional{ nombre="EventoOpcional1", edades= new List<int>{19, 20, 21,23,24,25,26} },
+                new EventoOpcional{ nombre="EventoOpcional2", edades= new List<int>{30, 40, 50} }
             };
 
         [ClassInitialize]
@@ -51,6 +55,15 @@ namespace SAREM.Testing
             
             db = SARMContext.getTenant(tenant);
 
+            comunicaciones.ForEach(c => db.comunicaciones.Add(c));
+            db.SaveChanges();
+            Debug.WriteLine("Comunicaciones agregados...");
+
+            eventos.ForEach(e => db.eventos.Add(e));
+            eventosop.ForEach(e => db.eventos.Add(e));
+            db.SaveChanges();
+            Debug.WriteLine("Eventos agregados...");
+
 
             List<Pais> naciones = new List<Pais>
             {
@@ -59,6 +72,7 @@ namespace SAREM.Testing
             };
             naciones.ForEach(n => db.paises.Add(n));
             db.SaveChanges();
+            Debug.WriteLine("Paises agregados...");
 
             List<Paciente> pacientes = new List<Paciente>
             {
@@ -94,9 +108,10 @@ namespace SAREM.Testing
                 }
             };
             //lista
-            pacientes.ForEach(p => db.pacientes.Add(p));
+            pacientes.ForEach(p => fabrica.ipacientes.altaPaciente(p));
             db.SaveChanges();
-    
+            Debug.WriteLine("Pacientes agregados...");
+
             //custom agrego 20 pacientes
             List<Paciente> customs = new List<Paciente>();
             for (int i = 0; i < 20; i++)
@@ -112,7 +127,7 @@ namespace SAREM.Testing
                 customs.Add(template);
             }
             customs.ForEach(x =>db.pacientes.Add(x));
-            db.SaveChanges();
+            
             Debug.WriteLine("Pacientes agregados...");
 
             //especialidades
@@ -189,14 +204,7 @@ namespace SAREM.Testing
             db.SaveChanges();
             Debug.WriteLine("Consultas agregados...");
 
-            comunicaciones.ForEach(c => db.comunicaciones.Add(c));
-            db.SaveChanges();
-            Debug.WriteLine("Comunicaciones agregados...");
 
-            eventos.ForEach(e => db.eventos.Add(e));
-            eventosop.ForEach(e => db.eventos.Add(e));
-            db.SaveChanges();
-            Debug.WriteLine("Eventos agregados...");
 
 
             //al paciente 13 le asigno un medico de referencia.

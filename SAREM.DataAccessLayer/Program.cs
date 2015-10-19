@@ -37,23 +37,46 @@ namespace SARM.DataAccessLayer
 
         static void amq()
         {
-            DALAMQP amq = new DALAMQP();
+            DALAMQP amq = new DALAMQP("test");
             var m = new DataMensaje
             {
-                medio = "mail",
-                destinatario = "tremendomail@mail.com",
-                asunto = "test",
-                mensaje = "hello world!",
-                fecha_envio = DateTime.Now.AddDays(2)
+                medio = 1, //mail
+                destinatario = "chebaysend@gmail.com",
+                asunto = "RabbitMQ testing",
+                mensaje = "Testing python send mail!",
+                fecha_envio = DateTime.UtcNow.AddMinutes(1),
+                inmediato=false
             };
+            amq.sendToQueue(m);
+        }
 
+        void testConsultamail() {
+            FabricaSAREM f = new FabricaSAREM("test");
+            /*
+            Consulta c = new Consulta
+            {
+                EspecialidadID = 1,
+                fecha_inicio = DateTime.UtcNow.AddMinutes(2),
+                fecha_fin = DateTime.UtcNow.AddMinutes(12),
+                FuncionarioID = "17299995",
+                LocalID = 1,
+                numpacientes = 10,
+                maxpacientesespera = 10
+            };
+            f.iagenda.agregarConsulta(c);
+            long consultaid = 
+             * */
+           
         }
 
         static void Main(string[] args)
         {
             FabricaSAREM f = new FabricaSAREM("test");
-            f.iagenda.cancelarConsultaPaciente("1", 2);
-
+            //f.iagenda.cancelarConsultaPaciente("1", 2);
+            //f.iagenda.agregarConsultaPaciente("0", 1, 1, false);
+            f.iagenda.agregarConsultaPaciente("50548305", 1, 1, false);
+            //amq();
+            Console.WriteLine("finish");
             Console.Read();
             //testOpenempi();
         }

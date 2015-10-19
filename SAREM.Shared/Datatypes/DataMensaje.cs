@@ -8,10 +8,11 @@ namespace SAREM.Shared.Datatypes
 {
     public class DataMensaje
     {
-        public string medio { get; set; }
+        public long medio { get; set; }
         public string asunto { get; set; }
         public string destinatario { get; set; }
         public string mensaje { get; set; }
         public DateTime fecha_envio { get; set; }
+        public bool inmediato { get; set; }
     }
 }

@@ -28,6 +28,19 @@ namespace SAREM.DataAccessLayer
             {
                 db.pacientes.Add(paciente);
                 db.SaveChanges();
+
+                //agrego comunicacion por defecto
+                var eventos = (from e in db.eventos
+                              where e is EventoObligatorio
+                              select e).ToList();
+                foreach (var ev in eventos)
+                {
+                    // asigno eventos obligatorios con medio mail...
+                    EventoPacienteComunicacion epv = new EventoPacienteComunicacion { ComunicacionID = 1, PacienteID = paciente.PacienteID, EventoID = ev.EventoID };
+                    db.eventopacientecomunicacion.Add(epv);
+                    db.SaveChanges();
+                }
+                //db.SaveChanges();
             }
         }
         

@@ -28,5 +28,9 @@ namespace SAREM.DataAccessLayer
         void crearEvento(Evento e);
         void eliminarEvento(long EventoID);
         void modificarEvento(Evento evento);
+
+        //mensajes
+        void enviarMensajeAlertaConsulta(string pacienteID, long eventoID, DateTime fecha);
+
     }
 }

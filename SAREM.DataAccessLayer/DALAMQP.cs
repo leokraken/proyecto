@@ -11,26 +11,48 @@ using Newtonsoft.Json.Converters;
 using RabbitMQ.Client;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
+
 namespace SAREM.DataAccessLayer
 {
-    public class DALAMQP
+    public class DALAMQP : IDALAMQP
     {
+        private string tenant;
         public static string baseURL = ConfigurationManager.AppSettings["AMQP_URL"].ToString();
-        
+
+        public DALAMQP(string tenant)
+        {
+            this.tenant = tenant;
+        }
+
         public void sendToQueue(DataMensaje m)
         {
-            string queue = "sarem.wait";
+
             ConnectionFactory factory = new ConnectionFactory();
             factory.Uri = "amqp://zquztoqc:OKzBDVlGU6H3xQ12OpTEP8OaEysrW0r4@black-boar.rmq.cloudamqp.com/zquztoqc";
             IConnection conn = factory.CreateConnection();
             Console.WriteLine("Connection Created...");
 
             IModel model = conn.CreateModel();
-            byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes("Hello, world!");
+            var serialized = JsonConvert.SerializeObject(m);
+            byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes(serialized);
             IBasicProperties props = model.CreateBasicProperties();
             props.ContentType = "application/json";
-            props.Expiration = "20000";
+            //props.Expiration = "5000";
             //props.DeliveryMode = 2;
+
+            /*Delayed queue*/
+            string queue = "sarem.wait";
+            if (m.inmediato)
+                queue = "sarem";
+            else
+            {
+                long milis = (long)(m.fecha_envio - DateTime.UtcNow).TotalMilliseconds;
+                Console.WriteLine("Tiempo en milis" + milis.ToString());
+                props.Expiration = milis.ToString();//"5000";
+            }
+
+
+
             Console.WriteLine("Sending...");
             model.BasicPublish("",
                               queue, props,
