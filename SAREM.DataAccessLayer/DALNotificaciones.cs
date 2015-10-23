@@ -91,9 +91,8 @@ namespace SAREM.DataAccessLayer
 
         public ICollection<EventoPacienteComunicacion> listarEventosPaciente(long EventoID)
         {
-            var pacientes = db.eventopacientecomunicacion.Include("pacientes").Include("comunicaciones")
+            var pacientes = db.eventopacientecomunicacion.Include("paciente").Include("comunicacion")
                                          .Where(e => e.EventoID == EventoID).ToList();
-
             return pacientes;
         }
         public ICollection<Evento> listarEventosSuscriptoPaciente(string PacienteID)

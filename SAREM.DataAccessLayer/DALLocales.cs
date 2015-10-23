@@ -51,14 +51,16 @@ namespace SAREM.DataAccessLayer
             }
         }
 
-        public ICollection<MedicoLocal> listarLocalesMedico(string medicoID)
+        public ICollection<Local> listarLocalesMedico(string medicoID)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
-                var query = (from c in db.medicolocal.Include("local")
-                             where c.FuncionarioID == medicoID
-                             select c);
-                return query.ToList();
+                var query = db.funcionarios.
+                    Include("locales").
+                    OfType<Medico>().
+                    Where(m => m.FuncionarioID == medicoID);
+                return query.First().locales.ToList();
+                //return query.ToList();
 
             }
         }

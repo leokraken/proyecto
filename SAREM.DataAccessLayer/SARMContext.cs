@@ -75,6 +75,7 @@ namespace SAREM.DataAccessLayer
             
             builder.Entity<EventoPacienteComunicacion>().ToTable("EventoPacienteComunicacion", schemaName);
 
+            //builder.Entity<MedicoLocal>().ToTable("MedicoLocal", schemaName).;
 
             builder.Entity<PacienteConsultaCancelar>().ToTable("ConsultasCanceladas", schemaName);
             builder.Entity<Paciente>()
@@ -110,6 +111,7 @@ namespace SAREM.DataAccessLayer
                     me.ToTable("LocalesEspecialidades", schemaName);
                 });
 
+            
             builder.Entity<Medico>()
                 .HasMany<Local>(e => e.locales)
                 .WithMany(r => r.medicos)
@@ -119,7 +121,7 @@ namespace SAREM.DataAccessLayer
                     me.MapRightKey("LocalID");
                     me.ToTable("MedicoLocal", schemaName);
                 });
-
+            
             builder.Entity<Evento>()
                 .HasMany<EventoPacienteComunicacion>(e=> e.pacientes);
             builder.Entity<Paciente>()
@@ -130,7 +132,6 @@ namespace SAREM.DataAccessLayer
             builder.Entity<PacienteConsultaEspera>().ToTable("PacientesEspera", schemaName);
 
             builder.Entity<Mensaje>().ToTable("Mensajes", schemaName);
-
 
 
             var model = builder.Build(new SqlConnection(con));
@@ -211,6 +212,7 @@ namespace SAREM.DataAccessLayer
                 Database.ExecuteSqlCommand(String.Format(drop, schema, t));
             }
             Database.ExecuteSqlCommand("drop schema ["+schema+"]");
+
 
         }
     }

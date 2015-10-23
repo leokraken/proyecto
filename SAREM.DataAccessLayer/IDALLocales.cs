@@ -12,7 +12,7 @@ namespace SAREM.DataAccessLayer
         ICollection<Local> listarLocales();
         Local obtenerLocal(long LocalID);
         ICollection<Local> listarLocales(long EspecialidadID);
-        ICollection<MedicoLocal> listarLocalesMedico(string medicoID);
+        ICollection<Local> listarLocalesMedico(string medicoID);
 
     }
 }

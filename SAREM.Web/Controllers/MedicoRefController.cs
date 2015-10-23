@@ -285,11 +285,11 @@ namespace SAREM.Web.Controllers
              
                 List<LocalJson> listjs = new List<LocalJson>();
 
-                foreach (MedicoLocal l in locales)
+                foreach (Local l in locales)
                 {
                     LocalJson ljs = new LocalJson();
-                    ljs.Nombre = l.local.nombre;
-                    ljs.Direccion = l.local.calle + " " + l.local.numero;
+                    ljs.Nombre = l.nombre;
+                    ljs.Direccion = l.calle + " " + l.numero;
 
                     listjs.Add(ljs);
                 }

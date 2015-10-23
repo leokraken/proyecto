@@ -71,11 +71,23 @@ namespace SARM.DataAccessLayer
 
         static void Main(string[] args)
         {
+
             FabricaSAREM f = new FabricaSAREM("test");
+            //f.adminController.dropSchema("test");
+            //f.adminController.createSchema("test");
+                //new FabricaSAREM("test");
             //f.iagenda.cancelarConsultaPaciente("1", 2);
             //f.iagenda.agregarConsultaPaciente("0", 1, 1, false);
-            f.iagenda.agregarConsultaPaciente("50548305", 1, 1, false);
+            //f.iagenda.agregarConsultaPaciente("50548305", 1, 1, false);
             //amq();
+            //var q = f.iagenda.listarConsultasPaciente("0");
+            //Console.WriteLine("paciente 0");
+            //f.iagenda.agregarConsultaPacienteEspera("0", 3);
+            var q = f.inotificaciones.listarEventosPaciente(3);
+            foreach (var a in q)
+            {
+                Console.WriteLine(a.ComunicacionID+ " " +a.PacienteID);
+            }
             Console.WriteLine("finish");
             Console.Read();
             //testOpenempi();

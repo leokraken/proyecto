@@ -12,6 +12,7 @@ namespace SAREM.Shared.Entities
 
         [Key, Column(Order=1)]
         public short ConsultaIDTurno { get; set; }
+        //[Key, Column(Order = 1)]
         public string PacienteID { get; set; }
 
         public virtual Paciente paciente { get; set; }

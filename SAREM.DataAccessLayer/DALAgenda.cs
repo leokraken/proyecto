@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SAREM.Shared.Excepciones;
+using System.Diagnostics;
 
 namespace SAREM.DataAccessLayer
 {
@@ -34,10 +35,14 @@ namespace SAREM.DataAccessLayer
                 //Si es fuera de lista debo crear PacienteConsultaAgenda
                 if (fueraLista)
                 {
+                    int count = (from c in db.consultasagendadas
+                            where c.ConsultaID == ConsultaID
+                            select c).Count();
+
                     PacienteConsultaAgenda pca = new PacienteConsultaAgenda { 
                         ConsultaID=ConsultaID, 
                         ausencia=false, 
-                        //ConsultaIDTurno=null,
+                        ConsultaIDTurno=(short)count,
                         fecharegistro= DateTime.UtcNow,
                         fueralista=fueraLista,
                         PacienteID = PacienteID,
@@ -63,8 +68,16 @@ namespace SAREM.DataAccessLayer
                             db.SaveChanges();
 
                             //send MQ
-                            IDALNotificaciones inot = new DALNotificaciones(tenant);
-                            inot.enviarMensajeAlertaConsulta(PacienteID, 1, (DateTime)consultaturno.turno);
+                            try
+                            {
+                                IDALNotificaciones inot = new DALNotificaciones(tenant);
+                                inot.enviarMensajeAlertaConsulta(PacienteID, 1, (DateTime)consultaturno.turno);
+                            }
+                            catch (Exception E)
+                            {
+                                Debug.WriteLine("AMQP:Mensaje no enviado.");
+                            }
+
                         }
                         else
                             throw new Exception("No existe turno o la consulta ha sido tomada...");
@@ -349,12 +362,13 @@ namespace SAREM.DataAccessLayer
                 if (p == null)
                     throw new Exception("No existe paciente");
 
-                var q = from c in db.consultas.Include("pacientes.paciente")
+                var q = (from c in db.consultas.Include("pacientes.paciente")
                         .Include("local")
                         .Include("medico")
                         .Include("especialidad")
-                        where c.pacientes.Any(x => x.PacienteID == PacienteID)
-                        select c;
+                        .Include("pacientesespera")
+                        where c.pacientes.Any(x => x.PacienteID == PacienteID) || c.pacientesespera.Any(x => x.PacienteID==PacienteID)
+                        select c).Distinct();
                 return q.ToList();
                
             }
