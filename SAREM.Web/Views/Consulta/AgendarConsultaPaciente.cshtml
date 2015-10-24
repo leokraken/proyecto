@@ -225,33 +225,43 @@
                 url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
                 dataType: "json",
                 type: "POST",
-                data: { idC: $("#idRowAdd").val() },
+                data: { idC: $("#idRowAdd").val(), idCT: $("#Turno").find('option:selected').val() },
 
                 cache: false,
                 success: function (data) {
 
-                    if (data.success && data.turno != "LE") {
+                    //if (data.success && data.turno != "LE") {
 
-                        $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
-                        $('#modalAlerta').modal('show');
+                    //    $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
+                    //    $('#modalAlerta').modal('show');
 
 
 
-                    } else if (data.success && data.turno == "LE") {
+                    //} else if (data.success && data.turno == "LE") {
 
-                        $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
-                        $('#modalAlerta').modal('show');
+                    //    $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
+                    //    $('#modalAlerta').modal('show');
+
+                    //} else {
+
+                    //    $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
+                    //    $('#modalAlerta').modal('show');
+                    //}
+
+                    if (data.success) {
+                        $('#tablaConsultas').bootstrapTable('remove', {
+                            field: 'idC',
+                            values: $("#idRowAdd").val()
+                        });
+
+                       $('#pText').text("Se ha agendado correctamente a la consulta, por más información visite la sección Consultas > Ver Consultas Agendadas.");
+                       $('#modalAlerta').modal('show');
 
                     } else {
 
-                        $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
+                        $('#pText').text("Se ha producido un error al agendar la Consulta. Por más información consulte al Administrador de su Centro de Salud.");
                         $('#modalAlerta').modal('show');
                     }
-
-                    $('#tablaConsultas').bootstrapTable('remove', {
-                        field: 'idC',
-                        values: $("#idRowAdd").val()
-                    });
                 },
                 error: function (xhr) {
 
@@ -259,6 +269,44 @@
                 }
             })
 
+        });
+
+        //Agregar Paciente a Lista de Espera
+        $("#agregarListaEspera").click(function () {
+         
+
+            $.ajax({
+                url: '@Url.Action("AddPacienteConsultaEsperaPaciente", "Consulta")',
+                dataType: "json",
+                type: "POST",
+
+                data: { idC: $("#idRowConsulta").val() },
+                cache: false,
+                success: function (data) {
+
+                    if (data.success) {
+
+                        $('#modalAlertaConsulta').modal('hide');
+                        $('#tablaConsultas').bootstrapTable('remove', {
+                            field: 'idC',
+                            values: $("#idRowConsulta").val()
+                        });
+                        $('#pText').text("Se ha agendado correctamente a la Lista de Espera de la Consulta. Por más información dirijase a la sección Consultas > Ver Consultas Agendadas.");
+                        $('#modalAlerta').modal('show');
+
+                    } else {
+
+                        $('#pText').text("Se ha producido un error al realizar la acción. Por más información consulte al Administrador de su Centro de Salud.");
+                        $('#modalAlerta').modal('show');
+                    }
+
+                },
+                error: function (xhr) {
+
+                    alert('error al agregar paciente a lista de espera tipo 1');
+                }
+
+            });
         });
 
         $(function () {
@@ -298,43 +346,41 @@
 
                         if (data.hasOwnProperty('turnoVacio')) {
 
+                            //Debo consultar si existe espacio libre en la lista de espera
                             $.ajax({
-                                url: '@Url.Action("AgregarPacienteConsulta", "Consulta")',
+                                url: '@Url.Action("ConsultarDisponibilidadConsulta", "Consulta")',
                                 dataType: "json",
-                                type: "POST",
+                                type: "GET",
                                 data: { idC: row.idC },
 
                                 cache: false,
                                 success: function (data) {
 
-                                    if (data.success && data.turno != "LE") {
+                                    if (data.hasOwnProperty('falla')) {
 
-                                        $('#pText').text("Se ha agendado correctamente a la consulta, su turno es: " + data.turno + ".")
-                                        $('#modalAlerta').modal('show');
-
-
-
-                                    } else if (data.success && data.turno == "LE") {
-
-                                        $('#pText').text("El cupo de la consulta esta lleno. Ha quedado en Lista de Espera.")
-                                        $('#modalAlerta').modal('show');
+                                        alert('error al consultar disponibilidad consulta tipo 2');
 
                                     } else {
+                                       
+                                        if (data.disponibilidadLE) {
 
-                                        $('#pText').text("El cupo de la consulta esta lleno y también el de Lista de Espera, por favor busque otra Consulta.")
-                                        $('#modalAlerta').modal('show');
+                                            $("#idRowConsulta").val(row.idC);
+                                            $('#pTextConsulta').text("El cupo de la consulta esta lleno. Desea ingresar a Lista de Espera ?");
+                                            $('#modalAlertaConsulta').modal('show');
+
+                                        } else {
+
+                                            $('#pText').text("Los cupos de la Consulta y de la Lista de Espera estan llenos. Por favor, busque otra consulta.");
+                                            $('#modalAlerta').modal('show');
+                                        }
                                     }
-
-                                    $('#tablaConsultas').bootstrapTable('remove', {
-                                        field: 'idC',
-                                        values: row.idC
-                                    });
                                 },
                                 error: function (xhr) {
 
-                                    alert('error agendar consulta tipo 1');
+                                    alert('error al consultar disponibilidad consulta tipo 1');
                                 }
-                            })
+                            });
+
                            
                         } else {
 
@@ -397,13 +443,32 @@
     </div>
 </div>
 
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="modalAlertaConsulta">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Aviso</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pTextConsulta"></p>
+                <input id="idRowConsulta" type="hidden" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="agregarListaEspera">Si</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="addPacCons">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Agregar Consulta</h4>
+                <h4 class="modal-title">Agendar Consulta</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="step2">

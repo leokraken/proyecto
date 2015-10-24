@@ -33,6 +33,7 @@ namespace SAREM.DataAccessLayer
         ICollection<Paciente> obtenerPacientesConsulta(long ConsultaID);
         ICollection<Paciente> obtenerPacientesConsultaEspera(long ConsultaID);
         ICollection<Paciente> obtenerPacientesConsultaFueraLista(long ConsultaID);
+        DataConsulta consultarDisponibilidadConsulta(long ConsultaID);
 
         //parte diario
         ICollection<Consulta> obtenerParteDiario(string MedicoID, DateTime fecha);

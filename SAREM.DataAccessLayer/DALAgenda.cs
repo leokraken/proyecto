@@ -19,6 +19,48 @@ namespace SAREM.DataAccessLayer
 
         //MQ
 
+        public DataConsulta consultarDisponibilidadConsulta(long ConsultaID)
+        {
+            DataConsulta dc = new DataConsulta();
+            using (var db = SARMContext.getTenant(tenant)) {
+           
+                int numpacientesEnConsulta = db.consultasagendadas
+                                       .Where(c => c.ConsultaID == ConsultaID && c.PacienteID != null).ToList().Count;
+
+                int numpacientesEnListaEspera = db.pacienteespera
+                                    .Where(c => c.ConsultaID == ConsultaID).ToList().Count;
+            
+                int numpacientesConsulta = (from c in db.consultas
+                                        where c.ConsultaID == ConsultaID
+                                        select c.numpacientes).Single();
+
+                int numpacientesConsultaEspera = (from c in db.consultas
+                                            where c.ConsultaID == ConsultaID
+                                            select c.maxpacientesespera).Single();
+
+                if (numpacientesEnConsulta < numpacientesConsulta)
+                {
+
+                    dc.lugaresLibreConsulta = true;
+                }
+                else
+                {
+                    dc.lugaresLibreConsulta = false;
+                }
+
+                if (numpacientesEnListaEspera < numpacientesConsultaEspera)
+                {
+                    dc.lugaresLibresListaEspera = true;
+
+                } else {
+
+                    dc.lugaresLibresListaEspera = false;
+                }
+            }
+
+            return dc;
+        }
+
         /*
          * Este metodo ha cambiado, antes se asignaba dinamicamente, metodo single, es decir lo agregaba
          * a la lista si existe lugar, caso contrario a lista de espera.
@@ -56,6 +98,21 @@ namespace SAREM.DataAccessLayer
                     Paciente paciente = db.pacientes.Find(PacienteID);
                     if (paciente != null)
                     {
+
+                        int numpacientesEnConsulta = db.consultasagendadas
+                                       .Where(c => c.ConsultaID == ConsultaID && c.PacienteID != null).ToList().Count;
+
+                        int numpacientesConsulta = ( from c in db.consultas
+                                                     where c.ConsultaID == ConsultaID
+                                                     select c.numpacientes ).Single();
+
+                        if (numpacientesEnConsulta >= numpacientesConsulta)
+                        {
+
+                            throw new ExcepcionMaxPacientesConsulta();
+                        }
+                        else {
+
                         PacienteConsultaAgenda consultaturno = (from ct in db.consultasagendadas
                                                                 where ct.PacienteID == null && ct.ConsultaID == ConsultaID && ct.ConsultaIDTurno == ConsultaIDTurno
                                                                 select ct).Single();
@@ -81,6 +138,8 @@ namespace SAREM.DataAccessLayer
                         }
                         else
                             throw new Exception("No existe turno o la consulta ha sido tomada...");
+
+                        }
                     }
                     else
                     {
