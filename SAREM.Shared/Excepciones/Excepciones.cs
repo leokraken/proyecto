@@ -26,4 +26,8 @@ namespace SAREM.Shared.Excepciones
         public ExcepcionFueraDeFechaParteDiario() { }
     }
 
+    public class ExcepcionMaxPacientesConsulta : Exception
+    {
+        public ExcepcionMaxPacientesConsulta() { }
+    }
 }

@@ -152,7 +152,7 @@
         $("#addPacEspera").popover({ trigger: "hover" });
         $("#dataConsulta").popover({ trigger: "hover" });
         $("#upgradePac").popover({ trigger: "hover" });
-
+        $("#upgradePac").hide();
 
         $("#dataConsulta").click(function () {
 
@@ -370,15 +370,6 @@
                 align: 'center',
                 events: operateEventsLE,
                 formatter: operateFormatterLE
-            },
-            {
-                field: 'state',
-                title: 'Mover a Consulta',
-                checkbox: true,
-                width: 40,
-                align: 'center'
-
-
             }
 
             ]
@@ -488,6 +479,7 @@
                         //    values: [$('#idRowCancel').val()]
                         //});
                         $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
+                        $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
 
                     } else {
 

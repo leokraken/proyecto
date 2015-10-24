@@ -56,7 +56,7 @@ namespace SAREM.DataAccessLayer
             using (var db = SARMContext.getTenant(tenant))
             {
                 var query = (from c in db.medicolocal.Include("local")
-                             where c.FuncionarioID == medicoID
+                             where c.FuncionarioID == medicoID 
                              select c);
                 return query.ToList();
 

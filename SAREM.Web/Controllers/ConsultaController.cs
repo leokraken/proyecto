@@ -1,9 +1,12 @@
 ﻿using OfficeOpenXml;
 using SAREM.DataAccessLayer;
+using SAREM.Shared.Datatypes;
 using SAREM.Shared.Entities;
+using SAREM.Shared.Excepciones;
 using SAREM.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -926,7 +929,7 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                 fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
+                fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
                
                 return Json(new { success = true });
             }
@@ -938,6 +941,8 @@ namespace SAREM.Web.Controllers
 
         }
 
+
+  
 
         [HttpPost]
         public JsonResult CancelPacienteConsulta(string idC, string idP)
@@ -1141,8 +1146,9 @@ namespace SAREM.Web.Controllers
 
                 return Json(new { success = true });
             }
-            catch
+            catch(Exception e)
             {
+                Debug.WriteLine(e.Message);
                 return Json(new { success = false });
             }
 
@@ -1171,6 +1177,9 @@ namespace SAREM.Web.Controllers
         #endregion
 
         #region Paciente
+
+
+
 
         //Agendar Consulta Paciente
         [HttpGet]
@@ -1381,24 +1390,65 @@ namespace SAREM.Web.Controllers
             {
                 long idCC = Convert.ToInt64(idC);
                 short idCCT = Convert.ToInt16(idCT);
-                DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("14", idCC, idCCT);
-                if (turnoAux != null) {
+                //DateTime? turnoAux = fabrica.iagenda.agregarConsultaPaciente("14", idCC, idCCT);
+
+                fabrica.iagenda.agregarConsultaPaciente("14", idCC, idCCT, false);
+                //if (turnoAux != null) {
                     
-                    DateTime turno = turnoAux ?? DateTime.UtcNow;
-                    String format = "dd/MM/yyyy HH:mm";
-                    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                            turno,
-                            DateTimeKind.Utc);
-                    DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
-                    var fecha = localVersionFIni.ToString(format);
+                //    DateTime turno = turnoAux ?? DateTime.UtcNow;
+                //    String format = "dd/MM/yyyy HH:mm";
+                //    DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                //            turno,
+                //            DateTimeKind.Utc);
+                //    DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                //    var fecha = localVersionFIni.ToString(format);
 
-                    return Json(new { success = true , turno = fecha});
+                //    return Json(new { success = true , turno = fecha});
                 
-                } else {
+                //} else {
 
-                    return Json(new { success = true , turno = "LE" });
-                }
-                
+                //    return Json(new { success = true , turno = "LE" });
+                //}
+                return Json(new { success = true });
+            }
+            catch (ExcepcionMaxPacientesConsulta)
+            {
+                return Json(new { errorCuposTomados = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false });
+            }
+
+
+        }
+
+        public JsonResult ConsultarDisponibilidadConsulta(string idC)
+        {
+            try
+            {
+                DataConsulta dc = fabrica.iagenda.consultarDisponibilidadConsulta(Convert.ToInt64(idC));
+
+                return Json(new { disponiblidadConsulta = dc.lugaresLibreConsulta, disponibilidadLE = dc.lugaresLibresListaEspera }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+
+                return Json(new { falla = true });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AddPacienteConsultaEsperaPaciente(string idC)
+        {
+
+             //return RedirectToAction("AddPacienteConsultaEspera", "Consulta", new {idC  = idC, idP = "14" });
+            try
+            {
+                long idCC = Convert.ToInt64(idC);
+                fabrica.iagenda.agregarConsultaPacienteEspera("14", idCC);
+
+                return Json(new { success = true });
             }
             catch
             {
@@ -1407,6 +1457,7 @@ namespace SAREM.Web.Controllers
 
 
         }
+
 
         #endregion
        
