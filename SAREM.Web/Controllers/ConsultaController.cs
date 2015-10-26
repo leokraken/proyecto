@@ -1209,11 +1209,11 @@ namespace SAREM.Web.Controllers
             return View();
         }
 
-        //Ver Consultas agendadas
-        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
+        //Ver Consultas para agendar
+        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaDesde, string fechaHasta)
         {
 
-            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime(), "14");
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaDesde).ToUniversalTime(),ParseDate(fechaHasta).ToUniversalTime(),"14");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
 
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1254,6 +1254,97 @@ namespace SAREM.Web.Controllers
             return Json(lista, JsonRequestBehavior.AllowGet);
         }
 
+        //Ver consultas para agenda, con filtros, origen y medico
+        public JsonResult GetConsultasParaAgendaOrigenMedico(string idOrigen, string idMedico, string fechaDesde, string fechaHasta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocal(Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaDesde).ToUniversalTime(), ParseDate(fechaHasta).ToUniversalTime(), "14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        //Ver consultas para agenda, con filtros, origen y especialidad
+        public JsonResult GetConsultasParaAgendaOrigenEsp(string idOrigen, string idEspecialidad, string fechaDesde, string fechaHasta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasLocalEspecialidad(Convert.ToInt64(idOrigen), Convert.ToInt64(idEspecialidad), ParseDate(fechaDesde).ToUniversalTime(), ParseDate(fechaHasta).ToUniversalTime(), "14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
 
@@ -1282,17 +1373,19 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
+
+                var consulta = fabrica.iagenda.obtenerTurno(c.ConsultaID, "14");
+
               
-                var consulta = fabrica.iagenda.obtenerConsulta("14", c.ConsultaID);
                 if (consulta.turno != null)
                 {
-                            DateTime turno = consulta.turno ?? DateTime.UtcNow;
-                            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                            turno,
-                            DateTimeKind.Utc);
-                            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                    DateTime turno = consulta.turno ?? DateTime.UtcNow;
+                    runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                    turno,
+                    DateTimeKind.Utc);
+                    localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
-                            cjson.turno = localVersionFIni.ToString(format);
+                    cjson.turno = localVersionFIni.ToString(format);
                 }
             
                 lista.Add(cjson);
@@ -1458,6 +1551,19 @@ namespace SAREM.Web.Controllers
 
         }
 
+
+
+        public JsonResult GetMedicosOrigen(string idLocalidad)
+        {
+            List<SelectListItem> medicos = new List<SelectListItem>();
+            foreach (Medico m in  fabrica.imedicos.listarMedicosLocal(Convert.ToInt64(idLocalidad)))
+            {
+
+                medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID });
+            }
+            return Json(new SelectList(medicos, "Value", "Text"), JsonRequestBehavior.AllowGet);
+          
+        }
 
         #endregion
        

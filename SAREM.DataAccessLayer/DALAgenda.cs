@@ -484,6 +484,20 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public PacienteConsultaAgenda obtenerTurno(long ConsultaID, string PacienteID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = from c in db.consultasagendadas
+                           
+                            where c.ConsultaID == ConsultaID && c.PacienteID == PacienteID
+                            select c;
+                PacienteConsultaAgenda con = query.Single();
+            
+                return con;
+            }
+        }
+
 
         public ICollection<Paciente> listarPacientesNotInConsulta(long ConsultaID)
         {
@@ -601,7 +615,7 @@ namespace SAREM.DataAccessLayer
             return d;
         }*/
 
-        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fecha, string idP)
+        public ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fechaDesde, DateTime fechaHasta, string idP)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
@@ -618,8 +632,58 @@ namespace SAREM.DataAccessLayer
                             select c;
                 List<Consulta> lista = new List<Consulta>();
                 foreach (var c in query.ToList())
+                { 
+                    if (c.fecha_inicio.Date >= fechaDesde.Date && c.fecha_inicio.Date <= fechaHasta.Date && c.fecha_fin.Date >= fechaDesde.Date && c.fecha_fin.Date <= fechaHasta.Date)
+                        lista.Add(c);
+                }
+                return lista;
+            }
+        }
+
+        public ICollection<Consulta> listarConsultasMedicoLocal(long LocalID, string MedicoID, DateTime fechaDesde, DateTime fechaHasta, string idPaciente)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = from c in db.consultas.Include("pacientes")
+                            .Include("especialidad")
+                            .Include("medico")
+                            .Include("local")
+                            where c.LocalID == LocalID
+                        
+                            && c.FuncionarioID == MedicoID
+                            && !c.pacientes.Any(p => p.PacienteID == idPaciente)
+                            && !c.pacientesespera.Any(p => p.PacienteID == idPaciente)
+                            && (c.pacientes.Count < c.numpacientes || c.pacientesespera.Count < c.maxpacientesespera)
+                            select c;
+                List<Consulta> lista = new List<Consulta>();
+                foreach (var c in query.ToList())
                 {
-                    if (c.fecha_inicio.Date == fecha.Date)
+                    if (c.fecha_inicio.Date >= fechaDesde.Date && c.fecha_inicio.Date <= fechaHasta.Date && c.fecha_fin.Date >= fechaDesde.Date && c.fecha_fin.Date <= fechaHasta.Date)
+                        lista.Add(c);
+                }
+                return lista;
+            }
+        }
+
+        public ICollection<Consulta> listarConsultasLocalEspecialidad(long LocalID, long EspecialidadID, DateTime fechaDesde, DateTime fechaHasta, string idPaciente)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var query = from c in db.consultas.Include("pacientes")
+                            .Include("especialidad")
+                            .Include("medico")
+                            .Include("local")
+                            where c.LocalID == LocalID
+
+                            && c.EspecialidadID == EspecialidadID
+                            && !c.pacientes.Any(p => p.PacienteID == idPaciente)
+                            && !c.pacientesespera.Any(p => p.PacienteID == idPaciente)
+                            && (c.pacientes.Count < c.numpacientes || c.pacientesespera.Count < c.maxpacientesespera)
+                            select c;
+                List<Consulta> lista = new List<Consulta>();
+                foreach (var c in query.ToList())
+                {
+                    if (c.fecha_inicio.Date >= fechaDesde.Date && c.fecha_inicio.Date <= fechaHasta.Date && c.fecha_fin.Date >= fechaDesde.Date && c.fecha_fin.Date <= fechaHasta.Date)
                         lista.Add(c);
                 }
                 return lista;

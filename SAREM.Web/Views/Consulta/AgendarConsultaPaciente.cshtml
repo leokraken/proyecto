@@ -33,11 +33,91 @@
 </div>
 <br />
 <div>
-    <div class="panel panel-info">
-        <div class="panel-heading"><button type="button" class="btn btn-info" id="buscar">Buscar  &nbsp &nbsp  <i class="fa fa-search"></i></button> </div>
-        <div class="panel-body">
-               <div class="form-horizontal">
-                  
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Búsqueda por Orígen, Especialidad y Médico
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Orígen:</label>
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(
+                        model => model.localID,
+                        Model.local.Select(l => new SelectListItem
+                        {
+                            Text = l.nombre,
+                            Value = l.LocalID.ToString()
+                        }),
+                   "Seleccione un Orígen", new { @class = "origen_change form-control" })
+                                @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div id="especialidades" style="display:none">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Especialidad:</label>
+                                <div class="col-md-10">
+
+                                    @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div id="medicos" style="display:none">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Médico:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Desde:</label>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                                @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Hasta:</label>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFFin", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                                @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2"></label>
+                            <div class="col-md-10">
+                                &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                    <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Búsqueda por Orígen y Médico
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                   <div class="form-horizontal">
                        <div class="form-group">
                            <label class="control-label col-md-2">Orígen:</label>
                            <div class="col-md-10">
@@ -48,39 +128,106 @@
                             Text = l.nombre,
                             Value = l.LocalID.ToString()
                         }),
-                   "Seleccione un Orígen", new { @class = "origen_change form-control" })
+                            "Seleccione un Orígen", new { @id = "origen2", @class = "form-control" })
                                @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
                            </div>
                        </div>
-
-                      
-                   <div id="especialidades" style="display:none">
+                       <div id="medicos2" style="display:none">
+                           <div class="form-group">
+                               <label class="control-label col-md-2">Médico:</label>
+                               <div class="col-md-10">
+                                   @Html.DropDownList("Medico2", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { @class = "form-control" })
+                               </div>
+                           </div>
+                       </div>
                        <div class="form-group">
-                           <label class="control-label col-md-2">Especialidad:</label>
+                           <label class="control-label col-md-2">Desde:</label>
                            <div class="col-md-10">
+                               @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI2", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                               @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="control-label col-md-2">Hasta:</label>
+                           <div class="col-md-10">
+                               @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFFin2", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                               @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                           </div>
+                       </div>
+                       <div class="form-group">
+                           <label class="control-label col-md-2"></label>
+                           <div class="col-md-10">
+                               &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                               <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar2" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
 
-                               @Html.DropDownList("Especial", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { @class = "form-control" })
                            </div>
                        </div>
                    </div>
-                   <div id="medicos" style="display:none">
-                       <div class="form-group">
-                           <label class="control-label col-md-2">Médico:</label>
-                           <div class="col-md-10">
-                               @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new {  @class = "form-control" })
-                           </div>
-                       </div>
-                   </div>
-                   <div class="form-group">
-                       <label class="control-label col-md-2">Fecha Consulta:</label>
-                       <div class="col-md-10">
-                           @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
-                           @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
-                       </div>
-                   </div>
-               </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Búsqueda por Orígen y Especialidad
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                     <div class="form-horizontal">
+                         <div class="form-group">
+                             <label class="control-label col-md-2">Orígen:</label>
+                             <div class="col-md-10">
+                                 @Html.DropDownListFor(
+                        model => model.localID,
+                        Model.local.Select(l => new SelectListItem
+                        {
+                            Text = l.nombre,
+                            Value = l.LocalID.ToString()
+                        }),
+                            "Seleccione un Orígen", new { @id = "origen3", @class = "form-control" })
+                                 @Html.ValidationMessageFor(model => model.localID, "", new { @class = "text-danger" })
+                             </div>
+                         </div>
+                         <div id="especialidades3" style="display:none">
+                             <div class="form-group">
+                                 <label class="control-label col-md-2">Especialidad:</label>
+                                 <div class="col-md-10">
+
+                                     @Html.DropDownList("Especial3", new SelectList(string.Empty, "Value", "Text"), "Seleccione una Especialidad", new { @class = "form-control" })
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <label class="control-label col-md-2">Desde:</label>
+                             <div class="col-md-10">
+                                 @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI3", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                                 @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <label class="control-label col-md-2">Hasta:</label>
+                             <div class="col-md-10">
+                                 @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFFin3", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
+                                 @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
+                             </div>
+                         </div>
+                         <div class="form-group">
+                             <label class="control-label col-md-2"></label>
+                             <div class="col-md-10">
+                                 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                 <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar3" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
+
+                             </div>
+                         </div>
+                     </div>
+                </div>
+            </div>
         </div>
     </div>
+
 
 </div>
 
@@ -94,6 +241,7 @@
 <script>
     $(document).ready(function () {
 
+        $('[data-toggle="tooltip"]').tooltip();
 
         $(".origen_change").change(function () {
 
@@ -132,6 +280,199 @@
             }
         });
 
+        //Busqueda Origen, Medico
+        $("#origen2").change(function () {
+
+            if ($("#origen2 option:selected").index() != 0) {
+
+               
+                $("#Medico2").empty().append('<option value="0">Seleccione un Médico</option>');
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetMedicosOrigen", "Consulta")',
+                    dataType: 'json',
+                    data: { idLocalidad: $(this).find('option:selected').val() },
+                    cache: false,
+                    success: function (data) {
+                        //Fill div with results
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+
+                        $.each(data, function (i, dato) {
+                            $("#Medico2").append('<option value="' + dato.Value + '">' +
+                                 dato.Text + '</option>');
+                            // here we are adding option for States
+
+                        });
+
+                        $("#medicos2").css("display", "block");
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve states.' + ex);
+                    }
+                });
+            }
+        });
+
+        //Busqueda Orígen, Especialidad
+        $("#origen3").change(function () {
+
+            if ($("#origen3 option:selected").index() != 0) {
+
+    
+                $("#Especial3").empty().append('<option value="0">Seleccione una Especialidad</option>');
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetEspecialidades", "Consulta")',
+                    dataType: 'json',
+                    data: { idLocalidad: $(this).find('option:selected').val() },
+                    cache: false,
+                    success: function (data) {
+                        //Fill div with results
+                        // states contains the JSON formatted list
+                        // of states passed from the controller
+
+
+
+                        $.each(data, function (i, dato) {
+                            $("#Especial3").append('<option value="' + dato.Value + '">' +
+                                 dato.Text + '</option>');
+                            // here we are adding option for States
+
+                        });
+
+                        $("#especialidades3").css("display", "block");
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve states.' + ex);
+                    }
+                });
+            }
+        });
+
+
+
+        //Realizar Busqueda por origen, medico, fecha desde, fecha hasta
+        $("#buscar2").click(function () {
+            $("#divConsultas").hide();
+          
+            if ($("#origen2 option:selected").index() != 0 && $("#Medico2 option:selected").index() != 0 && $("#idFI2").val() && $("#idFFin2").val()) {
+
+                $('#tablaConsultas').bootstrapTable('destroy');
+                $('#tablaConsultas').bootstrapTable({
+                    url: '@Url.Action("GetConsultasParaAgendaOrigenMedico", "Consulta")' + '?idOrigen=' + $("#origen2").find('option:selected').val() + 
+                          "&idMedico=" + $("#Medico2").find('option:selected').val() + "&fechaDesde=" + $("#idFI2").val() + "&fechaHasta=" + $("#idFFin2").val(),
+
+                    columns: [{
+                        field: 'idC',
+                        title: 'Id Consulta',
+                        visible: false
+                    }, {
+                        field: 'origen',
+                        title: 'Orígen',
+
+                        sortable: true
+                    }, {
+                        field: 'especialidad',
+                        title: 'Especialidad',
+
+                        sortable: true
+                    }, {
+                        field: 'medico',
+                        title: 'Médico',
+
+                        sortable: true
+                    }, {
+                        field: 'fechaInicio',
+                        title: 'Fecha Inicio',
+
+                        sortable: true
+                    },
+                    {
+                        field: 'fechaFin',
+                        title: 'Fecha Fin',
+
+                        sortable: true
+                    }, {
+                        field: 'operate',
+                        title: 'Agendar',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    },
+
+                    ]
+                });
+
+                $("#collapseTwo").collapse('toggle');
+                $("#divConsultas").show();
+            }
+
+        });
+
+        //Realizar Busqueda por origen, especialidad, fecha desde, fecha hasta
+        $("#buscar3").click(function () {
+            $("#divConsultas").hide();
+
+            if ($("#origen3 option:selected").index() != 0 && $("#Medico3 option:selected").index() != 0 && $("#idFI3").val() && $("#idFFin3").val()) {
+
+                $('#tablaConsultas').bootstrapTable('destroy');
+                $('#tablaConsultas').bootstrapTable({
+                    url: '@Url.Action("GetConsultasParaAgendaOrigenEsp", "Consulta")' + '?idOrigen=' + $("#origen3").find('option:selected').val() +
+                           "&idEspecialidad=" + $("#Especial3").find('option:selected').val() + "&fechaDesde=" + $("#idFI3").val() + "&fechaHasta=" + $("#idFFin3").val(),
+
+                    columns: [{
+                        field: 'idC',
+                        title: 'Id Consulta',
+                        visible: false
+                    }, {
+                        field: 'origen',
+                        title: 'Orígen',
+
+                        sortable: true
+                    }, {
+                        field: 'especialidad',
+                        title: 'Especialidad',
+
+                        sortable: true
+                    }, {
+                        field: 'medico',
+                        title: 'Médico',
+
+                        sortable: true
+                    }, {
+                        field: 'fechaInicio',
+                        title: 'Fecha Inicio',
+
+                        sortable: true
+                    },
+                    {
+                        field: 'fechaFin',
+                        title: 'Fecha Fin',
+
+                        sortable: true
+                    }, {
+                        field: 'operate',
+                        title: 'Agendar',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    },
+
+                    ]
+                });
+
+                $("#collapseThree").collapse('toggle');
+                $("#divConsultas").show();
+            }
+
+        });
+
+
         $("#Especial").change(function () {
             if ($("#Especial option:selected").index() != 0) {
                 $("#Medico").empty().append('<option value="0">Seleccione un Médico</option>');
@@ -164,14 +505,15 @@
         });
 
 
+        //Busqueda por Origen, Especialidad y Médico
         $("#buscar").click(function () {
             $("#divConsultas").hide();
-            if ($(".origen_change option:selected").index() != 0 && $("#Especial option:selected").index() != 0 && $("#Medico option:selected").index() != 0 && $("#idFI").val()) {
+            if ($(".origen_change option:selected").index() != 0 && $("#Especial option:selected").index() != 0 && $("#Medico option:selected").index() != 0 && $("#idFI").val() && $("#idFFin").val()) {
 
                 $('#tablaConsultas').bootstrapTable('destroy');
                 $('#tablaConsultas').bootstrapTable({
                     url: '@Url.Action("GetConsultasParaAgenda", "Consulta")' + '?idOrigen=' + $(".origen_change").find('option:selected').val() + "&idEspecialidad=" + $("#Especial").find('option:selected').val()
-                          + "&idMedico=" + $("#Medico").find('option:selected').val() + "&fechaConsulta=" + $("#idFI").val(),
+                          + "&idMedico=" + $("#Medico").find('option:selected').val() + "&fechaDesde=" + $("#idFI").val() + "&fechaHasta=" + $("#idFFin").val(),
 
                     columns: [{
                         field: 'idC',
@@ -180,28 +522,28 @@
                     }, {
                         field: 'origen',
                         title: 'Orígen',
-                     
+
                         sortable: true
                     }, {
                         field: 'especialidad',
                         title: 'Especialidad',
-                       
+
                         sortable: true
                     }, {
                         field: 'medico',
                         title: 'Médico',
-                       
+
                         sortable: true
                     }, {
                         field: 'fechaInicio',
                         title: 'Fecha Inicio',
-                     
+
                         sortable: true
                     },
                     {
                         field: 'fechaFin',
                         title: 'Fecha Fin',
-                      
+
                         sortable: true
                     }, {
                         field: 'operate',
@@ -214,10 +556,14 @@
                     ]
                 });
 
+                $("#collapseOne").collapse('toggle');
                 $("#divConsultas").show();
             }
 
         });
+
+
+
 
         $("#agendar").click(function () {
             $('#addPacCons').modal('hide');
@@ -254,8 +600,8 @@
                             values: $("#idRowAdd").val()
                         });
 
-                       $('#pText').text("Se ha agendado correctamente a la consulta, por más información visite la sección Consultas > Ver Consultas Agendadas.");
-                       $('#modalAlerta').modal('show');
+                        $('#pText').text("Se ha agendado correctamente a la consulta, por más información visite la sección Consultas > Ver Consultas Agendadas.");
+                        $('#modalAlerta').modal('show');
 
                     } else {
 
@@ -273,7 +619,7 @@
 
         //Agregar Paciente a Lista de Espera
         $("#agregarListaEspera").click(function () {
-         
+
 
             $.ajax({
                 url: '@Url.Action("AddPacienteConsultaEsperaPaciente", "Consulta")',
@@ -330,9 +676,9 @@
         window.operateEvents = {
 
             'click .pacientes': function (e, value, row, index) {
-           
+
                 $("#idRowAdd").val(row.idC);
-               
+
                 $.ajax({
                     url: '@Url.Action("GetTurnosConsulta", "Consulta")',
                     dataType: "json",
@@ -342,7 +688,7 @@
                     cache: false,
                     success: function (data) {
 
-                       
+
 
                         if (data.hasOwnProperty('turnoVacio')) {
 
@@ -361,7 +707,7 @@
                                         alert('error al consultar disponibilidad consulta tipo 2');
 
                                     } else {
-                                       
+
                                         if (data.disponibilidadLE) {
 
                                             $("#idRowConsulta").val(row.idC);
@@ -381,7 +727,7 @@
                                 }
                             });
 
-                           
+
                         } else {
 
                             $("#Turno").empty().append('<option value="0">Seleccione...</option>');
@@ -396,7 +742,7 @@
 
                         }
 
-                       
+
                     },
                     error: function (xhr) {
 
