@@ -13,5 +13,6 @@ namespace SAREM.DataAccessLayer
         Medico obtenerMedico(string FuncionarioID);
         ICollection<Medico> listarMedicosEspecialidad(long EspecialidadID);
         ICollection<Medico> listarMedicosLocal(long LocalID);
+        ICollection<Medico> listarMedicos();
     }
 }

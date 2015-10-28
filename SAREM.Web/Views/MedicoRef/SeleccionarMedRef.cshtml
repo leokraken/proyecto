@@ -207,8 +207,35 @@
                     $("#medicos").css("display", "none");
                     $(".especialidad").prop('selectedIndex', 0);
                     $("#Especialidad2").prop('selectedIndex', 0);
+                    // Cargo combo de Medicos
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetMedicosTenant", "MedicoRef")',
+                        dataType: 'json',
+
+                        cache: false,
+                        success: function (data) {
+                            //Fill div with results
+                            // states contains the JSON formatted list
+                            // of states passed from the controller
+                            $("#Medico2").empty().append('<option value="0">Seleccione un Médico</option>');
+                            $.each(data, function (i, dato) {
+                                $("#Medico2").append('<option value="' + dato.Value + '">' +
+                                     dato.Text + '</option>');
+                                // here we are adding option for States
+
+                            });
+
+
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve states.' + ex);
+                        }
+                    });
                     $("#Medico2").prop('selectedIndex', 0);
                     $("#collapseOne").collapse('show');
+                    $("#collapseTwo").collapse('hide');
+                    $("#collapseThree").collapse('hide');
                     $("#estadoRef").hide();
                     $("#solMR").show();
                 }
@@ -217,6 +244,9 @@
                 //alert('Failed to retrieve states.' + ex);
             }
         });
+
+     
+
 
         //Obtener médicos dada una especialidad
 
@@ -253,6 +283,8 @@
 
         $("#buscar").click(function () {
 
+            if ($("#Medico option:selected").index() != 0) {
+
             $('#tablaMR').bootstrapTable('destroy');
             $('#tablaMR').bootstrapTable({
                 url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
@@ -280,73 +312,84 @@
                 ]
             });
 
-            $('#medReferencia').show();
+              $("#collapseOne").collapse('toggle');
+              $('#medReferencia').show();
+
+            }
         });
 
         //Por medicos
         $("#buscar2").click(function () {
 
-            $('#tablaMR').bootstrapTable('destroy');
-            $('#tablaMR').bootstrapTable({
-                url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
+            if ($("#Medico2 option:selected").index() != 0) {
 
-                columns: [{
-                    field: 'MedicoID',
-                    title: 'Id Médico'
-                }, {
-                    field: 'Nombre',
-                    title: 'Nombre'
-                }, {
-                    field: 'operate',
-                    title: 'Ver Locales',
-                    align: 'center',
-                    events: operateEvents,
-                    formatter: operateFormatter
-                }, {
-                    field: 'operateRef',
-                    title: 'Referenciar',
-                    align: 'center',
-                    events: operateEventsRef,
-                    formatter: operateFormatterRef
-                },
+                $('#tablaMR').bootstrapTable('destroy');
+                $('#tablaMR').bootstrapTable({
+                    url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico2").find('option:selected').val(),
 
-                ]
-            });
+                    columns: [{
+                        field: 'MedicoID',
+                        title: 'Id Médico'
+                    }, {
+                        field: 'Nombre',
+                        title: 'Nombre'
+                    }, {
+                        field: 'operate',
+                        title: 'Ver Locales',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }, {
+                        field: 'operateRef',
+                        title: 'Referenciar',
+                        align: 'center',
+                        events: operateEventsRef,
+                        formatter: operateFormatterRef
+                    },
 
-            $('#medReferencia').show();
+                    ]
+                });
+
+                $("#collapseTwo").collapse('toggle');
+                $('#medReferencia').show();
+
+            }
         });
         
         //Por especialidades
         $("#buscar3").click(function () {
+            if ($("#Especialidad2 option:selected").index() != 0) {
+                $('#tablaMR').bootstrapTable('destroy');
+                $('#tablaMR').bootstrapTable({
+                    url: '@Url.Action("GetMedicosEspecialidad", "MedicoRef")' + '?idEspecialidad=' + $("#Especialidad2").find('option:selected').val(),
 
-            $('#tablaMR').bootstrapTable('destroy');
-            $('#tablaMR').bootstrapTable({
-                url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
+                    columns: [{
+                        field: 'MedicoID',
+                        title: 'Id Médico'
+                    }, {
+                        field: 'Nombre',
+                        title: 'Nombre'
+                    }, {
+                        field: 'operate',
+                        title: 'Ver Locales',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }, {
+                        field: 'operateRef',
+                        title: 'Referenciar',
+                        align: 'center',
+                        events: operateEventsRef,
+                        formatter: operateFormatterRef
+                    },
 
-                columns: [{
-                    field: 'MedicoID',
-                    title: 'Id Médico'
-                }, {
-                    field: 'Nombre',
-                    title: 'Nombre'
-                }, {
-                    field: 'operate',
-                    title: 'Ver Locales',
-                    align: 'center',
-                    events: operateEvents,
-                    formatter: operateFormatter
-                }, {
-                    field: 'operateRef',
-                    title: 'Referenciar',
-                    align: 'center',
-                    events: operateEventsRef,
-                    formatter: operateFormatterRef
-                },
+                    ]
+                });
 
-                ]
-            });
+                $("#collapseThree").collapse('toggle');
+                $('#medReferencia').show();
 
-            $('#medReferencia').show();
+            }
         });
 
         function operateFormatterRef(value, row, index) {
@@ -376,7 +419,7 @@
 
                 $('#tableLocales').bootstrapTable('destroy');
                 $('#tableLocales').bootstrapTable({
-                    url: '@Url.Action("GetMedicoLocales", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
+                    url: '@Url.Action("GetMedicoLocales", "MedicoRef")' + '?idM=' + row.MedicoID,
 
                     columns: [{
                         field: 'Nombre',

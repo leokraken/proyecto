@@ -1377,7 +1377,7 @@ namespace SAREM.Web.Controllers
                 var consulta = fabrica.iagenda.obtenerTurno(c.ConsultaID, "14");
 
               
-                if (consulta.turno != null)
+                if (consulta != null)
                 {
                     DateTime turno = consulta.turno ?? DateTime.UtcNow;
                     runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
@@ -1556,15 +1556,16 @@ namespace SAREM.Web.Controllers
         public JsonResult GetMedicosOrigen(string idLocalidad)
         {
             List<SelectListItem> medicos = new List<SelectListItem>();
-            foreach (Medico m in  fabrica.imedicos.listarMedicosLocal(Convert.ToInt64(idLocalidad)))
+            foreach (Medico m in fabrica.imedicos.listarMedicosLocal(Convert.ToInt64(idLocalidad)))
             {
 
                 medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID });
             }
             return Json(new SelectList(medicos, "Value", "Text"), JsonRequestBehavior.AllowGet);
-          
+
         }
 
+       
         #endregion
        
 

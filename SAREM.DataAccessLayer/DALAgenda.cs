@@ -492,7 +492,7 @@ namespace SAREM.DataAccessLayer
                            
                             where c.ConsultaID == ConsultaID && c.PacienteID == PacienteID
                             select c;
-                PacienteConsultaAgenda con = query.Single();
+                PacienteConsultaAgenda con = query.SingleOrDefault();
             
                 return con;
             }

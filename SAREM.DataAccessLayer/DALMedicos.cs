@@ -63,6 +63,15 @@ namespace SAREM.DataAccessLayer
             }
         }
 
-
+        public ICollection<Medico> listarMedicos()
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var medicos = db.funcionarios
+                .OfType<Medico>()
+                .ToList();
+                return medicos;
+            }
+        }
     }
 }
