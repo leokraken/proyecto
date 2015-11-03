@@ -138,7 +138,18 @@
 
         //Guardar paciente agregado fuera de lista
         $("#agregarFL").click(function () {
+
+            $("#divPE").removeClass("has-error");
+            $("#helpPE").hide();
+            $("#divError").hide();
      
+            if (!$('#idPacienteFE').val()) {
+
+                $("#divPE").removeClass("has-error").addClass("has-error");
+                $("#helpPE").text("El Id del Paciente es vacio.");
+                $("#helpPE").show();
+
+            } else {
           
             $.ajax({
                 url: '@Url.Action("AgregarPacienteFE", "Consulta")',
@@ -149,30 +160,36 @@
                 cache: false,
                 success: function (data) {
 
-                   
-                    if (!data.success) {
-                       
-                        $("#divPE").removeClass("has-error").addClass("has-error");
-                        $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
-                        $("#helpPE").show();
-                      
-                    } else {
+
+                    if (data.success) {
 
                         $('#tablaPacientesFE').bootstrapTable("refresh", { silent: true });
                       
                         $("#addPacFE").modal('hide');
-                      
+
+
+                    } else if (!data.hasOwnProperty('errorGrave')){
+
+                        $("#divPE").removeClass("has-error").addClass("has-error");
+                        $("#helpPE").text(data.mensaje);
+                        $("#helpPE").show();
+                    
+                    } else {
+
+                        $("#textoErrorPE").text(data.mensaje);
+                        $("#divErrorPE").show();
                     }
 
                   
                 },
                 error: function (xhr) {
 
-                    $("#divPE").removeClass("has-error").addClass("has-error");
-                    $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
-                    $("#helpPE").show();
+                    $("#textoErrorPE").text("Se ha producido un error al intentar agregar al Paciente como Fuera de Lista. Por favor, consulte con el Administrador del Sistema.");
+                    $("#divErrorPE").show();
                 }
             })
+
+          }
         
 
         });
@@ -272,8 +289,8 @@
         $("#addPacFL").click(function () {
 
             $("#divPE").removeClass("has-error");
-          
             $("#helpPE").hide();
+            $("#divErrorPE").hide();
 
             $.ajax({
                 url: '@Url.Action("GetPacientesNotInConsulta", "Consulta")',
@@ -466,7 +483,15 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="step2">
+                    <div class="form-group" id="divError" style="display:none;">
+                        <label for="email" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-8">
+                            <div class="alert alert-danger alert-dismissible" role="alert" style="display:none;" id="msjError">
 
+                                <strong><i class="fa fa-exclamation-triangle"></i> Advertencia:</strong> &nbsp <p id="textoError"></p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="form-group" id="divPE">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>

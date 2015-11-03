@@ -910,12 +910,34 @@ namespace SAREM.Web.Controllers
                 long idCC = Convert.ToInt64(idC);
                 short idCCT = Convert.ToInt16(idCT);
 
-                fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, false);
-                return Json(new { success = true });
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
+                
+                if (existePac) { 
+                    
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera) { 
+                    
+                    fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, false);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception e)
             {
-                return Json(new { success = false });
+                return Json(new { success = false , errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
           
@@ -929,13 +951,37 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
-               
-                return Json(new { success = true });
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
+
+                if (existePac)
+                {
+
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera)
+                {
+
+                    fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception e)
             {
-                return Json(new { success = false });
+                return Json(new { success = false, errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -1081,7 +1127,9 @@ namespace SAREM.Web.Controllers
                 fecha_fin = fFin,
                 descEspecialidad = c.especialidad.descripcion,
                 localDesc = c.local.nombre,
-                medDesc = c.medico.nombre
+                medDesc = c.medico.nombre,
+                cantPacientes = c.numpacientes.ToString(),
+                cantPacientesEspera = c.maxpacientesespera.ToString()
             };
             return View("VerPacientesParteDiario",model);
         }
@@ -1142,14 +1190,40 @@ namespace SAREM.Web.Controllers
                 long idCC = Convert.ToInt64(idC);
                 short idCCT = Convert.ToInt16(idCT);
 
-                fabrica.iagenda.agregarConsultaPaciente(idP,idCC,idCCT,true);
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
 
-                return Json(new { success = true });
+                if (existePac)
+                {
+
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera)
+                {
+
+                    fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, true);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+
+             
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception e)
             {
-                Debug.WriteLine(e.Message);
-                return Json(new { success = false });
+
+                return Json(new { success = false, errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
 

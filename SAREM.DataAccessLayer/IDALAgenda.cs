@@ -10,7 +10,7 @@ namespace SAREM.DataAccessLayer
         void agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno, Boolean fueraLista);
         //TODO test
         DateTime? agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno);
-
+        Boolean pacientePerteneceConsulta(long ConsultaID, string PacienteID);
         void cancelarConsultaPaciente(string PacienteID, long ConsultaID);
         void ausenciaConsultaPaciente(string PacienteID, long ConsultaID);
         void agregarConsulta(Consulta consulta);

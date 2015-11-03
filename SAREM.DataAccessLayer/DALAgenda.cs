@@ -516,6 +516,21 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public Boolean pacientePerteneceConsulta(long ConsultaID, string PacienteID)
+        {
+           using (var db = SARMContext.getTenant(tenant))
+           {
+                if ((!db.consultasagendadas.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == PacienteID)) &&
+                                  !db.pacienteespera.Any(c => (c.ConsultaID == ConsultaID) && (c.PacienteID == PacienteID)))) {
+                    return true;
+                } else {
+
+                    return false;
+                }
+
+           }
+        }
+
         public ICollection<Paciente> obtenerPacientesConsulta(long ConsultaID)
         {
             using (var db = SARMContext.getTenant(tenant))
