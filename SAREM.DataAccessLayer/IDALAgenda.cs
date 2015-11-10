@@ -10,7 +10,7 @@ namespace SAREM.DataAccessLayer
         void agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno, Boolean fueraLista);
         //TODO test
         DateTime? agregarConsultaPaciente(string PacienteID, long ConsultaID, short ConsultaIDTurno);
-
+        Boolean pacientePerteneceConsulta(long ConsultaID, string PacienteID);
         void cancelarConsultaPaciente(string PacienteID, long ConsultaID);
         void ausenciaConsultaPaciente(string PacienteID, long ConsultaID);
         void agregarConsulta(Consulta consulta);
@@ -20,9 +20,9 @@ namespace SAREM.DataAccessLayer
         ICollection<Consulta> listarConsultasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasCanceladasPaciente(string PacienteID);
         ICollection<Consulta> listarConsultasAusentesPaciente(string PacienteID);
-        ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fecha, string idPaciente);
-
-
+        ICollection<Consulta> listarConsultasMedicoLocalEspecialidad(long EspecialidadID, long LocalID, string MedicoID, DateTime fechaDesde, DateTime fechaHasta, string idPaciente);
+        ICollection<Consulta> listarConsultasMedicoLocal(long LocalID, string MedicoID, DateTime fechaDesde, DateTime fechaHasta, string idPaciente);
+        ICollection<Consulta> listarConsultasLocalEspecialidad(long LocalID, long EspecialidadID, DateTime fechaDesde, DateTime fechaHasta, string idPaciente);
         ICollection<Funcionario> listarFuncionarios();
         Consulta obtenerConsulta(long ConsultaID);
         void agregarConsultaPacienteEspera(string PacienteID, long ConsultaID);
@@ -33,6 +33,7 @@ namespace SAREM.DataAccessLayer
         ICollection<Paciente> obtenerPacientesConsulta(long ConsultaID);
         ICollection<Paciente> obtenerPacientesConsultaEspera(long ConsultaID);
         ICollection<Paciente> obtenerPacientesConsultaFueraLista(long ConsultaID);
+        PacienteConsultaAgenda obtenerTurno(long ConsultaID, string PacienteID);
         DataConsulta consultarDisponibilidadConsulta(long ConsultaID);
 
         //parte diario

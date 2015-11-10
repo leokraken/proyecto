@@ -186,6 +186,13 @@
 
                 }
 
+                if ($("#divTurno").hasClass("has-error")){
+
+                    $("#divTurno").removeClass("has-error");
+                    $("#helpTurno").hide();
+
+                }
+
                 $.ajax({
                     url: '@Url.Action("GetPacientesNotInConsulta", "Consulta")',
                     dataType: "json",
@@ -208,7 +215,7 @@
 
                         awesompleteP.list = list;
 
-                        //$('#addPacCons').modal('show');
+                       // $('#addPacCons').modal('show');
                     },
                     error: function (xhr) {
 
@@ -382,7 +389,29 @@
             var existe = false;
             $("#divP").removeClass("has-error");
             $("#helpP").hide();
+            $("#divTurno").removeClass("has-error");
+            $("#helpTurno").hide();
+            $("#divError").hide();
 
+            if (!$("#idPaciente").val() || $("#Turno").find('option:selected').val() == "0") {
+
+
+                if (!$("#idPaciente").val()) {
+
+                    $("#divP").removeClass("has-error").addClass("has-error");
+                    $("#helpP").text("El Id del Paciente es vacio.");
+                    $("#helpP").show();
+                }
+
+                if ( $("#Turno").find('option:selected').val() == "0") {
+
+
+                    $("#divTurno").removeClass("has-error").addClass("has-error");
+                    $("#helpTurno").text("Debe seleccionar un Turno.");
+                    $("#helpTurno").show();
+                }
+
+            } else {
 
 
             $.ajax({
@@ -400,28 +429,48 @@
                         $('#tablaPacientes').bootstrapTable("refresh", { silent: true });
                         $("#divP").removeClass("has-error");
                         $("#helpP").hide();
+                        $("#divTurno").removeClass("has-error");
+                        $("#helpTurno").hide();
+
+                    } else if (!data.hasOwnProperty('errorGrave')){
+
+                        $("#divP").removeClass("has-error").addClass("has-error");
+                        $("#helpP").text(data.mensaje);
+                        $("#helpP").show();
 
                     } else {
 
-                        $("#divP").addClass("has-error");
-                        $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
-                        $("#helpP").show();
+                        $("#textoError").text(data.mensaje);
+                        $("#divError").show();
 
                     }
                 },
                 error: function (xhr) {
 
-                    $("#divP").addClass("has-error");
-                    $("#helpP").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
-                    $("#helpP").show();
+                    $("#textoError").text("Se ha producido un error al intentar agregar el Paciente a la Consulta. Por favor, consulte con el Administrador del Sistema.");
+                    $("#divError").show();
+
                 }
             })
+
+            }
 
         });
 
         //Guardar paciente en lista de espera
         $("#agregarEspera").click(function () {
 
+            $("#divPE").removeClass("has-error");
+            $("#helpPE").hide();
+            $("#divErrorPE").hide();
+
+            if (!$("#idPacienteEspera").val() ) {
+
+                $("#divPE").removeClass("has-error").addClass("has-error");
+                $("#helpPE").text("El Id del Paciente es vacio.");
+                $("#helpPE").show();
+
+            } else {
 
 
             $.ajax({
@@ -439,23 +488,30 @@
                         $('#tablaPacientesEspera').bootstrapTable("refresh", { silent: true });
 
 
-                    } else {
+                    } else if (!data.hasOwnProperty('errorGrave')){
 
                         $("#divPE").removeClass("has-error").addClass("has-error");
-                        $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
+                        $("#helpPE").text(data.mensaje);
                         $("#helpPE").show();
+                    
+                    } else {
+
+                        $("#textoErrorPE").text(data.mensaje);
+                        $("#divErrorPE").show();
                     }
                 },
                 error: function (xhr) {
 
-                    $("#divPE").removeClass("has-error").addClass("has-error");
-                    $("#helpPE").text("El Id Paciente ingresado no es correcto. Asegurese de que no sea vacío, sea un Id correcto y no pertenezca a la Consulta, ni a la Lista de Espera.");
-                    $("#helpPE").show();
+                    $("#textoErrorPE").text("Se ha producido un error al intentar agregar el Paciente a la Lista de Espera. Por favor, consulte con el Administrador del Sistema.");
+                    $("#divErrorPE").show();
+
                 }
 
 
 
             });
+
+            }
         })
 
         //Cancelar consulta paciente
@@ -677,7 +733,15 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="step2">
-                  
+                    <div class="form-group" id="divError" style="display:none;">
+                        <label for="email" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-8">
+                            <div class="alert alert-danger alert-dismissible" role="alert" style="display:none;" id="msjError">
+
+                                <strong><i class="fa fa-exclamation-triangle"></i> Advertencia:</strong> &nbsp <p id="textoError"></p>
+                            </div>
+                        </div>
+                    </div>
                   
                     <div class="form-group" id="divP">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
@@ -716,7 +780,15 @@
             <div class="modal-body">
                 <form class="form-horizontal" id="step2">
 
+                    <div class="form-group" id="divErrorPE" style="display:none;">
+                        <label for="email" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-8">
+                            <div class="alert alert-danger alert-dismissible" role="alert" style="display:none;" id="msjError">
 
+                                <strong><i class="fa fa-exclamation-triangle"></i> Advertencia:</strong> &nbsp <p id="textoErrorPE"></p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group" id="divPE">
                         <label for="email" class="col-sm-4 control-label">Id Paciente:</label>
                         <div class="col-sm-8">

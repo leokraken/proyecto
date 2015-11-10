@@ -32,6 +32,7 @@ namespace SAREM.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                        "~/Content/bootstrap.min.css",
                       "~/Content/bootstrap-datetimepicker.css",  // ** NEW for Bootstrap Datepicker
                       "~/Content/custom.css",
                       "~/Content/site.css"));

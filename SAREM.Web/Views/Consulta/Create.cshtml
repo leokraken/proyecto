@@ -81,7 +81,7 @@
             <div class="form-group" id="divFI">
                 <label class="control-label col-md-2">Fecha Inicio:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                    @Html.EditorFor(model => model.fecha_inicio, new { htmlAttributes = new { @id = "idFI", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
                     @Html.ValidationMessageFor(model => model.fecha_inicio, "", new { @class = "text-danger" })
                     <span id="helpFI" class="help-block" style="display:none"></span>
                 </div>
@@ -90,7 +90,7 @@
             <div class="form-group" id="divFF">
                 <label class="control-label col-md-2">Fecha Fin:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una fecha.." } })
+                    @Html.EditorFor(model => model.fecha_fin, new { htmlAttributes = new { @id = "idFF", @class = "form-control datetimepicker", placeholder = "Seleccione una Fecha.." } })
                     @Html.ValidationMessageFor(model => model.fecha_fin, "", new { @class = "text-danger" })
                     <span id="helpFF" class="help-block" style="display:none"></span>
                 </div>
@@ -249,8 +249,8 @@
                         }
                     },
                     error: function (xhr) {
-
-                        alert('error');
+                        
+                        $('#errorCrear').modal('show');
                     }
                 })
 
@@ -428,11 +428,29 @@
                 <h4 class="modal-title">Error al Crear Consulta</h4>
             </div>
             <div class="modal-body">
-                <p>No se han completado correctamente todos los campos de la consulta</p>
+                <p id="pText">No se han completado correctamente todos los campos de la consulta</p>
             </div>
             <div class="modal-footer">
 
                 <button type="button" class="btn btn-primary" id="ok2">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="errorCrear">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Ok"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Error al Crear Consulta</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pText">Se ha producido un error al crear la consulta. Por favor consulte con el Adminsitrador del Sistema.</p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>

@@ -910,12 +910,34 @@ namespace SAREM.Web.Controllers
                 long idCC = Convert.ToInt64(idC);
                 short idCCT = Convert.ToInt16(idCT);
 
-                fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, false);
-                return Json(new { success = true });
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
+                
+                if (existePac) { 
+                    
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera) { 
+                    
+                    fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, false);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception e)
             {
-                return Json(new { success = false });
+                return Json(new { success = false , errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
           
@@ -929,13 +951,37 @@ namespace SAREM.Web.Controllers
             try
             {
                 long idCC = Convert.ToInt64(idC);
-                fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
-               
-                return Json(new { success = true });
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
+
+                if (existePac)
+                {
+
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera)
+                {
+
+                    fabrica.iagenda.agregarConsultaPacienteEspera(idP, idCC);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception e)
             {
-                return Json(new { success = false });
+                return Json(new { success = false, errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -1081,7 +1127,9 @@ namespace SAREM.Web.Controllers
                 fecha_fin = fFin,
                 descEspecialidad = c.especialidad.descripcion,
                 localDesc = c.local.nombre,
-                medDesc = c.medico.nombre
+                medDesc = c.medico.nombre,
+                cantPacientes = c.numpacientes.ToString(),
+                cantPacientesEspera = c.maxpacientesespera.ToString()
             };
             return View("VerPacientesParteDiario",model);
         }
@@ -1142,14 +1190,40 @@ namespace SAREM.Web.Controllers
                 long idCC = Convert.ToInt64(idC);
                 short idCCT = Convert.ToInt16(idCT);
 
-                fabrica.iagenda.agregarConsultaPaciente(idP,idCC,idCCT,true);
+                //Chequeo que Id Paciente sea valido
+                var existePac = fabrica.ipacientes.checkPaciente(idP);
+                //Chequeo que Id Paciente no pertenezca a la consula ni a la lista de espera
+                var notExistePacConsultaListaEspera = false;
 
-                return Json(new { success = true });
+                if (existePac)
+                {
+
+                    notExistePacConsultaListaEspera = fabrica.iagenda.pacientePerteneceConsulta(idCC, idP);
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El Id del Paciente ingresado no es correcto." }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (existePac && notExistePacConsultaListaEspera)
+                {
+
+                    fabrica.iagenda.agregarConsultaPaciente(idP, idCC, idCCT, true);
+                }
+                else
+                {
+
+                    return Json(new { success = false, mensaje = "El Paciente ya pertenece a la Consulta o a la Lista de Espera." }, JsonRequestBehavior.AllowGet);
+                }
+
+             
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception e)
             {
-                Debug.WriteLine(e.Message);
-                return Json(new { success = false });
+
+                return Json(new { success = false, errorGrave = true, mensaje = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -1209,11 +1283,11 @@ namespace SAREM.Web.Controllers
             return View();
         }
 
-        //Ver Consultas agendadas
-        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaConsulta)
+        //Ver Consultas para agendar
+        public JsonResult GetConsultasParaAgenda(string idOrigen, string idEspecialidad, string idMedico, string fechaDesde, string fechaHasta)
         {
 
-            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaConsulta).ToUniversalTime(), "14");
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocalEspecialidad(Convert.ToInt64(idEspecialidad), Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaDesde).ToUniversalTime(),ParseDate(fechaHasta).ToUniversalTime(),"14");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
 
             foreach (SAREM.Shared.Entities.Consulta c in consultas)
@@ -1254,6 +1328,97 @@ namespace SAREM.Web.Controllers
             return Json(lista, JsonRequestBehavior.AllowGet);
         }
 
+        //Ver consultas para agenda, con filtros, origen y medico
+        public JsonResult GetConsultasParaAgendaOrigenMedico(string idOrigen, string idMedico, string fechaDesde, string fechaHasta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasMedicoLocal(Convert.ToInt64(idOrigen), idMedico, ParseDate(fechaDesde).ToUniversalTime(), ParseDate(fechaHasta).ToUniversalTime(), "14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+        //Ver consultas para agenda, con filtros, origen y especialidad
+        public JsonResult GetConsultasParaAgendaOrigenEsp(string idOrigen, string idEspecialidad, string fechaDesde, string fechaHasta)
+        {
+
+            var consultas = fabrica.iagenda.listarConsultasLocalEspecialidad(Convert.ToInt64(idOrigen), Convert.ToInt64(idEspecialidad), ParseDate(fechaDesde).ToUniversalTime(), ParseDate(fechaHasta).ToUniversalTime(), "14");
+            List<ConsultaJSON> lista = new List<ConsultaJSON>();
+
+            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            {
+                ConsultaJSON cjson = new ConsultaJSON();
+
+                cjson.idC = c.ConsultaID.ToString();
+                cjson.origen = c.local.nombre;
+                cjson.especialidad = c.especialidad.descripcion;
+                cjson.medico = c.medico.nombre;
+
+                String format = "dd/MM/yyyy HH:mm";
+                DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                        c.fecha_inicio,
+                            DateTimeKind.Utc);
+                DateTime localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+                cjson.fechaInicio = localVersionFIni.ToString(format);
+
+                runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                       c.fecha_fin,
+                           DateTimeKind.Utc);
+                localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                cjson.fechaFin = localVersionFIni.ToString(format);
+
+
+
+                lista.Add(cjson);
+            }
+
+            var aux = new GetConsultasJSON
+            {
+
+                records = lista
+            };
+
+
+            return Json(lista, JsonRequestBehavior.AllowGet);
+        }
+
+
         //Ver Consultas agendadas
         public JsonResult GetConsultasPaciente() {
 
@@ -1282,17 +1447,19 @@ namespace SAREM.Web.Controllers
                 localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
-              
-                var consulta = fabrica.iagenda.obtenerConsulta("14", c.ConsultaID);
-                if (consulta.turno != null)
-                {
-                            DateTime turno = consulta.turno ?? DateTime.UtcNow;
-                            runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
-                            turno,
-                            DateTimeKind.Utc);
-                            localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
-                            cjson.turno = localVersionFIni.ToString(format);
+                var consulta = fabrica.iagenda.obtenerTurno(c.ConsultaID, "14");
+
+              
+                if (consulta != null)
+                {
+                    DateTime turno = consulta.turno ?? DateTime.UtcNow;
+                    runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
+                    turno,
+                    DateTimeKind.Utc);
+                    localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
+
+                    cjson.turno = localVersionFIni.ToString(format);
                 }
             
                 lista.Add(cjson);
@@ -1459,6 +1626,20 @@ namespace SAREM.Web.Controllers
         }
 
 
+
+        public JsonResult GetMedicosOrigen(string idLocalidad)
+        {
+            List<SelectListItem> medicos = new List<SelectListItem>();
+            foreach (Medico m in fabrica.imedicos.listarMedicosLocal(Convert.ToInt64(idLocalidad)))
+            {
+
+                medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID });
+            }
+            return Json(new SelectList(medicos, "Value", "Text"), JsonRequestBehavior.AllowGet);
+
+        }
+
+       
         #endregion
        
 

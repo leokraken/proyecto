@@ -51,8 +51,27 @@ namespace SAREM.DataAccessLayer
             }
         }
 
+        public ICollection<Medico> listarMedicosLocal(long LocalID)
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var medicos = db.funcionarios
+                .OfType<Medico>()
+                .Where(m => m.locales.Any(l => l.LocalID == LocalID))
+                .ToList();
+                return medicos;
+            }
+        }
 
-
-
+        public ICollection<Medico> listarMedicos()
+        {
+            using (var db = SARMContext.getTenant(tenant))
+            {
+                var medicos = db.funcionarios
+                .OfType<Medico>()
+                .ToList();
+                return medicos;
+            }
+        }
     }
 }

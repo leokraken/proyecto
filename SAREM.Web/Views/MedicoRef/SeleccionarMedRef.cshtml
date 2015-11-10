@@ -13,7 +13,7 @@
 <script src="~/Scripts/bootstrap.min.js" type="text/javascript"></script>
 <script src="~/Content/boostrap-table/src/bootstrap-table.js"></script>
 <script src="~/Content/boostrap-table/src/locale/bootstrap-table-es-ES.js"></script>
-<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>
+@*<script src="~/Content/boostrap-table/src/extensions/filter-control/bootstrap-table-filter-control.js"></script>*@
 <script src="~/Content/boostrap-table/src/extensions/mobile/bootstrap-table-mobile.js"></script>
 
 <ol class="breadcrumb">
@@ -35,35 +35,120 @@
 <br />
 <div id="solMR" style="display:none">
     <div id="Busqueda">
-        <div class="panel panel-info">
-            <div class="panel-heading"><button type="button" class="btn btn-info" id="buscar">Buscar  &nbsp &nbsp  <i class="fa fa-search"></i></button> </div>
-            <div class="panel-body">
-                <div class="form-horizontal">
-
-                    <div class="form-group">
-                        <label class="control-label col-md-2">Especialidad:</label>
-                        <div class="col-md-10">
-                            @Html.DropDownListFor(
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Búsqueda por Especialidad y Médico
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Especialidad:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(
                         model => model.EspecialidadID,
                         Model.especialidad.Select(l => new SelectListItem
                         {
                             Text = l.descripcion,
                             Value = l.EspecialidadID.ToString()
                         }),
-          "Seleccione una Especialidad", new {  @class = "especialidad form-control" })
-                            @Html.ValidationMessageFor(model => model.EspecialidadID, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
+          "Seleccione una Especialidad", new { @class = "especialidad form-control" })
+                                    @Html.ValidationMessageFor(model => model.EspecialidadID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
 
-                    <div id="medicos" style="display:none">
-                        <div class="form-group">
-                            <label class="control-label col-md-2">Médico:</label>
-                            <div class="col-md-10">
-                                @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new {  @class = "form-control" })
+                            <div id="medicos" style="display:none">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Médico:</label>
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("Medico", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-2"></label>
+                                <div class="col-md-10">
+                                    &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                    <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Búsqueda por Médico
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Médico:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Medico2", new SelectList(string.Empty, "Value", "Text"), "Seleccione un Médico", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="control-label col-md-2"></label>
+                                <div class="col-md-10">
+                                    &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                    <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar2" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
+
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Búsqueda por Especialidad
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Especialidad:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(
+                        model => model.EspecialidadID,
+                        Model.especialidad.Select(l => new SelectListItem
+                        {
+                            Text = l.descripcion,
+                            Value = l.EspecialidadID.ToString()
+                        }),
+          "Seleccione una Especialidad", new { @id= "Especialidad2", @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.EspecialidadID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2"></label>
+                                <div class="col-md-10">
+                                    &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                    <img src="~/Content/images/busqueda.png" style="cursor:pointer;" id="buscar3" data-toggle="tooltip" data-placement="bottom" title="Click para buscar" />
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,23 +186,56 @@
 <script>
     $(document).ready(function () {
 
+
+        $('[data-toggle="tooltip"]').tooltip();
         //Chequeo si el usuario logueado ya solicito o no médico de referencia
         $.ajax({
             type: 'GET',
             url: '@Url.Action("ChequearSolicitud", "MedicoRef")',
             dataType: 'json',
-          
+
             cache: false,
             success: function (data) {
-                
-             
+
+
                 if (data.existe) {
                     $('#tabEstado').bootstrapTable("refresh", { silent: true });
                     $("#estadoRef").show();
                     $("#solMR").hide();
-                    
-                } else {
 
+                } else {
+                    $("#medicos").css("display", "none");
+                    $(".especialidad").prop('selectedIndex', 0);
+                    $("#Especialidad2").prop('selectedIndex', 0);
+                    // Cargo combo de Medicos
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetMedicosTenant", "MedicoRef")',
+                        dataType: 'json',
+
+                        cache: false,
+                        success: function (data) {
+                            //Fill div with results
+                            // states contains the JSON formatted list
+                            // of states passed from the controller
+                            $("#Medico2").empty().append('<option value="0">Seleccione un Médico</option>');
+                            $.each(data, function (i, dato) {
+                                $("#Medico2").append('<option value="' + dato.Value + '">' +
+                                     dato.Text + '</option>');
+                                // here we are adding option for States
+
+                            });
+
+
+                        },
+                        error: function (ex) {
+                            alert('Failed to retrieve states.' + ex);
+                        }
+                    });
+                    $("#Medico2").prop('selectedIndex', 0);
+                    $("#collapseOne").collapse('show');
+                    $("#collapseTwo").collapse('hide');
+                    $("#collapseThree").collapse('hide');
                     $("#estadoRef").hide();
                     $("#solMR").show();
                 }
@@ -126,6 +244,9 @@
                 //alert('Failed to retrieve states.' + ex);
             }
         });
+
+     
+
 
         //Obtener médicos dada una especialidad
 
@@ -162,6 +283,8 @@
 
         $("#buscar").click(function () {
 
+            if ($("#Medico option:selected").index() != 0) {
+
             $('#tablaMR').bootstrapTable('destroy');
             $('#tablaMR').bootstrapTable({
                 url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
@@ -189,7 +312,84 @@
                 ]
             });
 
-            $('#medReferencia').show();
+              $("#collapseOne").collapse('toggle');
+              $('#medReferencia').show();
+
+            }
+        });
+
+        //Por medicos
+        $("#buscar2").click(function () {
+
+            if ($("#Medico2 option:selected").index() != 0) {
+
+                $('#tablaMR').bootstrapTable('destroy');
+                $('#tablaMR').bootstrapTable({
+                    url: '@Url.Action("GetMedico", "MedicoRef")' + '?idM=' + $("#Medico2").find('option:selected').val(),
+
+                    columns: [{
+                        field: 'MedicoID',
+                        title: 'Id Médico'
+                    }, {
+                        field: 'Nombre',
+                        title: 'Nombre'
+                    }, {
+                        field: 'operate',
+                        title: 'Ver Locales',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }, {
+                        field: 'operateRef',
+                        title: 'Referenciar',
+                        align: 'center',
+                        events: operateEventsRef,
+                        formatter: operateFormatterRef
+                    },
+
+                    ]
+                });
+
+                $("#collapseTwo").collapse('toggle');
+                $('#medReferencia').show();
+
+            }
+        });
+        
+        //Por especialidades
+        $("#buscar3").click(function () {
+            if ($("#Especialidad2 option:selected").index() != 0) {
+                $('#tablaMR').bootstrapTable('destroy');
+                $('#tablaMR').bootstrapTable({
+                    url: '@Url.Action("GetMedicosEspecialidad", "MedicoRef")' + '?idEspecialidad=' + $("#Especialidad2").find('option:selected').val(),
+
+                    columns: [{
+                        field: 'MedicoID',
+                        title: 'Id Médico'
+                    }, {
+                        field: 'Nombre',
+                        title: 'Nombre'
+                    }, {
+                        field: 'operate',
+                        title: 'Ver Locales',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }, {
+                        field: 'operateRef',
+                        title: 'Referenciar',
+                        align: 'center',
+                        events: operateEventsRef,
+                        formatter: operateFormatterRef
+                    },
+
+                    ]
+                });
+
+                $("#collapseThree").collapse('toggle');
+                $('#medReferencia').show();
+
+            }
         });
 
         function operateFormatterRef(value, row, index) {
@@ -210,7 +410,7 @@
             ].join('');
         }
 
-       
+
 
         window.operateEvents = {
 
@@ -219,7 +419,7 @@
 
                 $('#tableLocales').bootstrapTable('destroy');
                 $('#tableLocales').bootstrapTable({
-                    url: '@Url.Action("GetMedicoLocales", "MedicoRef")' + '?idM=' + $("#Medico").find('option:selected').val(),
+                    url: '@Url.Action("GetMedicoLocales", "MedicoRef")' + '?idM=' + row.MedicoID,
 
                     columns: [{
                         field: 'Nombre',
@@ -248,7 +448,7 @@
                     url: '@Url.Action("SolicitarReferencia", "MedicoRef")',
                     dataType: "json",
                     type: "POST",
-                    data: { idM: row.MedicoID},
+                    data: { idM: row.MedicoID },
 
                     cache: false,
                     success: function (data) {
@@ -258,9 +458,9 @@
                             $("#solMR").hide();
                             $('#tabEstado').bootstrapTable("refresh", { silent: true });
                             $("#estadoRef").show();
-                            
 
-                        }  else {
+
+                        } else {
 
                             alert('error solicitar referencia tipo 2');
                         }
@@ -296,7 +496,10 @@
                         $("#medReferencia").hide();
                         $("#medicos").hide();
                         $(".especialidad").prop('selectedIndex', 0);
-                        
+                        $("#Especialidad2").prop('selectedIndex', 0);
+                        $("#Medico2").prop('selectedIndex', 0);
+                        $("#collapseOne").collapse('show');
+
                         $("#modalCancelRef").modal('hide');
 
                     } else {

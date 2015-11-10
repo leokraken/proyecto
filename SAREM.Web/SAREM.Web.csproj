@@ -394,6 +394,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\half-slider.css" />
     <Content Include="Content\Custom.css" />
     <Content Include="Content\fontawesome\font-awesome.css" />
     <Content Include="Content\fontawesome\font-awesome.min.css" />
@@ -404,11 +405,14 @@
     <Content Include="Content\images\addPac.png" />
     <Content Include="Content\images\addPac2.png" />
     <Content Include="Content\images\agenda.png" />
+    <Content Include="Content\images\agenda11.png" />
     <Content Include="Content\images\agenda2.png" />
     <Content Include="Content\images\aproveAll.png" />
     <Content Include="Content\images\AproveAll2.png" />
     <Content Include="Content\images\aproveNo.png" />
     <Content Include="Content\images\AproveYes.png" />
+    <Content Include="Content\images\busqueda.png" />
+    <Content Include="Content\images\busquedaMin.png" />
     <Content Include="Content\images\cancel38.png" />
     <Content Include="Content\images\clock118.png" />
     <Content Include="Content\images\clock258.png" />
@@ -419,16 +423,23 @@
     <Content Include="Content\images\icono6.png" />
     <Content Include="Content\images\icono7.png" />
     <Content Include="Content\images\icono8.png" />
+    <Content Include="Content\images\image4184.png" />
+    <Content Include="Content\images\image4699.png" />
+    <Content Include="Content\images\image6561.png" />
     <Content Include="Content\images\list-1.png" />
     <Content Include="Content\images\logo9.png" />
     <Content Include="Content\images\mailing2.png" />
     <Content Include="Content\images\md.png" />
+    <Content Include="Content\images\MedRef.png" />
     <Content Include="Content\images\Noaprove.png" />
     <Content Include="Content\images\Notis.png" />
+    <Content Include="Content\images\notis11.jpg" />
     <Content Include="Content\images\pacientes.png" />
+    <Content Include="Content\images\Pagina1.png" />
     <Content Include="Content\images\password13.png" />
     <Content Include="Content\images\progression.png" />
     <Content Include="Content\images\progressionDis.png" />
+    <Content Include="Content\images\rect6898.png" />
     <Content Include="Content\images\solicitudes.png" />
     <Content Include="Content\images\text format3.png" />
     <Content Include="Content\images\time18.png" />
@@ -1033,6 +1044,7 @@
     <Content Include="Views\MedicoRef\SeleccionarMedRef.cshtml" />
     <Content Include="Views\Notificacion\VerEventosPaciente.cshtml" />
     <Content Include="Template\Template-Consulta.xlsx" />
+    <Content Include="Views\Shared\Layout_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

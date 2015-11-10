@@ -410,6 +410,36 @@ namespace SAREM.Web.Controllers
 
         }
 
+       
+
+        public JsonResult GetMedicosTenant()
+        {
+            List<SelectListItem> medicos = new List<SelectListItem>();
+            foreach (Funcionario m in fabrica.imedicos.listarMedicos())
+            {
+
+                medicos.Add(new SelectListItem { Text = m.nombre, Value = m.FuncionarioID.ToString() });
+            }
+            return Json(new SelectList(medicos, "Value", "Text"), JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult GetMedicosEspecialidad(string idEspecialidad)
+        {
+            List<MedicoJson> mjs = new List<MedicoJson>();
+            foreach (Funcionario m in fabrica.imedicos.listarMedicosEspecialidad(Convert.ToInt64(idEspecialidad)))
+            {
+                MedicoJson mj = new MedicoJson();
+                mj.MedicoID = m.FuncionarioID;
+                mj.Nombre = m.nombre;
+           
+                mjs.Add(mj);
+            }
+
+            return Json(mjs, JsonRequestBehavior.AllowGet);
+
+        }
+
 
         #endregion
     }
