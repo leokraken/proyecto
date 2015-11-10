@@ -23,8 +23,8 @@ namespace SAREM.Shared.Entities
 
 
         [Required]
-        public Sexo sexo { get; set; }
-        public bool sancion { get; set; }
+        public string sexo { get; set; }
+        public Boolean sancion { get; set; }
         public string FuncionarioID { get; set; }
 
         [ForeignKey("PaisID")]

@@ -12,7 +12,7 @@ namespace SAREM.Shared.Entities
         public long EventoID { get; set; }
         [Required]
         public string nombre { get; set; }
-        public Sexo sexo { get; set; }
+        public string sexo { get; set; }
         public string mensaje { get; set; }
 
         public virtual ICollection<EventoPacienteComunicacion> pacientes { get; set; }

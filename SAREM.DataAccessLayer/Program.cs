@@ -1,4 +1,6 @@
-﻿using SAREM.DataAccessLayer;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SAREM.DataAccessLayer;
 using SAREM.Shared.Datatypes;
 using SAREM.Shared.Entities;
 using System;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -69,9 +72,33 @@ namespace SARM.DataAccessLayer
            
         }
 
+        static T get<T>(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                var result = client.GetAsync(url);
+                string str = result.Result.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(str);
+                var o = JsonConvert.DeserializeObject<T>(str);
+                return o;
+            }
+        }
+
+        static void post<T>(string url, T o)
+        {
+            using (var client = new HttpClient())
+            {
+                var result = client.PostAsJsonAsync(url,o);
+                string str = result.Result.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(str);
+                //var o = JsonConvert.DeserializeObject<T>(str);
+                //return o;
+            }
+        }
+
         static void Main(string[] args)
         {
-
+            List<DataConsulta> lista = new List<DataConsulta>();
             FabricaSAREM f = new FabricaSAREM("test");
             //f.adminController.dropSchema("test");
             //f.adminController.createSchema("test");
@@ -83,14 +110,43 @@ namespace SARM.DataAccessLayer
             //var q = f.iagenda.listarConsultasPaciente("0");
             //Console.WriteLine("paciente 0");
             //f.iagenda.agregarConsultaPacienteEspera("0", 3);
-            var q = f.inotificaciones.listarEventosPaciente(3);
-            foreach (var a in q)
+            string url = @"http://10.0.2.2:3000/api/pacientes/";
+            /*var o = get<List<Paciente>>(url);
+            foreach (var e in o)
             {
-                Console.WriteLine(a.ComunicacionID+ " " +a.PacienteID);
-            }
+                Console.WriteLine(e.PacienteID);
+                Console.WriteLine(e.nombre);
+            }*/
+            Paciente p = new Paciente{ PacienteID="5432", sancion=false, sexo="M", nombre="Leonardin"};
+            post<Paciente>(url, p);
+
             Console.WriteLine("finish");
             Console.Read();
             //testOpenempi();
         }
-    }
+
+        public static void clienthttp()
+        {
+            string url= @"http://10.0.2.2:3000/api/especialidades/";
+            using (var client = new HttpClient())
+            {
+                var result = client.GetAsync(url);
+                string str = result.Result.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(str);
+                var o = JsonConvert.DeserializeObject<List<Especialidad>>(str);
+                //JArray list = JArray.Parse(str);
+
+                //JavaScriptSerializer ser = new JavaScriptSerializer();
+
+                //var r = ser.Deserialize<List<Especialidad>>(str);    
+                foreach (var e in o)
+                {
+                    Console.WriteLine(e.EspecialidadID);
+
+                }
+             
+            }
+        }
+
+        }
 }

@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datatypes\APIDataConsulta.cs" />
+    <Compile Include="Datatypes\DataConsulta.cs" />
     <Compile Include="Datatypes\DataEdad.cs" />
     <Compile Include="Datatypes\DataMensaje.cs" />
     <Compile Include="Datatypes\DataNotificacionConsulta.cs" />

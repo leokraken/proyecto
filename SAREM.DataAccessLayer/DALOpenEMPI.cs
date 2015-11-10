@@ -209,19 +209,19 @@ namespace SAREM.DataAccessLayer
                         XmlSerializer personserializer = new XmlSerializer(typeof(person));
                         person p = (person)personserializer.Deserialize(reader);
 
-                        Sexo s = Sexo.UNKNOWN;
+                        string s = Sexo.UNKNOWN.ToString();
                         if (p.gender != null)
                         {
                             switch (p.gender.genderCode)
                             {
                                 case "M":
-                                    s = Sexo.MASCULINO;
+                                    s = Sexo.MASCULINO.ToString();
                                     break;
                                 case "F":
-                                    s = Sexo.FEMENINO;
+                                    s = Sexo.FEMENINO.ToString();
                                     break;
                                 default:
-                                    s = Sexo.UNKNOWN;
+                                    s = Sexo.UNKNOWN.ToString();
                                     break;
                             }
                         }
