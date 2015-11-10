@@ -87,16 +87,16 @@ namespace SAREM.Web.Controllers
                     eOb.nombre = e.nombre;
                     if (e.sexo.Equals("A"))
                     {
-                        eOb.sexo = Shared.enums.Sexo.AMBOS;
+                        eOb.sexo = Shared.enums.Sexo.AMBOS.ToString();
 
                     }
                     else if (e.sexo.Equals("F"))
                     {
-                        eOb.sexo = Shared.enums.Sexo.FEMENINO;
+                        eOb.sexo = Shared.enums.Sexo.FEMENINO.ToString();
                     }
                     else
                     {
-                        eOb.sexo = Shared.enums.Sexo.MASCULINO;
+                        eOb.sexo = Shared.enums.Sexo.MASCULINO.ToString();
                     }
 
                     eOb.mensaje = e.mensaje;
@@ -110,16 +110,16 @@ namespace SAREM.Web.Controllers
                     eOp.nombre = e.nombre;
                     if (e.sexo.Equals("A"))
                     {
-                        eOp.sexo = Shared.enums.Sexo.AMBOS;
+                        eOp.sexo = Shared.enums.Sexo.AMBOS.ToString();
 
                     }
                     else if (e.sexo.Equals("F"))
                     {
-                        eOp.sexo = Shared.enums.Sexo.FEMENINO;
+                        eOp.sexo = Shared.enums.Sexo.FEMENINO.ToString();
                     }
                     else
                     {
-                        eOp.sexo = Shared.enums.Sexo.MASCULINO;
+                        eOp.sexo = Shared.enums.Sexo.MASCULINO.ToString();
                     }
 
                     eOp.mensaje = e.mensaje;
