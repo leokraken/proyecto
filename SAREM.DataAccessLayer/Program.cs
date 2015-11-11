@@ -110,18 +110,37 @@ namespace SARM.DataAccessLayer
             //var q = f.iagenda.listarConsultasPaciente("0");
             //Console.WriteLine("paciente 0");
             //f.iagenda.agregarConsultaPacienteEspera("0", 3);
+            var cons = f.iagenda.listarConsultasPaciente("0");
+            foreach (var c in cons)
+            {
+                Console.WriteLine(c.consulta.ConsultaID+" "+c.consulta.EspecialidadID + " "+c.espera);
+            }
+
+            Console.Read();
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            /*
             string url = @"http://10.0.2.2:3000/api/pacientes/";
-            /*var o = get<List<Paciente>>(url);
+            var o = get<List<Paciente>>(url);
             foreach (var e in o)
             {
                 Console.WriteLine(e.PacienteID);
                 Console.WriteLine(e.nombre);
-            }*/
+            }
             Paciente p = new Paciente{ PacienteID="5432", sancion=false, sexo="M", nombre="Leonardin"};
             post<Paciente>(url, p);
 
             Console.WriteLine("finish");
             Console.Read();
+             */
             //testOpenempi();
         }
 

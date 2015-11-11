@@ -1,10 +1,10 @@
-﻿using SAREM.Shared.Entities;
-using SAREM.Shared.Datatypes;
+﻿using SAREM.Shared.Datatypes;
+using SAREM.Shared.Entities;
+using SAREM.Shared.Excepciones;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using SAREM.Shared.Excepciones;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SAREM.DataAccessLayer
 {
@@ -115,7 +115,7 @@ namespace SAREM.DataAccessLayer
 
                         PacienteConsultaAgenda consultaturno = (from ct in db.consultasagendadas
                                                                 where ct.PacienteID == null && ct.ConsultaID == ConsultaID && ct.ConsultaIDTurno == ConsultaIDTurno
-                                                                select ct).Single();
+                                                                select ct).FirstOrDefault();
 
                         if (consultaturno != null)
                         {
@@ -413,7 +413,7 @@ namespace SAREM.DataAccessLayer
             }
         }
 
-        public ICollection<Consulta> listarConsultasPaciente(string PacienteID)
+        public ICollection<DataConsultaPaciente> listarConsultasPaciente(string PacienteID)
         {
             using (var db = SARMContext.getTenant(tenant))
             {
@@ -421,14 +421,27 @@ namespace SAREM.DataAccessLayer
                 if (p == null)
                     throw new Exception("No existe paciente");
 
+                List<DataConsultaPaciente> list = new List<DataConsultaPaciente>();
                 var q = (from c in db.consultas.Include("pacientes.paciente")
                         .Include("local")
                         .Include("medico")
                         .Include("especialidad")
                         .Include("pacientesespera")
-                        where c.pacientes.Any(x => x.PacienteID == PacienteID) || c.pacientesespera.Any(x => x.PacienteID==PacienteID)
-                        select c).Distinct();
-                return q.ToList();
+                         where c.pacientes.Any(x => x.PacienteID == PacienteID)
+                         select new DataConsultaPaciente{espera=false, consulta=c, fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio, turno=c.pacientes.Where(x => x.PacienteID == PacienteID).FirstOrDefault().turno}).Distinct();
+                var consultasagendadas = q.ToList();
+
+                var q2 = (from c in db.consultas.Include("pacientes.paciente")
+                        .Include("local")
+                        .Include("medico")
+                        .Include("especialidad")
+                        .Include("pacientesespera")
+                         where c.pacientesespera.Any(x => x.PacienteID == PacienteID)
+                         select new DataConsultaPaciente{ espera=true, consulta=c,fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio, turno=null})
+                         .Distinct().ToList();
+
+                consultasagendadas.AddRange(q2);
+                return consultasagendadas;
                
             }
         }

@@ -1425,14 +1425,14 @@ namespace SAREM.Web.Controllers
             var consultas = fabrica.iagenda.listarConsultasPaciente("14");
             List<ConsultaJSON> lista = new List<ConsultaJSON>();
            
-            foreach (SAREM.Shared.Entities.Consulta c in consultas)
+            foreach (DataConsultaPaciente c in consultas)
             {
                 ConsultaJSON cjson = new ConsultaJSON();
 
-                cjson.idC = c.ConsultaID.ToString();
-                cjson.origen = c.local.nombre;
-                cjson.especialidad = c.especialidad.descripcion;
-                cjson.medico = c.medico.nombre;
+                cjson.idC = c.consulta.ConsultaID.ToString();
+                cjson.origen = c.consulta.local.nombre;
+                cjson.especialidad = c.consulta.especialidad.descripcion;
+                cjson.medico = c.consulta.medico.nombre;
 
                 String format = "dd/MM/yyyy HH:mm";
                 DateTime runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
@@ -1448,7 +1448,7 @@ namespace SAREM.Web.Controllers
 
                 cjson.fechaFin = localVersionFIni.ToString(format);
 
-                var consulta = fabrica.iagenda.obtenerTurno(c.ConsultaID, "14");
+                var consulta = fabrica.iagenda.obtenerTurno(c.consulta.ConsultaID, "14");
 
               
                 if (consulta != null)

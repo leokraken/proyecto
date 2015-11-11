@@ -78,31 +78,31 @@ namespace SAREM.Testing
             {
                 new Paciente{ PacienteID="50548305",
                     FN=new DateTime(1991,6,22),
-                    sexo=Sexo.MASCULINO,
+                    sexo=Sexo.MASCULINO.ToString(),
                     nombre="Leonardo Clavijo",
                     PaisID = naciones.First().PaisID
                 },
                 new Paciente{ PacienteID="50548306",
                     FN=new DateTime(1991,6,22),
-                    sexo=Sexo.FEMENINO,
+                    sexo=Sexo.FEMENINO.ToString(),
                     nombre="Kali la diosa",
                     PaisID = naciones.First().PaisID
                 },
                   new Paciente{ PacienteID="50548307",
                     FN=new DateTime(1990,10,11),
-                    sexo=Sexo.FEMENINO, 
+                    sexo=Sexo.FEMENINO.ToString(), 
                     nombre="Valentina Da Silva",
                     PaisID = naciones.First().PaisID
                 },
                 new Paciente{ PacienteID="50548308",
                     FN=new DateTime(1990,11,11),
-                    sexo=Sexo.MASCULINO,
+                    sexo=Sexo.MASCULINO.ToString(),
                     nombre="Jorge Perez",
                     PaisID = naciones.First().PaisID
                 },
                 new Paciente{ PacienteID="51130115",
                     FN=new DateTime(1990,11,11),
-                    sexo=Sexo.FEMENINO,
+                    sexo=Sexo.FEMENINO.ToString(),
                     nombre="Juana Alvarez",
                     PaisID = naciones.First().PaisID
                 }
@@ -120,7 +120,7 @@ namespace SAREM.Testing
                 {
                     PacienteID = i.ToString(),
                     FN = new DateTime(1991, 6, 22),
-                    sexo = Sexo.MASCULINO,
+                    sexo = Sexo.MASCULINO.ToString(),
                     nombre = "Leonardo Clavijo" + i.ToString(),
                     PaisID = naciones.First().PaisID
                 };
@@ -252,27 +252,14 @@ namespace SAREM.Testing
 
             Debug.WriteLine("TEST1 FINALIZADO...");
  
-            //agrego a la consulta 2 todos los pacientes
-            short i = 0;
-            foreach (var p in db.pacientes)
-            {
-                try
-                {
-                    fabrica.iagenda.agregarConsultaPaciente(p.PacienteID, 2,i,false);
-                    i++;
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("El paciente "+p.PacienteID +" no ha sido agregado maximo superado en consulta...");
-                }
-            }
+
 
             //listo consultas paciente
             Debug.WriteLine("Consultas paciente " + CI);
             var cpacientes = fabrica.iagenda.listarConsultasPaciente(CI);
             foreach (var c in cpacientes)
             {
-                Debug.WriteLine(c.ConsultaID+c.fecha_inicio.ToString());
+                Debug.WriteLine(c.consulta.ConsultaID+c.fecha_inicio.ToString());
             }
             //debe tener 3
         }
