@@ -1491,13 +1491,20 @@ namespace SAREM.Web.Controllers
                 //if (consulta != null)
                // {
                     //DateTime turno = consulta.turno ?? DateTime.UtcNow;
-                DateTime turno = c.turno ?? DateTime.UtcNow;
+
+                if (c.turno != null)
+                {
+                    DateTime turno = c.turno ?? DateTime.UtcNow;
                     runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
                     turno,
                     DateTimeKind.Utc);
                     localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                     cjson.turno = localVersionFIni.ToString(format);
+
+
+                }
+                   
                 //}
             
                 lista.Add(cjson);
