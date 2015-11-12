@@ -83,8 +83,13 @@ namespace SAREM.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("VerConsultas", "Consulta");
-                    //return RedirectToLocal(returnUrl);
+                    using (var db = new ApplicationDbContext())
+                    {
+                        var user = db.Users.Where(u => u.UserName == model.Email).FirstOrDefault();
+                        Session["tenant"] = user.tenant;
+                    }
+                    Session["usuario"] = model.Email;
+                    return RedirectToAction("VerConsultasAgendadasPaciente", "Consulta");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -178,12 +183,25 @@ namespace SAREM.Web.Controllers
                     //TODO: enviar mail con password
                     //alta paciente
                     FabricaSAREM factory = new FabricaSAREM(p.mutualista);
-                    factory.ipacientes.altaPaciente(p.paciente);
-                    var user = new ApplicationUser { UserName = p.paciente.nombre + " " + p.paciente.apellido, Email = model.PaisID + "-" + model.CI };
+                    try 
+                    {
+                        factory.ipacientes.altaPaciente(p.paciente);
+
+                    }
+                    catch (Exception e)
+                    {
+                        IdentityResult ir = new IdentityResult("Paciente ya registrado...");
+                        AddErrors(ir);
+                        ViewBag.PaisID = new SelectList(fadmin.ipaises.obtenerPaises(), "PaisID", "nombre", "UY");
+                        return View(model);
+                    }
+                    //factory.ipacientes.altaPaciente(p.paciente);
+                    var user = new ApplicationUser { UserName = model.CI, Email = p.paciente.mail, tenant=p.mutualista };
                     var result = await UserManager.CreateAsync(user, "password");
                     if (result.Succeeded)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        //Session["usuario"] = model.CI;
+                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                         // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
                         // Enviar correo electrónico con este vínculo
@@ -191,7 +209,7 @@ namespace SAREM.Web.Controllers
                         // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
                         
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Login", "Account");
                     }
                     AddErrors(result);
 
@@ -200,7 +218,7 @@ namespace SAREM.Web.Controllers
                 {
                     //mensaje de falla
                     //consultar con su proveedor de salud para agregar el mail
-                    IdentityResult ir = new IdentityResult("Paciente no existe comunicarse con proveedora de salud.");
+                    IdentityResult ir = new IdentityResult("Paciente no existe comunicarse con prestadora de salud.");
                     AddErrors(ir);
                     //throw new Exception("Paciente no existe comunicarse con proveedora de salud.");
                 }

@@ -153,35 +153,42 @@ namespace SAREM.DataAccessLayer
 
                 List<StringContent> content = new List<StringContent>();
                 //serialize request
+                FabricaSAREM f = new FabricaSAREM();
+                var schemas = f.adminController.getSchemas();
+                dominios = dominios.Where(x => schemas.Contains(x.namespaceIdentifier)).ToList();
                 foreach (var dominio in dominios)
                 {
                     Debug.WriteLine(dominio);
-                    personIdentifier person = new personIdentifier
+                    if (schemas.Contains(dominio.namespaceIdentifier))
                     {
-                        identifier = pacienteID,
-                        identifierDomain = new identifierDomain
+                        personIdentifier person = new personIdentifier
                         {
-                            namespaceIdentifier = dominio.namespaceIdentifier,
-                            universalIdentifier = dominio.universalIdentifier,
-                            universalIdentifierTypeCode = dominio.universalIdentifierTypeCode
+                            identifier = pacienteID,
+                            identifierDomain = new identifierDomain
+                            {
+                                namespaceIdentifier = dominio.namespaceIdentifier,
+                                universalIdentifier = dominio.universalIdentifier,
+                                universalIdentifierTypeCode = dominio.universalIdentifierTypeCode
+                            }
+                        };
+
+                        string xml;
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(personIdentifier));
+                        XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                        ns.Add("", "");
+
+                        using (StringWriter sww = new StringWriter())
+                        using (XmlWriter writer = XmlWriter.Create(sww, settings))
+                        {
+                            serializer.Serialize(writer, person, ns);
+                            xml = sww.ToString();
                         }
-                    };
 
-                    string xml;
-
-                    XmlSerializer serializer = new XmlSerializer(typeof(personIdentifier));
-                    XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-                    ns.Add("", "");
-
-                    using (StringWriter sww = new StringWriter())
-                    using (XmlWriter writer = XmlWriter.Create(sww, settings))
-                    {
-                        serializer.Serialize(writer, person, ns);
-                        xml = sww.ToString();
+                        var httpContent = new StringContent(xml, Encoding.UTF8, "application/xml");
+                        content.Add(httpContent);
                     }
 
-                    var httpContent = new StringContent(xml, Encoding.UTF8, "application/xml");
-                    content.Add(httpContent);
                 }
 
                 //parallel!
@@ -232,7 +239,7 @@ namespace SAREM.DataAccessLayer
                             direccion = p.address1,
                             FN = p.dateOfBirth,
                             PaisID = p.countryCode,
-                            nacion= new Pais{PaisID=p.countryCode, nombre= p.country},
+                            //nacion= new Pais{PaisID=p.countryCode, nombre= p.country},
                             nombre = p.middleName,
                             mail = p.email,
                             apellido = p.motherName,                    
@@ -317,6 +324,7 @@ namespace SAREM.DataAccessLayer
         {
             using (var client = new HttpClient())
             {
+                Console.WriteLine("autenticando...");
                 client.BaseAddress = new Uri(OPENEMPI_URL);
                 var body = new StringContent(getAuthXML(OPENEMPI_ADMIN, OPENEMPI_PASS), Encoding.UTF8, "application/xml");
                 var response = client.PutAsync(OPENEMPI_URL + "openempi-ws-rest/security-resource/authenticate", body);
@@ -324,6 +332,7 @@ namespace SAREM.DataAccessLayer
                 if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string resultado = response.Result.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine(resultado);
                     return resultado;
                 }
                 else
@@ -338,9 +347,8 @@ namespace SAREM.DataAccessLayer
 
         public DataPaciente obtenerPaciente(string paisID, string pacienteID)
         {
-            Debug.WriteLine("en obtener pacientes" + paisID + pacienteID);
-            string search = paisID + "-" + pacienteID;
-            Task<DataPaciente> person = parallelRequestPaciente(search, httpDominios().Result);
+            Debug.WriteLine("en obtener pacientes" + pacienteID);
+            Task<DataPaciente> person = parallelRequestPaciente(pacienteID, httpDominios().Result);
             return person.Result;
         }
 

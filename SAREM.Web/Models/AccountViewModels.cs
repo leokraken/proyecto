@@ -50,7 +50,7 @@ namespace SAREM.Web.Models
     {
         [Required]
         [Display(Name = "Correo electrónico")]
-        [EmailAddress]
+        //[EmailAddress]
         public string Email { get; set; }
 
         [Required]

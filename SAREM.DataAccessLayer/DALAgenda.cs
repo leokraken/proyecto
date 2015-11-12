@@ -426,22 +426,31 @@ namespace SAREM.DataAccessLayer
                         .Include("local")
                         .Include("medico")
                         .Include("especialidad")
-                        .Include("pacientesespera")
                          where c.pacientes.Any(x => x.PacienteID == PacienteID)
-                         select new DataConsultaPaciente{espera=false, consulta=c, fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio, turno=c.pacientes.Where(x => x.PacienteID == PacienteID).FirstOrDefault().turno}).Distinct();
-                var consultasagendadas = q.ToList();
+                         select c).ToList();
 
-                var q2 = (from c in db.consultas.Include("pacientes.paciente")
+                foreach (var c in q)
+                {
+                    PacienteConsultaAgenda pca = c.pacientes.Where(x=> x.PacienteID==PacienteID).FirstOrDefault();
+                    list.Add(new DataConsultaPaciente { consulta = c, turno = pca.turno, espera = false, fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio });
+                }
+
+                var q2 = (from c in db.consultas
+                        //.Include("pacientes.paciente")
                         .Include("local")
                         .Include("medico")
                         .Include("especialidad")
                         .Include("pacientesespera")
                          where c.pacientesespera.Any(x => x.PacienteID == PacienteID)
-                         select new DataConsultaPaciente{ espera=true, consulta=c,fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio, turno=null})
-                         .Distinct().ToList();
+                         select c).ToList(); //new DataConsultaPaciente{ espera=true, consulta=c,fecha_fin=c.fecha_fin, fecha_inicio=c.fecha_inicio, turno=null})
+                         //.Distinct().ToList();
 
-                consultasagendadas.AddRange(q2);
-                return consultasagendadas;
+                foreach (var c in q2)
+                {
+                    list.Add(new DataConsultaPaciente { consulta = c, fecha_inicio = c.fecha_inicio, fecha_fin = c.fecha_fin, espera = true, turno = null });
+                }
+                
+                return list;
                
             }
         }

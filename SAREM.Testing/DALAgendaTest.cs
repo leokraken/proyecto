@@ -75,13 +75,13 @@ namespace SAREM.Testing
             Debug.WriteLine("Paises agregados...");
 
             List<Paciente> pacientes = new List<Paciente>
-            {
+            {   /*
                 new Paciente{ PacienteID="50548305",
                     FN=new DateTime(1991,6,22),
                     sexo=Sexo.MASCULINO.ToString(),
                     nombre="Leonardo Clavijo",
                     PaisID = naciones.First().PaisID
-                },
+                },*/
                 new Paciente{ PacienteID="50548306",
                     FN=new DateTime(1991,6,22),
                     sexo=Sexo.FEMENINO.ToString(),
@@ -228,8 +228,7 @@ namespace SAREM.Testing
         [TestMethod]
         public void AgregarConsultaPaciente()
         {
-            string CI = "50548305";
-            string CI2 = "50548306";
+            string CI = "50548306";
             //listar consultas
             foreach (var c in db.consultas)
             {
@@ -267,7 +266,7 @@ namespace SAREM.Testing
         [TestMethod]
         public void CancelarConsulta()
         {
-            string ci="50548305";
+            string ci="50548306";
             Debug.WriteLine("TEST::Cancelar Consulta");
             var consulta = db.consultas.First();
             Debug.WriteLine(consulta.ConsultaID);
@@ -288,7 +287,7 @@ namespace SAREM.Testing
         [TestMethod]
         public void TestNotificaciones()
         {
-            string PacienteID = "50548305";
+            string PacienteID = "50548306";
             //Listar comunicaciones
             List<Comunicacion> com = fabrica.inotificaciones.listarComunicaciones().ToList();
             com.ForEach(c =>
@@ -358,7 +357,7 @@ namespace SAREM.Testing
         public void testReferencia()
         {
             IDALReferencias iref= new DALReferencias(tenant);
-            string pacienteID = "50548305";
+            string pacienteID = "50548306";
             string pacienteID2 = "51130115";
             string pacienteID3 = "50548306";
             string medicoID = "17299999";

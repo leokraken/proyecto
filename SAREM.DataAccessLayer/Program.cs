@@ -26,7 +26,7 @@ namespace SARM.DataAccessLayer
             FabricaSAREM f = new FabricaSAREM("test");
             Console.WriteLine("Openempi test.");
 
-            DataPaciente p = f.iopenempi.obtenerPaciente("UY", "5432");
+            DataPaciente p = f.iopenempi.obtenerPaciente("UY", "50548305");
             if (p != null){
                 Console.WriteLine(p.paciente.mail);
                 Console.WriteLine(p.mutualista);
@@ -109,13 +109,19 @@ namespace SARM.DataAccessLayer
             //amq();
             //var q = f.iagenda.listarConsultasPaciente("0");
             //Console.WriteLine("paciente 0");
-            //f.iagenda.agregarConsultaPacienteEspera("0", 3);
+            f.iagenda.agregarConsultaPacienteEspera("0", 3);
             var cons = f.iagenda.listarConsultasPaciente("0");
             foreach (var c in cons)
             {
                 Console.WriteLine(c.consulta.ConsultaID+" "+c.consulta.EspecialidadID + " "+c.espera);
-            }
+                Console.WriteLine(c.consulta.local.nombre);
+                Console.WriteLine(c.consulta.especialidad.descripcion);
+                Console.WriteLine(c.consulta.medico.nombre);
+                if(c.turno!=null)
+                    Console.WriteLine(c.turno.ToString());
 
+            }
+            //testOpenempi();
             Console.Read();
             
             
