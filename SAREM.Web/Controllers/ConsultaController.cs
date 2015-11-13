@@ -50,7 +50,7 @@ namespace SAREM.Web.Controllers
             else
             {
                 Debug.WriteLine("USUARIO NULL...");
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "LogOff", controller = "Account" }));
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "GetLogOff", controller = "Account" }));
             }
         }
 
