@@ -1,9 +1,25 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
-  
+
+    <li class="dropdown">
+        @*@Html.Partial("_UserPartial")*@
 
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> @User.Identity.GetUserName() <b class="caret"></b></a>
-       
-   
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#"><i class="fa fa-fw fa-user"></i> Perfíl</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+            </li>
+
+            <li class="divider"></li>
+            <li>
+                <a href="@Url.Action("GetLogOff", "Account")"><i class="fa fa-fw fa-power-off"></i>Cerrar Sesión</a>
+            </li>
+        </ul>
+
+    </li>
+
 }
