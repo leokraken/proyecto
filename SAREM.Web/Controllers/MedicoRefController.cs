@@ -2,17 +2,39 @@
 using SAREM.Shared.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace SAREM.Web.Controllers
 {
+    
+
     public class MedicoRefController : Controller
     {
         // GET: MedicoRef
 
-        private FabricaSAREM fabrica = new FabricaSAREM("test");
+        private FabricaSAREM fabrica;
+        private string paciente;
+        private string tenant;
+       
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (filterContext.HttpContext.Session["usuario"] != null)
+            {
+                Debug.WriteLine("USUARIO NO ES NULL...");
+                paciente = (string)filterContext.HttpContext.Session["usuario"];
+                tenant = (string)filterContext.HttpContext.Session["tenant"];
+                fabrica = new FabricaSAREM(tenant);
+            }
+            else
+            {
+                Debug.WriteLine("USUARIO NULL...");
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "GetLogOff", controller = "Account" }));
+            }
+        }
         
         #region DataTypes
         public class PacienteJson
@@ -311,7 +333,7 @@ namespace SAREM.Web.Controllers
             try
             {
 
-                fabrica.ireferencias.agregarReferencia("11", idM);
+                fabrica.ireferencias.agregarReferencia(paciente, idM);
 
                 return Json(new { success = true });
             }
@@ -329,7 +351,7 @@ namespace SAREM.Web.Controllers
         {
             try
             {
-                var referencia = fabrica.ireferencias.obtenerReferencia("11");
+                var referencia = fabrica.ireferencias.obtenerReferencia(paciente);
 
                 List<EstadoReferenciasJson> listjs = new List<EstadoReferenciasJson>();
 
@@ -383,7 +405,7 @@ namespace SAREM.Web.Controllers
         {
             try
             {
-                Boolean existeS = fabrica.ireferencias.chequearExistenciaSolicitud("11");
+                Boolean existeS = fabrica.ireferencias.chequearExistenciaSolicitud(paciente);
                 return Json(new { existe = existeS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -398,7 +420,7 @@ namespace SAREM.Web.Controllers
             try
             {
 
-                fabrica.ireferencias.denegarReferencia("11", idM);
+                fabrica.ireferencias.denegarReferencia(paciente, idM);
 
                 return Json(new { success = true });
             }
