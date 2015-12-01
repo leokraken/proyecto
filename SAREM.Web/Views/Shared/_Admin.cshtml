@@ -1,4 +1,5 @@
 ﻿
+
 @{
     Layout = null;
 }
@@ -62,22 +63,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="dropdown">
-                    @Html.Partial("_UserPartial")
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Perfíl</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-key"></i> Cambiar Contraseña</a>
-                        </li>
-
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-power-off"></i>Cerrar Sesión</a>
-                        </li>
-                    </ul>
-                </li>
+                @Html.Partial("_UserPartial")
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -148,19 +134,14 @@
     </div>
     <!-- /#wrapper -->
 
- 
+    @*@Scripts.Render("~/bundles/jquery")*@
+   
+    
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
     
     <script>
-    $(document).ready(function () {
-
-
-        $('li > a').find('a[href="' + location.pathname + '"]')
-        .closest('li').addClass('active');
-      
-    });
-
+   
     </script>
 
 </body>

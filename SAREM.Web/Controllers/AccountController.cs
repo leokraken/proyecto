@@ -453,6 +453,12 @@ namespace SAREM.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public ActionResult GetLogOff()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]

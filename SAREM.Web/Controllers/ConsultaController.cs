@@ -24,7 +24,7 @@ namespace SAREM.Web.Controllers
             if (filterContext.HttpContext.Session["usuario"] == null)
             {
                 Debug.WriteLine("USUARIO ES NULL");
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "LogOff", controller = "Account" }));
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "GetLogOff", controller = "Account" }));
             }else
             {
                 Debug.WriteLine("USUARIO NO ES NULL...");
@@ -50,7 +50,7 @@ namespace SAREM.Web.Controllers
             else
             {
                 Debug.WriteLine("USUARIO NULL...");
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "LogOff", controller = "Account" }));
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { action = "GetLogOff", controller = "Account" }));
             }
         }
 
@@ -745,6 +745,10 @@ namespace SAREM.Web.Controllers
         [HttpGet]
         public ActionResult VerPacientes(string idC)
         {
+            try
+            {
+
+           
             long idL = Convert.ToInt64(idC);
             SAREM.Shared.Entities.Consulta c =  fabrica.iagenda.obtenerConsulta(idL);
             String format = "dd/MM/yyyy HH:mm";
@@ -772,8 +776,14 @@ namespace SAREM.Web.Controllers
                 cantPacientesEspera = c.maxpacientesespera.ToString()
             };
 
-
-            return View("VerConsultaPaciente",model);
+            return View("VerConsultaPaciente", model);
+            
+            }
+            catch
+            {
+                return View("VerConsultasNew");
+            }
+           
         }
 
         [HttpGet]
@@ -1139,6 +1149,7 @@ namespace SAREM.Web.Controllers
         [HttpGet]
         public ActionResult VerParteDiarioPacientes(string idC)
         {
+            try {
             long idL = Convert.ToInt64(idC);
             SAREM.Shared.Entities.Consulta c = fabrica.iagenda.obtenerConsulta(idL);
             String format = "dd/MM/yyyy HH:mm";
@@ -1165,7 +1176,14 @@ namespace SAREM.Web.Controllers
                 cantPacientes = c.numpacientes.ToString(),
                 cantPacientesEspera = c.maxpacientesespera.ToString()
             };
-            return View("VerPacientesParteDiario",model);
+
+            return View("VerPacientesParteDiario", model);
+            }
+            catch
+            {
+                return View("VerParteDiario");
+            }
+           
         }
 
         [HttpGet]
@@ -1491,13 +1509,20 @@ namespace SAREM.Web.Controllers
                 //if (consulta != null)
                // {
                     //DateTime turno = consulta.turno ?? DateTime.UtcNow;
-                DateTime turno = c.turno ?? DateTime.UtcNow;
+
+                if (c.turno != null)
+                {
+                    DateTime turno = c.turno ?? DateTime.UtcNow;
                     runtimeKnowsThisIsUtc = DateTime.SpecifyKind(
                     turno,
                     DateTimeKind.Utc);
                     localVersionFIni = runtimeKnowsThisIsUtc.ToLocalTime();
 
                     cjson.turno = localVersionFIni.ToString(format);
+
+
+                }
+                   
                 //}
             
                 lista.Add(cjson);
