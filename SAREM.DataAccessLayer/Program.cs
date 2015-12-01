@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SAREM.DataAccessLayer;
+using SAREM.DataAccessLayer.NodeJS;
 using SAREM.Shared.Datatypes;
 using SAREM.Shared.Entities;
 using System;
@@ -96,60 +97,77 @@ namespace SARM.DataAccessLayer
             }
         }
 
-        static void Main(string[] args)
+        public static void testEspecialidadControllerNodeJS()
         {
-            List<DataConsulta> lista = new List<DataConsulta>();
-            FabricaSAREM f = new FabricaSAREM("test");
-            //f.adminController.dropSchema("test");
-            //f.adminController.createSchema("test");
-                //new FabricaSAREM("test");
-            //f.iagenda.cancelarConsultaPaciente("1", 2);
-            //f.iagenda.agregarConsultaPaciente("0", 1, 1, false);
-            //f.iagenda.agregarConsultaPaciente("50548305", 1, 1, false);
-            //amq();
-            //var q = f.iagenda.listarConsultasPaciente("0");
-            //Console.WriteLine("paciente 0");
-            f.iagenda.agregarConsultaPacienteEspera("0", 3);
-            var cons = f.iagenda.listarConsultasPaciente("0");
-            foreach (var c in cons)
-            {
-                Console.WriteLine(c.consulta.ConsultaID+" "+c.consulta.EspecialidadID + " "+c.espera);
-                Console.WriteLine(c.consulta.local.nombre);
-                Console.WriteLine(c.consulta.especialidad.descripcion);
-                Console.WriteLine(c.consulta.medico.nombre);
-                if(c.turno!=null)
-                    Console.WriteLine(c.turno.ToString());
+            string tenant = "test";
+            Console.WriteLine("<---------TEST ESPECIALIDAD::-------->");
 
-            }
-            //testOpenempi();
-            Console.Read();
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            /*
-            string url = @"http://10.0.2.2:3000/api/pacientes/";
-            var o = get<List<Paciente>>(url);
-            foreach (var e in o)
-            {
-                Console.WriteLine(e.PacienteID);
-                Console.WriteLine(e.nombre);
-            }
-            Paciente p = new Paciente{ PacienteID="5432", sancion=false, sexo="M", nombre="Leonardin"};
-            post<Paciente>(url, p);
+            DALEspecialidadNodejs dalesp = new DALEspecialidadNodejs(tenant);
+            Especialidad e = dalesp.obtenerEspecialidad(1);
+            Console.WriteLine(e.descripcion);
+            Console.WriteLine("DALESPECIALIDAD::obtenerEspecialidad::OK");
 
-            Console.WriteLine("finish");
-            Console.Read();
-             */
-            //testOpenempi();
+            ICollection<Especialidad> lista_esp1 = dalesp.listarEspecialidades();
+            foreach (var it in lista_esp1)
+            {
+                Console.WriteLine(it.descripcion);
+            }
+            Console.WriteLine("DALESPECIALIDAD::obtenerEspecialidades::OK");
+
+            ICollection<Especialidad> lista_esp2 = dalesp.listarEspecialidadesLocal(1);
+            foreach (var it in lista_esp2)
+            {
+                Console.WriteLine(it.descripcion);
+            }
+            Console.WriteLine("DALESPECIALIDAD::obtenerEspecialidadesLocal::OK");
         }
 
+        public static void testLocalesControllerNodeJS()
+        {
+            string tenant = "test";
+            Console.WriteLine("<---------TEST LOCAL::--------->");
+            DALLocalNodejs dallocal = new DALLocalNodejs(tenant);
+
+            Local local = dallocal.obtenerLocal(1);
+            Console.WriteLine(local.calle);
+            Local local_fail = dallocal.obtenerLocal(8);
+            if (local_fail == null)
+                Console.WriteLine("OK::LocalNULL");
+
+            Console.WriteLine("DALLocales::obtenerLocal::OK");
+
+            ICollection<Local> lista_1 = dallocal.listarLocales();
+            foreach (var l in lista_1)
+            {
+                Console.WriteLine(l.calle);
+            }
+
+            Console.WriteLine("DALLocales::listarLocales::OK");
+
+            ICollection<Local> lista_2 = dallocal.listarLocales(1);
+            foreach (var l in lista_2)
+            {
+                Console.WriteLine(l.calle);
+            }
+            Console.WriteLine("DALLocales::listarLocales(EspecialidadID)::OK");
+
+            ICollection<Local> lista_3 = dallocal.listarLocalesMedico("1234567");
+            foreach (var l in lista_3)
+            {
+                Console.WriteLine(l.calle);
+            }
+            Console.WriteLine("DALLocales::listarLocalesMedico::OK");
+
+
+        }
+
+        static void Main(string[] args)
+        {
+
+            testLocalesControllerNodeJS();
+            Console.Read();             
+        }
+        /*
         public static void clienthttp()
         {
             string url= @"http://10.0.2.2:3000/api/especialidades/";
@@ -172,6 +190,6 @@ namespace SARM.DataAccessLayer
              
             }
         }
-
+        */
         }
 }
