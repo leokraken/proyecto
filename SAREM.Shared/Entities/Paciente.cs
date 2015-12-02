@@ -19,7 +19,7 @@ namespace SAREM.Shared.Entities
         public string telefono { get; set; }
         public string mail { get; set; }
         public string extra_account { get; set; }
-        public DateTime FN { get; set; }
+        public DateTime ? FN { get; set; }
 
 
         [Required]

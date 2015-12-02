@@ -161,10 +161,61 @@ namespace SARM.DataAccessLayer
 
         }
 
+        public static void testReferenciaControllerNodeJS()
+        {
+            DALReferenciaNodejs refdal = new DALReferenciaNodejs("saremtest");
+            ICollection<Referencia> list_1 = refdal.obtenerPacientesReferenciadosMedico("1234567");
+            foreach (var r in list_1)
+            {
+                Console.WriteLine(r.PacienteID + "  " + r.FuncionarioID + " " + r.pendiente);
+                Console.WriteLine(r.paciente.PaisID);
+                Console.WriteLine(r.paciente.nombre);
+            }
+            Console.WriteLine("DALReferenciaNodeJS::obtenerPacientesReferenciadosMedico   OK");
+
+            ICollection<Referencia> list_2 = refdal.obtenerReferenciasPendientesMedico("1234567");
+            foreach (var r in list_2)
+            {
+                Console.WriteLine(r.PacienteID + "  " + r.FuncionarioID + " " + r.pendiente);
+                Console.WriteLine(r.paciente.PaisID);
+                Console.WriteLine(r.paciente.nombre);
+
+            }
+            Console.WriteLine("DALReferenciaNodeJS::obtenerReferenciasPendientesMedico   OK");
+
+            ICollection<Referencia> list_3 = refdal.obtenerTodasReferencias();
+            foreach (var r in list_3)
+            {
+                Console.WriteLine(r.PacienteID + "  " + r.FuncionarioID + " " + r.pendiente);
+                Console.WriteLine(r.paciente.PaisID);
+                Console.WriteLine(r.paciente.nombre);
+
+            }
+            Console.WriteLine("DALReferenciaNodeJS::obtenerTodasReferencias   OK");
+
+            refdal.agregarReferencia("5434", "1234567");
+            Console.WriteLine("DALReferenciaNodeJS::agregarReferencia   OK");
+
+            Referencia r1 = refdal.obtenerReferencia("5434");
+            Console.WriteLine(r1.PacienteID + "  " + r1.FuncionarioID + " " + r1.pendiente);
+            Console.WriteLine("DALReferenciaNodeJS::obtenerReferencia   OK");
+
+            refdal.denegarReferencia("5434", "1234567");
+            Console.WriteLine("DALReferenciaNodeJS::denegarReferencia   OK");
+
+
+            if(refdal.chequearExistenciaSolicitud("5432"))
+                Console.WriteLine("DALReferenciaNodeJS::chequearExistenciaSolicitud   OK");
+            else
+                Console.WriteLine("DALReferenciaNodeJS::chequearExistenciaSolicitud   ERROR");
+
+        }
+
         static void Main(string[] args)
         {
 
-            testLocalesControllerNodeJS();
+            //testLocalesControllerNodeJS();
+            testReferenciaControllerNodeJS();
             Console.Read();             
         }
         /*

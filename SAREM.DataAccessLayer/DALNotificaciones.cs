@@ -31,7 +31,9 @@ namespace SAREM.DataAccessLayer
             if(e!=null && p!=null && c!=null)
             {
                 DateTime now = DateTime.Today;
-                int edad = now.Year - p.FN.Year;
+                DateTime dt= (DateTime)p.FN;
+                int edad = now.Year - dt.Year;
+
                 if (p.FN > now.AddYears(-edad)) edad--;
 
                 if (e is EventoObligatorio || (e is EventoOpcional && ((EventoOpcional) e).edades.Contains(edad) && e.sexo == p.sexo))
@@ -63,7 +65,8 @@ namespace SAREM.DataAccessLayer
                 var eventosop = db.eventos.OfType<EventoOpcional>().ToList(); 
                 foreach (var e in eventosop)
                 {
-                    if (e.edades.Contains(p.FN.Year))
+                    DateTime dt = (DateTime)p.FN;
+                    if (e.edades.Contains(dt.Year))
                     {
                         eventos.Add(e);
                         break;

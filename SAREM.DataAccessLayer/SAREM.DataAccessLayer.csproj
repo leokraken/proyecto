@@ -91,6 +91,7 @@
     <Compile Include="IDALReferencias.cs" />
     <Compile Include="NodeJS\DALEspecialidadNodejs.cs" />
     <Compile Include="NodeJS\DALLocalNodejs.cs" />
+    <Compile Include="NodeJS\DALReferenciaNodejs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SARMContext.cs" />
